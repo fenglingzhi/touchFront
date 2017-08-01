@@ -128,7 +128,7 @@
     name: 'navheader',
     data () {
       return {
-        // 监内未点人员明细
+        // 柜内工具
         inCriminals: [
           {name: '12321', headimg: '/static/img/tol.png'},
           {name: '123', headimg: '/static/img/tol.png'},
@@ -141,9 +141,14 @@
           {name: '9999', headimg: '/static/img/tol.png'},
           {name: '23445', headimg: '/static/img/tol.png'},
           {name: '123344', headimg: '/static/img/tol.png'},
+          {name: '123344', headimg: '/static/img/tol.png'},
+          {name: '123344', headimg: '/static/img/tol.png'},
+          {name: '123344', headimg: '/static/img/tol.png'},
+          {name: '123344', headimg: '/static/img/tol.png'},
           {name: '5555666', headimg: '/static/img/tol.png'}
         ],
-        // 外出未点人员明细
+        // 柜外工具
+
         outCriminals: [
           {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
           {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
