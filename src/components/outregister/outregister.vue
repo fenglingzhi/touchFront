@@ -278,7 +278,7 @@
           </div>
           <div class="partsFoot">
             <div style="margin: 13px 2px;float: right">
-              <div class="sure">提交</div>
+              <div class="sure">提sdfsadfasdfas交</div>
               <div class="sure">取消</div>
             </div>
           </div>
