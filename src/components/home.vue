@@ -27,28 +27,22 @@
             <span class="out">本监外出{{float_personnel[0].out}}人）</span>
           </h4>
           <el-row class="menu_title_wrap">
-            <el-col :span="3" style="height: 10px;"></el-col>
-            <el-col :span="6">
+            <el-col :span="6" v-for="item in float_person_card">
               <div class="float_person_card">
-                <div class="phtot"></div>
+                <div class="phtot">
+                  <img :src="item.imgurl" alt="">
+                </div>
                 <div class="crimal_content">
-                  <p>姓名：</p>
-                  <p>罪犯编号：</p>
-                  <p>当前区域：</p>
-                  <p>外出地点：</p>
-                  <p>陪同民警：</p>
-                  <p>外出时间：</p>
-                  <p>外出事由：</p>
+                  <p>姓名：{{item.name}}</p>{{item.imgurl}}
+                  <p>罪犯编号：{{item.crimalNum}}</p>
+                  <p>当前区域：{{item.area}}</p>
+                  <p>外出地点：{{item.destination}}</p>
+                  <p>陪同民警：{{item.withplace}}</p>
+                  <p>外出时间：{{item.outtime}}</p>
+                  <p>外出事由：{{item.outreasons}}</p>
                 </div>
               </div>
             </el-col>
-            <el-col :span="6">
-
-            </el-col>
-            <el-col :span="6">
-
-            </el-col>
-            <el-col :span="3" style="height: 10px;"></el-col>
           </el-row>
         </div>
         <div class="outside_persion_personnel">
@@ -71,6 +65,68 @@ export default {
       ],
       float_personnel: [
         {float: 12, out: 13}
+      ],
+      float_person_card: [
+        {
+          imgurl: './assets/crimal_1_03.jpg',
+          name: '王小明',
+          crimalNum: '00123',
+          area: '某区域',
+          destination: '无',
+          withplace: '无',
+          outtime: '15:44:00',
+          outreasons: '无'
+        },
+        {
+          imgurl: './assets/crimal_1_03.jpg',
+          name: '王小明',
+          crimalNum: '00123',
+          area: '某区域',
+          destination: '无',
+          withplace: '无',
+          outtime: '15:44:00',
+          outreasons: '无'
+        },
+        {
+          imgurl: './assets/crimal_1_03.jpg',
+          name: '王小明',
+          crimalNum: '00123',
+          area: '某区域',
+          destination: '无',
+          withplace: '无',
+          outtime: '15:44:00',
+          outreasons: '无'
+        },
+        {
+          imgurl: './assets/crimal_1_03.jpg',
+          name: '王小明',
+          crimalNum: '00123',
+          area: '某区域',
+          destination: '无',
+          withplace: '无',
+          outtime: '15:44:00',
+          outreasons: '无'
+        },
+        {
+          imgurl: './assets/crimal_1_03.jpg',
+          name: '王小明',
+          crimalNum: '00123',
+          area: '某区域',
+          destination: '无',
+          withplace: '无',
+          outtime: '15:44:00',
+          outreasons: '无'
+        },
+        {
+          imgurl: './assets/crimal_1_03.jpg',
+          name: '王小明',
+          crimalNum: '00123',
+          area: '某区域',
+          destination: '无',
+          withplace: '无',
+          outtime: '15:44:00',
+          outreasons: '无'
+        }
       ]
     }
   }
