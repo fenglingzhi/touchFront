@@ -1,5 +1,7 @@
 <template>
-  <div class="navheader">这是头</div>
+  <el-row class="navheader">
+
+  </el-row>
 </template>
 
 <script>

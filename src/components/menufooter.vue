@@ -1,11 +1,11 @@
 <template>
   <div class="menufooter">
     <el-row class="menu_title_wrap">
-      <el-col :span="1" class="menu_title"></el-col>
-      <el-col :span="3" class="menu_title" v-for="item in menuList">
+      <!--<el-col :span="1" class="menu_title"></el-col>-->
+      <el-col :span="4" class="menu_title" v-for="item in menuList">
         <div v-on:click="gopage(item.path)">{{item.name}}</div>
       </el-col>
-      <el-col :span="1"></el-col>
+      <!--<el-col :span="1" class="menu_title"></el-col>-->
     </el-row>
   </div>
 </template>
@@ -21,8 +21,8 @@ export default {
         {name: '人员清点', path: '/crimalcheck'},
         {name: '工具清点', path: '/toolcheck'},
         {name: '外出登记', path: '/outregister'},
-        {name: '定位展示', path: '/position'},
-        {name: '互监组', path: '/mutualsupervision'}
+//        {name: '定位展示', path: '/position'},
+        {name: '互监组管理', path: '/mutualsupervision'}
       ]
     }
   },
