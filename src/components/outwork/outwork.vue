@@ -5,10 +5,10 @@
     <el-col :span="22">
       <div class="li1_parts">
         <div class="tabHead">
-          <div class="tab">出工</div>
-          <div class="tab tabing">留监</div>
+          <div :class="['tab', { tabing: isB1}]" v-on:click="toggle()">出工</div>
+          <div :class="['tab', { tabing: isB2}]" v-on:click="toggle()">留监</div>
         </div>
-        <div class="partsBody">
+        <div class="partsBody" v-show="isShow1">
           <div class="bodyCon">
             <el-col :span="2">
               <div class="criminal">
@@ -16,8 +16,28 @@
                 <span class="criminalName">张三</span>
               </div>
             </el-col>
+          </div>
+          <el-row >
+            <el-col :span="8" style="height: 10px"></el-col>
+            <el-col :span="8" >
+              <div class="pages">
+                <span class="pageControl"><img src="../../assets/q1.png" alt=""/></span>
+                <span class="pagesText">11/30</span>
+                <span class="pageControl"><img src="../../assets/q2.png" alt=""/></span>
+              </div>
+            </el-col>
+            <el-col :span="8" style="height: 10px"></el-col>
+          </el-row>
 
-
+        </div>
+        <div class="partsBody" v-show="isShow2">
+          <div class="bodyCon">
+            <el-col :span="2">
+              <div class="criminal">
+                <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
+                <span class="criminalName">1233213</span>
+              </div>
+            </el-col>
           </div>
           <el-row >
             <el-col :span="8" style="height: 10px"></el-col>
@@ -44,7 +64,49 @@
 
 <script>
   export default {
-    name: 'navheader'
+    name: 'navheader',
+    data () {
+      return {
+        // 监内未点人员明细
+        inCriminals: [
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'}
+        ],
+        // 外出未点人员明细
+        outCriminals: [
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'}
+
+        ],
+        isShow1: true,
+        isShow2: false,
+        isB1: true,
+        isB2: false
+      }
+    },
+    methods: {
+      toggle: function () {
+        this.isShow1 = !this.isShow1
+        this.isShow2 = !this.isShow2
+        this.isB1 = !this.isB1
+        this.isB2 = !this.isB2
+      }
+    }
   }
 </script>
 
@@ -60,17 +122,17 @@
   .li1_parts .tab{
     width: 127px;
     height: 40px;
-    background: white;
+    background: #004bdc;
     font-size: 18px;
-    color: #004bdc;
     text-align: center;
     float: left;
+    color:white;
     line-height: 38px;
   }
   .li1_parts .tabing{
-    background: #004bdc;
+    background: white;
     font-size: 18px;
-    color:white;
+    color: #004bdc;
     text-align: center;
   }
   .li1_parts .partsBody{

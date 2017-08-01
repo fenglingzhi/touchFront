@@ -4,107 +4,28 @@
     <el-col :span="1" style="height:10px"></el-col>
     <el-col :span="22">
       <div class="li2_parts">
+        <!--<div class="tabHead">-->
+          <!--<div class="tab"  v-on:click="toggle()">人员清点</div>-->
+          <!--<div class="tab tabing"  v-on:click="toggle()">清点记录</div>-->
+        <!--</div>-->
         <div class="tabHead">
-          <div class="tab">人员清点</div>
-          <div class="tab tabing">清点记录</div>
+          <div  :class="['tab', { tabing: isB1}]"  v-on:click="toggle()">人员清点</div>
+          <div  :class="['tab', { tabing: isB2}]"  v-on:click="toggle()">清点记录</div>
         </div>
-        <div class="tab1" style="display: block">
+        <div class="tab1" v-show="isShow1">
           <div class="partsBody" style="height:392px;">
             <div class="bodyHead">
               <div class="title">监内未点人员150人</div>
               <div class="titleDescribe">（本监区总人数：200人，<span style="color: #1443cd">已点人数23人</span>）</div>
             </div>
             <div class="bodyCon">
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
+              <el-col :span="2" v-for="criminal in inCriminals">
+                <div class="criminal" >
+                  <img :src="criminal.headimg" width="98%" height="85" alt=""/>
+                  <span class="criminalName">{{ criminal.name }}</span>
                 </div>
               </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
+
             </div>
             <el-row >
               <el-col :span="8" style="height: 10px"></el-col>
@@ -123,34 +44,10 @@
               <div class="title">外出未点人员</div>
             </div>
             <div class="bodyCon" style="height: 135px;">
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
-                </div>
-              </el-col>
-              <el-col :span="2">
-                <div class="criminal">
-                  <img src="../../assets/crimal_1_03.jpg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">张三</span>
+              <el-col :span="2" v-for="criminal in outCriminals">
+                <div class="criminal" >
+                  <img :src="criminal.headimg" width="98%" height="85" alt=""/>
+                  <span class="criminalName">{{ criminal.name }}</span>
                 </div>
               </el-col>
 
@@ -168,16 +65,17 @@
             </el-row>
           </div>
           <div class="partsFoot">
-            <div style="margin: 10px 10px;float: right">
+            <div style="margin: 13px 2px;float: right">
               <div class="sure">手动确定</div>
               <div class="sure">手动结束</div>
             </div>
           </div>
         </div>
-        <div class="tab2" style="display: none">
+        <div class="tab2" v-show="isShow2">
           <div class="partsBody" style="height:697px;">
 
             <div class="bodyCon">
+
               <table  border="1" width="100%">
                 <tr>
                   <th>科目一</th>
@@ -188,441 +86,33 @@
                   <th>科目一</th>
                   <th>科目一</th>
                 </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
 
 
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                <tr v-for="record in inventoryRecords">
+                  <td>{{record.n1}}</td>
+                  <td>{{record.n2}}</td>
+                  <td>{{record.n3}}</td>
+                  <td>{{record.n4}}</td>
+                  <td>{{record.n5}}</td>
+                  <td>{{record.n6}}</td>
+                  <td>{{record.n7}}</td>
                 </tr>
 
 
               </table>
 
             </div>
-            <div class="pages">
-              <span class="pageControl"><img src="img/q1.png" alt=""/></span>
-              <span class="pagesText">11/30</span>
-              <span class="pageControl"><img src="img/q2.png" alt=""/></span>
-            </div>
+            <el-row >
+              <el-col :span="8" style="height: 10px"></el-col>
+              <el-col :span="8" >
+                <div class="pages">
+                  <span class="pageControl"><img src="../../assets/q1.png" alt=""/></span>
+                  <span class="pagesText">11/30</span>
+                  <span class="pageControl"><img src="../../assets/q2.png" alt=""/></span>
+                </div>
+              </el-col>
+              <el-col :span="8" style="height: 10px"></el-col>
+            </el-row>
           </div>
         </div>
 
@@ -634,9 +124,71 @@
 </template>
 
 <script>
-export default {
-  name: 'navheader'
-}
+  export default {
+    name: 'navheader',
+    data () {
+      return {
+        // 监内未点人员明细
+        inCriminals: [
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'}
+        ],
+        // 外出未点人员明细
+        outCriminals: [
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
+          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'}
+
+        ],
+        // 清点记录
+        inventoryRecords: [
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
+          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'}
+        ],
+        isShow1: true,
+        isShow2: false,
+        isB1: true,
+        isB2: false
+      }
+    },
+    methods: {
+      toggle: function () {
+        this.isShow1 = !this.isShow1
+        this.isShow2 = !this.isShow2
+        this.isB1 = !this.isB1
+        this.isB2 = !this.isB2
+      }
+    }
+  }
 </script>
 
 <style>
@@ -651,17 +203,17 @@ export default {
   .li2_parts .tab{
     width: 127px;
     height: 40px;
-    background: white;
+    background: #004bdc;
     font-size: 18px;
-    color: #004bdc;
     text-align: center;
     float: left;
+    color:white;
     line-height: 38px;
   }
   .li2_parts .tabing{
-    background: #004bdc;
+    background: white;
     font-size: 18px;
-    color:white;
+    color: #004bdc;
     text-align: center;
   }
   .li2_parts .partsBody{
@@ -706,13 +258,13 @@ export default {
     line-height: 36px;
     letter-spacing: 2px;
     float: right;
-    margin: 24px 95px;
+    margin: 0px 35px;
   }
 
 
 
   .li2_parts .criminal{
-    /*width: 64px;*/
+    width: 84%;
     height: 110px;
     float: left;
     background: #0048d9;
@@ -754,10 +306,7 @@ export default {
     text-align: left;
   }
   .tab2 .bodyCon{
-    width: 1130px;
-    height: 565px;
-    position: absolute;
-    margin: 41px 50px;
+    height: 600px;
   }
 
 
