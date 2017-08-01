@@ -31,10 +31,8 @@ body{
   text-align: center;
   color: #2c3e50;
   width: 100%;
-  /*height: 1024px;*/
   background: url('./assets/bg.png');
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  /*margin-top: 60px;*/
 }
 </style>
