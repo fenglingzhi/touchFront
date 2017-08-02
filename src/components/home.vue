@@ -86,12 +86,7 @@
         </div>
       </el-col>
     </div>
-
-
   </div>
-
-
-
 </template>
 
 <script>
@@ -227,11 +222,15 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
+  .home{
+    height: 836px;
+  }
   .body{
     height: 100%;
     color:#000;
     padding: 25px;
     overflow: hidden;
+    padding-top: 0;
     .home_title{
       color: #2553ff;
       text-shadow: -1px 1px 0px #fff;
@@ -253,7 +252,7 @@ export default {
       text-align: center;
     }
     .prison_situation{
-      height: 230px;
+      height: 300px;
       background: rgba(255,255,255,.8);
       text-align: left;
       overflow: auto;
@@ -261,13 +260,14 @@ export default {
       .content{
         p{
           font-size: 16px;
-          line-height: 16px;
+          line-height: 48px;
           font-weight: bold;
+          margin: 0;
         }
       }
     }
     .member_distribute{
-      height:460px;
+      height:520px;
       background: rgba(255,255,255,.8);
       overflow: auto;
       text-align: left;
@@ -275,7 +275,7 @@ export default {
     .floating_personnel{
       background: rgba(255,255,255,.8);
       overflow: hidden;
-      height: 465px;
+      height: 510px;
       margin-bottom: 20px;
       margin-left: 20px;
       .float{
@@ -293,7 +293,7 @@ export default {
         .float_person_card{
           padding: 10px;
           height: 150px;
-          margin: 5px 10px;
+          margin: 10px 10px;
           .photo{
             height:100%;
           }
@@ -322,13 +322,13 @@ export default {
     .outside_persion_personnel{
       background: rgba(255,255,255,.8);
       overflow: hidden;
-      height: 225px;
+      height: 310px;
       margin-left: 20px;
       .outside_person_wrap{
-        padding: 0 40px;
+        padding: 20px 10px;
         .outside_person_card{
           padding: 10px;
-          height: 80px;
+          height: 100px;
           margin: 5px 10px;
           background: #481fac;
           .photo{
