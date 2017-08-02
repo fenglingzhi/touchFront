@@ -24,25 +24,30 @@
     </el-col>
   </el-row>
 </template>
-
-<script>
-  var nowdate
-  setInterval(function () {
-    var nowdates = new Date()
-    nowdate = nowdates.getFullYear()
-    console.log(nowdate)
-  }, 600)
-  export default {
+//mounted 和beforeCreate 都可以
     name: 'navheader',
-    data () {
+    beforeCreate() {
+      var context = this;
+      setInterval(function () {
+        context.localTime = new Date();
+      }, 1000)
+    },
+    data() {
       return {
         logoIsShow: true,
         position: '厂房第一监区',
-        localTime: nowdate
+        localTime: new Date()
       }
+    },
+   
+/*    mounted() {
+      var context = this;
+      setInterval(function () {
+        context.localTime = new Date();
+      }, 1000)
     }
+    */
   }
-</script>
 
 <style lang="scss">
 .navheader{
