@@ -5,8 +5,10 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 import App from './App'
 import router from './router'
+import $ from 'jquery'
 
 Vue.use(ElementUI)
+// Vue.use($)
 
 Vue.config.productionTip = false
 
