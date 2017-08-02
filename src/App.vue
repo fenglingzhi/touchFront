@@ -19,7 +19,7 @@
                 <el-col :span="12">
                  <span class="tipHead">请民警登录或刷卡确认</span>
                   <input type="text">
-                  <input type="text">
+                  <input type="password">
                 </el-col>
                 <el-col :span="6" style="height: 10px"></el-col>
               </el-row>
@@ -411,6 +411,13 @@
       </div>
     </div>
     <!--已点名单 end-->
+
+
+    <!--报警弹框 star-->
+    <div class="alertAlarm" v-show="true">
+
+    </div>
+    <!--报警弹框 end-->
   </div>
 </template>
 
@@ -507,10 +514,12 @@ body{
 /*用户登录*/
 
 .alertYHDL input{
-  width:100%;
-  margin:20px 0px;
-  height:40px;
+  width: 100%;
+  margin: 20px 0px;
+  font-size: 25px;
+  height: 40px;
   border: 1px solid rgba(0, 0, 0, 0.38);
+  text-indent: 10px;
 }
 .alertYHDL .tipHead{
     display: inline-block;
@@ -609,5 +618,15 @@ body{
   font-size: 18px;
   font-weight: 800;
   line-height: 33px;
+}
+
+/*报警弹框*/
+.alertAlarm{
+  width: 370px;
+  height: 90px;
+  background: #ff3333;
+  position: fixed;
+  bottom: 38px;
+  right: 34px;
 }
 </style>

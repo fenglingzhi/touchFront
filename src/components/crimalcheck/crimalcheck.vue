@@ -192,6 +192,7 @@
 </script>
 
 <style>
+
   .li2_parts {
     height: 740px;
     margin: 0px auto;
