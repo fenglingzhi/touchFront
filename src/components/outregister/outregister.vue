@@ -1,6 +1,6 @@
 <template>
   <!--<div class="navheader">人员清点</div>-->
-  <el-row class="menu_title_wrap">
+  <el-row class="menu_title_wrap home">
     <el-col :span="1" style="height:10px"></el-col>
     <el-col :span="22">
       <div class="li3_parts">
@@ -350,7 +350,9 @@
 </script>
 
 <style>
-
+  .home{
+    height: 836px;
+  }
   .li3_parts {
     height: 740px;
     margin: 0px auto;

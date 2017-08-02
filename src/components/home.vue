@@ -223,7 +223,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
   .home{
-    height: 836px;
+    height: 780px !important;
   }
   .body{
     height: 100%;

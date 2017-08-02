@@ -414,7 +414,7 @@
 
 
     <!--报警弹框 star-->
-    <div class="alertAlarm" v-show="true">
+    <div class="alertAlarm" v-show="false">
 
     </div>
     <!--报警弹框 end-->
