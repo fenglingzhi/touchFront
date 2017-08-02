@@ -7,7 +7,7 @@
     <!--用户登录 star-->
     <div class="alertTip alertYHDL" v-show="alertYHDL">
           <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 408px;">
-            <div class="bodyHead"><div class="title">用户登录</div><div  v-on:click="close('alertYHDL')" class="close">X</div></div>
+            <div class="bodyHead"><div class="title">用户登录{{alertYHDL}}</div><div  v-on:click="close('alertYHDL')" class="close">X</div></div>
             <div class="bodyCon">
               <el-row class="menu_title_wrap">
                 <el-col :span="6" >
@@ -432,7 +432,7 @@ export default {
   },
   data () {
     return {
-      alertYHDL: true,
+      alertYHDL: false,
       alertJQXZ: false,
       alertBJXX: false,
       alertSSLD: false,
@@ -448,7 +448,12 @@ export default {
     close: function (chose) {
       this.chose = false
       alert(this.chose)
+    },
+    open: function (chose) {
+      this.chose = true
+      alert(this.chose)
     }
+
   }
 }
 
