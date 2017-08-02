@@ -12,7 +12,7 @@
     <el-col :span="8" class="navoption">
       <el-col :span="21">
         <p>
-          <span>当前位置：<a href="">{{ position }}</a></span><span v-bind="localTime"></span>
+          <span>当前位置：<a href="">{{ position }}</a></span><span>{{localTime}}</span>
         </p>
         <p>
           <span class="nav-plan">正在计划点名中</span><span class="nav-plan-time">计划清点：{{}}</span>
@@ -26,25 +26,22 @@
 </template>
 
 <script>
-export default {
-  name: 'navheader',
-  data () {
-    return {
-      logoIsShow: true,
-      position: '厂房第一监区'
-//      localTime: date
-    }
-  },
-  method: {
-    localTime: function () {
-      var date
-      setInterval(function () {
-        date = new Date()
-      }, 600)
-      return date
+  var nowdate
+  setInterval(function () {
+    var nowdates = new Date()
+    nowdate = nowdates.getFullYear()
+    console.log(nowdate)
+  }, 600)
+  export default {
+    name: 'navheader',
+    data () {
+      return {
+        logoIsShow: true,
+        position: '厂房第一监区',
+        localTime: nowdate
+      }
     }
   }
-}
 </script>
 
 <style lang="scss">
