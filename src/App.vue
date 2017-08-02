@@ -5,9 +5,9 @@
     <router-view></router-view>
     <menufooter></menufooter>
     <!--用户登录 star-->
-    <div class="alertTip alertYHDL" v-show="false">
+    <div class="alertTip alertYHDL" v-show="alertYHDL">
           <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 408px;">
-            <div class="bodyHead"><div class="title">用户登录</div><div class="close">X</div></div>
+            <div class="bodyHead"><div class="title">用户登录</div><div  v-on:click="close('alertYHDL')" class="close">X</div></div>
             <div class="bodyCon">
               <el-row class="menu_title_wrap">
                 <el-col :span="6" >
@@ -34,7 +34,7 @@
     <!--用户登录 end-->
 
     <!--监区选择 star-->
-    <div class="alertTip alertJQXZ" v-show="false">
+    <div class="alertTip alertJQXZ" v-show="alertJQXZ">
       <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 270px;">
         <div class="bodyHead"><div class="title">监区选择</div><div class="close">X</div></div>
         <div class="bodyCon">
@@ -72,7 +72,7 @@
     <!--监区选择 end-->
 
     <!--报警信息 star-->
-    <div class="alertTip alertBJXX" v-show="false">
+    <div class="alertTip alertBJXX" v-show="alertBJXX">
       <div class="alertBody " style="margin: -222px -400px;width: 800px;height: 444px;">
         <div class="bodyHead"><div class="title">报警信息</div><div class="close">X</div></div>
         <div class="bodyCon" style="height: 312px;">
@@ -164,7 +164,7 @@
     <!--报警信息 end-->
 
     <!--实时流动 star-->
-    <div class="alertTip alertSSLD" v-show="false">
+    <div class="alertTip alertSSLD" v-show="alertSSLD">
       <div class="alertBody " style=" margin: -290px -440px;width: 880px;height: 580px;">
         <div class="bodyHead"><div class="title">实时流动</div><div class="close">X</div></div>
         <div class="bodyCon" style="height: 466px;">
@@ -253,7 +253,7 @@
     <!--实时流动 end-->
 
     <!--已点名单 star-->
-    <div class="alertTip alertYDMD" v-show="false">
+    <div class="alertTip alertYDMD" v-show="alertYDMD">
       <div class="alertBody " style="margin: -330px -550px;width: 1100px;height: 660px;">
         <div class="bodyHead"><div class="title">已点名单</div><div class="close">X</div></div>
         <div class="bodyCon" style="height: 514px;">
@@ -429,8 +429,29 @@ export default {
   components: {
     navheader: navheader,         // 引入组件头部导航
     menufooter: menufooter        // 引入组件底部菜单
+  },
+  data () {
+    return {
+      alertYHDL: true,
+      alertJQXZ: false,
+      alertBJXX: false,
+      alertSSLD: false,
+      alertYDMD: false
+    }
+  },
+  beforeCreate () {
+    var context = this
+    console.log($.getApiJson('http://10.58.1.145:88/api/HomeIndex/GetBindJQ',''))
+      context.localTime = new Date().toLocaleString()
+  },
+  methods: {
+    close: function (chose) {
+      this.chose = false
+      alert(this.chose)
+    }
   }
 }
+
 </script>
 
 <style>
