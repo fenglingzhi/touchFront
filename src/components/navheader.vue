@@ -24,31 +24,25 @@
     </el-col>
   </el-row>
 </template>
-//mounted 和beforeCreate 都可以
+
+<script>
+  export default {
     name: 'navheader',
-    beforeCreate() {
-      var context = this;
-      setInterval(function () {
-        context.localTime = new Date();
-      }, 1000)
-    },
-    data() {
+    data () {
       return {
         logoIsShow: true,
         position: '厂房第一监区',
         localTime: new Date()
       }
     },
-
-/*    mounted() {
-      var context = this;
+    beforeCreate () {
+      var context = this
       setInterval(function () {
-        context.localTime = new Date();
+        context.localTime = new Date()
       }, 1000)
     }
-    */
   }
-
+</script>
 <style lang="scss">
 .navheader{
   p{
