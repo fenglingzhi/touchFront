@@ -86,7 +86,11 @@
         </div>
       </el-col>
     </div>
+
+
   </div>
+
+
 
 </template>
 
@@ -347,4 +351,6 @@ export default {
       }
     }
   }
+
+
 </style>
