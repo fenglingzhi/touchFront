@@ -39,7 +39,7 @@
         localTime: new Date()
       }
     },
-   
+
 /*    mounted() {
       var context = this;
       setInterval(function () {
