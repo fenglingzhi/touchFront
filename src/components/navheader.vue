@@ -15,7 +15,7 @@
           <span>当前位置：<a href="">{{ position }}</a></span><span>{{localTime}}</span>
         </p>
         <p>
-          <span class="nav-plan">正在计划点名中</span><span class="nav-plan-time">计划清点：{{}}</span>
+          <span class="nav-plan">正在计划点名中</span><span class="nav-plan-time">计划清点：{{week}}</span>
         </p>
       </el-col>
       <el-col :span="3">
@@ -33,7 +33,8 @@
         logoIsShow: true,
         position: '厂房第一监区',
         localTime: new Date().toLocaleString(),
-        localweek: ''
+        localhoner: new Date().toLocaleTimeString(),
+        week: ''
       }
     },
     beforeCreate () {
@@ -57,7 +58,8 @@
           week = '星期六'
         }
         context.localTime = new Date().toLocaleString()
-        context.localweek = week
+        context.localhoner = new Date().toLocaleTimeString()
+        context.week = week
       }, 1000)
     }
   }
@@ -86,8 +88,20 @@
     }
   }
   .navoption{
+    padding: 0 30px;
+    padding-top: 30px;
     p{
       text-align: left;
+      font-size: 14px;
+      font-weight: bold;
+      line-height:28px;
+    }
+    .nav-plan{
+      color: #28ff00;
+    }
+    .nav-plan-time{
+      color: #ffd800;
+      margin-left: 50px;
     }
   }
 }
