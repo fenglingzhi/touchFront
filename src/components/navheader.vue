@@ -1,5 +1,5 @@
 <template>
-  <el-row class="navheader">
+  <el-row class="navheader" >
     <el-col :span="8" class="logo" v-show="logoIsShow">
       <el-col :span="2"><img src="../assets/hui.png" alt=""></el-col>
       <el-col :span="22"><p>区域定位管控系统</p></el-col>
@@ -13,7 +13,7 @@
       <el-col :span="22">
         <p>
           <span @click="$emit('getPosition')" class="nowposition">当前位置：{{ abbbbb }}</span>
-          <span>{{localTime}}</span>
+          <span @click="$emit('getTime')">{{localTime}}</span>
           <span>{{localWeek}}</span>
           <span>{{localYear}}</span>
         </p>
