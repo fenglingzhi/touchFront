@@ -444,14 +444,11 @@ export default {
   },
   data () {
     return {
-      alertYHDL: true,
-      alertJQXZ: false,
-      alertBJXX: false,
-      alertSSLD: false,
-      alertYDMD: false
+
     }
   },
   beforeCreate () {
+    var context = this
     console.log($.getApiJson('http://10.58.1.145:88/api/HomeIndex/GetBindJQ',''))
 //    重构罪犯信息哈希数据
     for(var i=0;i<personlists.length;i++){

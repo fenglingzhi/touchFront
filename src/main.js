@@ -6,10 +6,12 @@ import 'element-ui/lib/theme-default/index.css'
 import App from './App'
 import router from './router'
 import $ from 'jquery'
+import axios from 'axios'
 import ajax from './assets/ajaxWebApiMethod.js'
+import global from './plugins/vue.global.js'
 
 Vue.use(ElementUI)
-// Vue.use(ajax)
+Vue.use(global)
 // Vue.use($)
 
 Vue.config.productionTip = false

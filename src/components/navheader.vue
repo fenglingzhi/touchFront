@@ -10,15 +10,18 @@
     </el-col>
     <el-col :span="8" class="logo"></el-col>
     <el-col :span="8" class="navoption">
-      <el-col :span="21">
+      <el-col :span="22">
         <p>
-          <span>当前位置：<a href="">{{ position }}</a></span><span>{{localTime}}</span>
+          <span v-on:click="open(alertJQXZ)" class="nowposition">当前位置：{{ position }}</span>
+          <span>{{localTime}}</span>
+          <span>{{localWeek}}</span>
+          <span>{{localYear}}</span>
         </p>
         <p>
-          <span class="nav-plan">正在计划点名中</span><span class="nav-plan-time">计划清点：{{week}}</span>
+          <span class="nav-plan">正在计划点名中</span><span class="nav-plan-time">计划清点：16:35-16:45</span>
         </p>
       </el-col>
-      <el-col :span="3">
+      <el-col :span="2">
         <a href="" class="nav-mobile"><img src="../assets/mobile.png" alt=""></a>
       </el-col>
     </el-col>
@@ -26,41 +29,70 @@
 </template>
 
 <script>
+  import axios from 'axios'
+  import { shanlei } from '../config'
   export default {
     name: 'navheader',
     data () {
       return {
         logoIsShow: true,
         position: '厂房第一监区',
-        localTime: new Date().toLocaleString(),
-        localhoner: new Date().toLocaleTimeString(),
-        week: ''
+        localTime: '',
+        localWeek: '',
+        localYear: '',
+        info:{},
       }
     },
     beforeCreate () {
-      var context = this
+      var vm = this;
       setInterval(function () {
+        var Year = new Date().getFullYear()
+        var Months = new Date().getMonth()
+        var Days = new Date().getDay()
         var getDay = new Date().getDay()
+        var Hours = new Date().getHours()
+        var Minutes = new Date().getMinutes()
+        var Seconds = new Date().getSeconds()
+        var getTime = Hours + ':' + Minutes + ':' + Seconds
+        var getYear = Year + '-' + Months + '-' + Days
         var week
         if (getDay === '0') {
           week = '星期日'
-        } else if (getDay === '1') {
+        } else if (getDay == '1') {
           week = '星期一'
-        } else if (getDay === '2') {
+        } else if (getDay == '2') {
           week = '星期二'
-        } else if (getDay === '3') {
+        } else if (getDay == '3') {
           week = '星期三'
-        } else if (getDay === '4') {
+        } else if (getDay == '4') {
           week = '星期四'
-        } else if (getDay === '5') {
+        } else if (getDay == '5') {
           week = '星期五'
-        } else if (getDay === '6') {
+        } else if (getDay == '6') {
           week = '星期六'
         }
-        context.localTime = new Date().toLocaleString()
-        context.localhoner = new Date().toLocaleTimeString()
-        context.week = week
+        vm.localTime = getTime
+        vm.localWeek = week
+        vm.localYear = getYear
       }, 1000)
+    },
+    methods: {
+      gethomeData : function () {
+        $.ajax({
+          url:shanlei+'HomeIndex/GetBindJQ',
+          type:'get',
+          dataType:'json',
+//          jsonp:'callback',
+          success:function (res) {
+            vm = this
+            vm.info = res
+          }
+        })
+      },
+//      checkPrison: function (choose) {
+//        this.$emit(choose, true)
+//        alert(this.choose)
+//      }
     }
   }
 </script>
@@ -88,20 +120,25 @@
     }
   }
   .navoption{
-    padding: 0 30px;
-    padding-top: 30px;
+    padding: 30px 30px 0 0;
     p{
       text-align: left;
       font-size: 14px;
       font-weight: bold;
       line-height:28px;
+      span{
+        margin: 0 5px;
+      }
+    }
+    .nowposition{
+      cursor: pointer;
     }
     .nav-plan{
       color: #28ff00;
     }
     .nav-plan-time{
       color: #ffd800;
-      margin-left: 50px;
+      float: right;
     }
   }
 }
