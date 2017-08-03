@@ -12,7 +12,7 @@
     <el-col :span="8" class="navoption">
       <el-col :span="22">
         <p>
-          <span v-on:click="getPosition()" class="nowposition">当前位置：{{ abbbbb }}</span>
+          <span @click="$emit('getPosition')" class="nowposition">当前位置：{{ abbbbb }}</span>
           <span>{{localTime}}</span>
           <span>{{localWeek}}</span>
           <span>{{localYear}}</span>
@@ -41,7 +41,7 @@
         localWeek: '',
         localYear: '',
         info:{},
-        abbbbb:''
+        abbbbb:'',
       }
     },
     beforeCreate () {
@@ -79,25 +79,28 @@
     },
     methods: {
       getPosition : function () {
-
         var vm = this
+        alert(1)
+        vm.$emit('alertJQXZ','true');
+        console.log()
 //        $.ajax({
-////          url:shanlei+'HomeIndex/GetBindJQ',
-//          url:'http://rapapi.org/mockjsdata/23163/RFajax',
+//          url:shanlei+'HomeIndex/GetBindJQ',
+////          url:'http://rapapi.org/mockjsdata/23163/RFajax',
+////          url:'http://10.58.1.125:8881/api/CriminalCnt/GetCriminalList',
 //          type:'get',
-//          dataType:'json',
-////          jsonp:'callback',
+////          data:{ OrgID: "3F012C0B-2EFC-4194-AB18-FE4BCBB39C6D" },
+//          dataType:'jsonp',
+//          jsonp:'callback',
 //          success:function (res) {
 //            vm.res = res
 //            console.log(vm.res)
-//            vm.abbbbb = res.data[0].name
-//            console.log(vm.abbbbb)
+////            vm.abbbbb = res.data[0].name
+////            console.log(vm.abbbbb)
 //          },
 //          error:function (res) {
 //            console.log(res)
 //          }
 //        })
-
       },
       webSockets: function () {
         var socket = new WebSocket("ws://10.58.1.177:20001");
@@ -133,10 +136,7 @@
       }
     },
     mounted(){
-      this.webSockets()
-//      $.getDomainApiJson("http://10.58.1.125:8881/api/CriminalCnt/GetCriminalList", { OrgID: "3F012C0B-2EFC-4194-AB18-FE4BCBB39C6D" }, function (result) {
-//        alert(JSON.stringify(result));
-//      });
+//      this.webSockets()
     }
   }
 </script>
