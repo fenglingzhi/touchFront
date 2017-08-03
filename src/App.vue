@@ -36,7 +36,7 @@
     <!--监区选择 star-->
     <div class="alertTip alertJQXZ" v-show="alertJQXZ">
       <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 270px;">
-        <div class="bodyHead"><div class="title">监区选择</div><div class="close">X</div></div>
+        <div class="bodyHead"><div class="title">监区选择</div><div v-on:click="close('alertYHDL')" class="close">X</div></div>
         <div class="bodyCon">
           <el-row>
             <el-col :span="5" >
@@ -74,7 +74,7 @@
     <!--报警信息 star-->
     <div class="alertTip alertBJXX" v-show="alertBJXX">
       <div class="alertBody " style="margin: -222px -400px;width: 800px;height: 444px;">
-        <div class="bodyHead"><div class="title">报警信息</div><div class="close">X</div></div>
+        <div class="bodyHead"><div class="title">报警信息</div><div v-on:click="close('alertYHDL')" class="close">X</div></div>
         <div class="bodyCon" style="height: 312px;">
           <div class="lists" v-show="true">
             <el-row>
@@ -166,7 +166,7 @@
     <!--实时流动 star-->
     <div class="alertTip alertSSLD" v-show="alertSSLD">
       <div class="alertBody " style=" margin: -290px -440px;width: 880px;height: 580px;">
-        <div class="bodyHead"><div class="title">实时流动</div><div class="close">X</div></div>
+        <div class="bodyHead"><div class="title">实时流动</div><div v-on:click="close('alertYHDL')" class="close">X</div></div>
         <div class="bodyCon" style="height: 466px;">
           <el-row>
             <el-col :span="12" >
@@ -255,7 +255,7 @@
     <!--已点名单 star-->
     <div class="alertTip alertYDMD" v-show="alertYDMD">
       <div class="alertBody " style="margin: -330px -550px;width: 1100px;height: 660px;">
-        <div class="bodyHead"><div class="title">已点名单</div><div class="close">X</div></div>
+        <div class="bodyHead"><div class="title">已点名单</div><div v-on:click="close('alertYHDL')" class="close">X</div></div>
         <div class="bodyCon" style="height: 514px;">
           <el-col :span="12" >
             <el-col :span="12" >
@@ -424,6 +424,18 @@
 <script>
 import navheader from './components/navheader.vue'                  // 引入组件头部导航
 import menufooter from './components/menufooter.vue'                // 引入组件底部菜单
+
+var personlists=[{"FlnkID":"9c2e3994-54d4-43ea-bfd3-b87dd95cc761",
+  "CriminalName":"科比.波密斯",
+  "Photo":"\/Document\/Photos\/Criminals\/2017072510103420170624084751李丽超.jpg"
+},
+  {"FlnkID":"dfd825d1-c4d3-43ce-a55b-242cc622a2c1","CriminalName":"8b96罪犯未绑卡",
+    "Photo":"\/Document\/Photos\/Criminals\/2017073119045020170624090400张博.jpg"}];
+//所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
+var personlist_hash = new Array();
+//所有罪犯信息缓存(传进vue的数据用于渲染页面)
+var vueDataPersonlist=new Array();
+
 export default {
   name: 'app',
   components: {
@@ -440,15 +452,34 @@ export default {
     }
   },
   beforeCreate () {
-    var context = this
     console.log($.getApiJson('http://10.58.1.145:88/api/HomeIndex/GetBindJQ',''))
-      context.localTime = new Date().toLocaleString()
+//    重构罪犯信息哈希数据
+    for(var i=0;i<personlists.length;i++){
+      personlist_hash[personlists[i].FlnkID] = {"CriminalName":'"'+personlists[i].CriminalName+'"',"Photo":'"'+personlists[i].Photo+'"'};
+    }
+//   模拟数据（网关推送过来的罪犯FlnkID）
+    var FlnkIDList=['dfd825d1-c4d3-43ce-a55b-242cc622a2c1','9c2e3994-54d4-43ea-bfd3-b87dd95cc761']
+    for(var j=0;j<FlnkIDList.length;j++){
+      vueDataPersonlist[j]={"FlnkID":'"'+FlnkIDList[j]+'"',"CriminalName":'"'+personlist_hash[FlnkIDList[j]].CriminalName+'"',"Photo":'"'+personlist_hash[FlnkIDList[j]].Photo+'"'}
+    }
+    console.log(vueDataPersonlist[0])
+
+
+
   },
   methods: {
     close: function (chose) {
-      var isNot = this
-      isNot.chose = false
-      console.log(isNot.alertYHDL)
+      if(chose=="alertYHDL"){
+          this.alertYHDL=false
+      }else  if (chose=="alertJQXZ"){
+        this.alertJQXZ=false
+      }else  if (chose=="alertBJXX"){
+        this.alertBJXX=false
+      }else  if (chose=="alertSSLD"){
+        this.alertSSLD=false
+      }else  if (chose=="alertYDMD"){
+        this.alertYDMD=false
+      }
     }
 
   }
