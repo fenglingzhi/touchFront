@@ -12,7 +12,7 @@
     <el-col :span="8" class="navoption">
       <el-col :span="22">
         <p>
-          <span v-on:click="open(alertJQXZ)" class="nowposition">当前位置：{{ position }}</span>
+          <span v-on:click="getPosition()" class="nowposition">当前位置：{{ abbbbb }}</span>
           <span>{{localTime}}</span>
           <span>{{localWeek}}</span>
           <span>{{localYear}}</span>
@@ -41,6 +41,7 @@
         localWeek: '',
         localYear: '',
         info:{},
+        abbbbb:''
       }
     },
     beforeCreate () {
@@ -77,22 +78,65 @@
       }, 1000)
     },
     methods: {
-      gethomeData : function () {
-        $.ajax({
-          url:shanlei+'HomeIndex/GetBindJQ',
-          type:'get',
-          dataType:'json',
-//          jsonp:'callback',
-          success:function (res) {
-            vm = this
-            vm.info = res
-          }
-        })
+      getPosition : function () {
+
+        var vm = this
+//        $.ajax({
+////          url:shanlei+'HomeIndex/GetBindJQ',
+//          url:'http://rapapi.org/mockjsdata/23163/RFajax',
+//          type:'get',
+//          dataType:'json',
+////          jsonp:'callback',
+//          success:function (res) {
+//            vm.res = res
+//            console.log(vm.res)
+//            vm.abbbbb = res.data[0].name
+//            console.log(vm.abbbbb)
+//          },
+//          error:function (res) {
+//            console.log(res)
+//          }
+//        })
+
       },
-//      checkPrison: function (choose) {
-//        this.$emit(choose, true)
-//        alert(this.choose)
-//      }
+      webSockets: function () {
+        var socket = new WebSocket("ws://10.58.1.177:20001");
+        var _this = this;
+        socket.onopen = function(){
+          // Web Socket 已连接上，使用 send() 方法发送数据
+          var aaa= {
+            "header": {
+              "MsgID":"201501260000000001",
+              "MsgType":"DOOR001",
+            },
+            "body":[
+              {
+                "action":"1",
+                "doorID":"123"
+              },{
+                "action":"1",
+                "doorID":"123"
+              }
+            ]
+          }
+      socket.send(aaa);
+          alert("数据发送123");
+        };
+        socket.onmessage=function(event){
+          _this.test();
+          console.log('message',event.data)
+        }
+        socket.onclose = function(){
+          // 关闭 websocket
+          alert("连接已关闭...");
+        };
+      }
+    },
+    mounted(){
+      this.webSockets()
+//      $.getDomainApiJson("http://10.58.1.125:8881/api/CriminalCnt/GetCriminalList", { OrgID: "3F012C0B-2EFC-4194-AB18-FE4BCBB39C6D" }, function (result) {
+//        alert(JSON.stringify(result));
+//      });
     }
   }
 </script>
