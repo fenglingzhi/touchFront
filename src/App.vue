@@ -36,7 +36,7 @@
     <!--监区选择 star-->
     <div class="alertTip alertJQXZ" v-show="alertJQXZ">
       <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 270px;">
-        <div class="bodyHead"><div class="title">监区选择</div><div v-on:click="close('alertYHDL')" class="close">X</div></div>
+        <div class="bodyHead"><div class="title">监区选择</div><div v-on:click="close('alertJQXZ')" class="close">X</div></div>
         <div class="bodyCon">
           <el-row>
             <el-col :span="5" >
@@ -74,7 +74,7 @@
     <!--报警信息 star-->
     <div class="alertTip alertBJXX" v-show="alertBJXX">
       <div class="alertBody " style="margin: -222px -400px;width: 800px;height: 444px;">
-        <div class="bodyHead"><div class="title">报警信息</div><div v-on:click="close('alertYHDL')" class="close">X</div></div>
+        <div class="bodyHead"><div class="title">报警信息</div><div v-on:click="close('alertBJXX')" class="close">X</div></div>
         <div class="bodyCon" style="height: 312px;">
           <div class="lists" v-show="true">
             <el-row>
@@ -166,7 +166,7 @@
     <!--实时流动 star-->
     <div class="alertTip alertSSLD" v-show="alertSSLD">
       <div class="alertBody " style=" margin: -290px -440px;width: 880px;height: 580px;">
-        <div class="bodyHead"><div class="title">实时流动</div><div v-on:click="close('alertYHDL')" class="close">X</div></div>
+        <div class="bodyHead"><div class="title">实时流动</div><div v-on:click="close('alertSSLD')" class="close">X</div></div>
         <div class="bodyCon" style="height: 466px;">
           <el-row>
             <el-col :span="12" >
@@ -255,147 +255,71 @@
     <!--已点名单 star-->
     <div class="alertTip alertYDMD" v-show="alertYDMD">
       <div class="alertBody " style="margin: -330px -550px;width: 1100px;height: 660px;">
-        <div class="bodyHead"><div class="title">已点名单</div><div v-on:click="close('alertYHDL')" class="close">X</div></div>
+        <div class="bodyHead"><div class="title">已点名单</div><div v-on:click="close('alertYDMD')" class="close">X</div></div>
         <div class="bodyCon" style="height: 514px;">
-          <el-col :span="12" >
-            <el-col :span="12" >
-                <div class="tab">条目一</div>
+
+          <el-col :span="24" >
+            <el-col :span="6" >
+              <div class="tab">条目一</div>
             </el-col>
-            <el-col :span="12" >
+            <el-col :span="6" >
+              <div class="tab">条目一内容</div>
+            </el-col>
+            <el-col :span="6" >
+              <div class="tab">条目一</div>
+            </el-col>
+            <el-col :span="6" >
               <div class="tab">条目一内容</div>
             </el-col>
           </el-col>
-          <el-col :span="12" >
-            <el-col :span="12" >
+
+          <el-col :span="24" >
+            <el-col :span="6" >
               <div class="tab">条目一</div>
             </el-col>
-            <el-col :span="12" >
+            <el-col :span="6" >
+              <div class="tab">条目一内容</div>
+            </el-col>
+            <el-col :span="6" >
+              <div class="tab">条目一</div>
+            </el-col>
+            <el-col :span="6" >
               <div class="tab">条目一内容</div>
             </el-col>
           </el-col>
-          <el-col :span="12" >
-            <el-col :span="12" >
+
+          <el-col :span="24" >
+            <el-col :span="6" >
               <div class="tab">条目一</div>
             </el-col>
-            <el-col :span="12" >
+            <el-col :span="6" >
+              <div class="tab">条目一内容</div>
+            </el-col>
+            <el-col :span="6" >
+              <div class="tab">条目一</div>
+            </el-col>
+            <el-col :span="6" >
               <div class="tab">条目一内容</div>
             </el-col>
           </el-col>
-          <el-col :span="12" >
-            <el-col :span="12" >
+
+          <el-col :span="24" >
+            <el-col :span="6" >
               <div class="tab">条目一</div>
             </el-col>
-            <el-col :span="12" >
+            <el-col :span="6" >
               <div class="tab">条目一内容</div>
             </el-col>
-          </el-col>
-          <el-col :span="12" >
-            <el-col :span="12" >
+            <el-col :span="6" >
               <div class="tab">条目一</div>
             </el-col>
-            <el-col :span="12" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-          </el-col>
-          <el-col :span="12" >
-            <el-col :span="12" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="12" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-          </el-col>
-          <el-col :span="12" >
-            <el-col :span="12" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="12" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-          </el-col>
-          <el-col :span="12" >
-            <el-col :span="12" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="12" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-          </el-col>
-          <el-col :span="12" >
-            <el-col :span="12" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="12" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-          </el-col>
-          <el-col :span="12" >
-            <el-col :span="12" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="12" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-          </el-col>
-          <el-col :span="12" >
-            <el-col :span="12" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="12" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-          </el-col>
-          <el-col :span="12" >
-            <el-col :span="12" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="12" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-          </el-col>
-          <el-col :span="12" >
-            <el-col :span="12" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="12" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-          </el-col>
-          <el-col :span="12" >
-            <el-col :span="12" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="12" >
+            <el-col :span="6" >
               <div class="tab">条目一内容</div>
             </el-col>
           </el-col>
 
 
 
-          <el-col :span="12" >
-            <el-col :span="12" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="12" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-          </el-col>
-          <el-col :span="12" >
-            <el-col :span="12" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="12" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-          </el-col>
-          <el-col :span="12" >
-            <el-col :span="12" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="12" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-          </el-col>
         </div>
         <el-row >
           <el-col :span="8" style="height: 10px"></el-col>
@@ -444,11 +368,14 @@ export default {
   },
   data () {
     return {
-
+      alertYHDL: false,
+      alertJQXZ: false,
+      alertBJXX: false,
+      alertSSLD: false,
+      alertYDMD: true
     }
   },
   beforeCreate () {
-    var context = this
     console.log($.getApiJson('http://10.58.1.145:88/api/HomeIndex/GetBindJQ',''))
 //    重构罪犯信息哈希数据
     for(var i=0;i<personlists.length;i++){
