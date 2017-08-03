@@ -5,7 +5,7 @@
     <router-view></router-view>
     <menufooter></menufooter>
     <!--用户登录 star-->
-    <div class="alertTip alertYHDL" v-show="alertYHDL">
+    <div class="alertTip alertYHDL" v-show="alertYHDL" @getPosition="onClickPosition">
           <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 408px;">
             <div class="bodyHead"><div class="title">用户登录</div><div  v-on:click="close('alertYHDL')" class="close">X</div></div>
             <div class="bodyCon">
@@ -372,24 +372,21 @@ export default {
       alertJQXZ: false,
       alertBJXX: false,
       alertSSLD: false,
-      alertYDMD: true
+      alertYDMD: false
     }
   },
   beforeCreate () {
     console.log($.getApiJson('http://10.58.1.145:88/api/HomeIndex/GetBindJQ',''))
-//    重构罪犯信息哈希数据
+    // 重构罪犯信息哈希数据
     for(var i=0;i<personlists.length;i++){
       personlist_hash[personlists[i].FlnkID] = {"CriminalName":'"'+personlists[i].CriminalName+'"',"Photo":'"'+personlists[i].Photo+'"'};
     }
-//   模拟数据（网关推送过来的罪犯FlnkID）
+    // 模拟数据（网关推送过来的罪犯FlnkID）
     var FlnkIDList=['dfd825d1-c4d3-43ce-a55b-242cc622a2c1','9c2e3994-54d4-43ea-bfd3-b87dd95cc761']
     for(var j=0;j<FlnkIDList.length;j++){
       vueDataPersonlist[j]={"FlnkID":'"'+FlnkIDList[j]+'"',"CriminalName":'"'+personlist_hash[FlnkIDList[j]].CriminalName+'"',"Photo":'"'+personlist_hash[FlnkIDList[j]].Photo+'"'}
     }
     console.log(vueDataPersonlist[0])
-
-
-
   },
   methods: {
     close: function (chose) {
@@ -404,9 +401,13 @@ export default {
       }else  if (chose=="alertYDMD"){
         this.alertYDMD=false
       }
+    },
+    onClickPosition: function () {
+      alert(1)
+      this.alertYHDL=true
     }
+  },
 
-  }
 }
 
 </script>
