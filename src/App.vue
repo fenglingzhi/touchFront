@@ -36,30 +36,14 @@
     <!--监区选择 star-->
     <div class="alertTip alertJQXZ" v-show="alertJQXZ">
       <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 270px;">
-        <div class="bodyHead"><div class="title">监区选择</div><div v-on:click="close('alertJQXZ')" class="close">X</div></div>
+        <div class="bodyHead"><div class="title" v-on:click="getaraeList()">监区选择</div><div v-on:click="close('alertJQXZ')" class="close">X</div></div>
         <div class="bodyCon">
           <el-row>
-            <el-col :span="5" >
+            <el-col :span="5"  v-for="area in areaList">
               <div style="width:10px;"></div>
-
-              <div class="areas">一监区</div>
-            </el-col>
-            <el-col :span="5" >
-              <div style="width:10px;"></div>
-
-              <div class="areas">二监区</div>
+              <div class="areas">{{ area.statusText }}</div>
             </el-col>
 
-            <el-col :span="5" >
-              <div style="width:10px;"></div>
-
-              <div class="areas">三监区</div>
-            </el-col>
-            <el-col :span="5" >
-              <div style="width:10px;"></div>
-
-              <div class="areas">四监区</div>
-            </el-col>
           </el-row>
         </div>
         <div class="partsFoot">
@@ -359,7 +343,8 @@ var personlists=[{"FlnkID":"9c2e3994-54d4-43ea-bfd3-b87dd95cc761",
 var personlist_hash = new Array();
 //所有罪犯信息缓存(传进vue的数据用于渲染页面)
 var vueDataPersonlist=new Array();
-
+//监区列表
+//var areaList;
 export default {
   name: 'app',
   components: {
@@ -369,32 +354,42 @@ export default {
   data () {
     return {
       alertYHDL: false,
-      alertJQXZ: false,
+      alertJQXZ: true,
       alertBJXX: false,
       alertSSLD: false,
-      alertYDMD: true
+      alertYDMD: false,
+      areaList:[]
     }
   },
   beforeCreate () {
-    console.log($.getApiJson('http://10.58.1.145:88/api/HomeIndex/GetBindJQ',''))
+
 //    重构罪犯信息哈希数据
     for(var i=0;i<personlists.length;i++){
-      personlist_hash[personlists[i].FlnkID] = {"CriminalName":'"'+personlists[i].CriminalName+'"',"Photo":'"'+personlists[i].Photo+'"'};
+      personlist_hash[personlists[i].FlnkID] = {"CriminalName":personlists[i].CriminalName,"Photo":personlists[i].Photo};
     }
 //   模拟数据（网关推送过来的罪犯FlnkID）
     var FlnkIDList=['dfd825d1-c4d3-43ce-a55b-242cc622a2c1','9c2e3994-54d4-43ea-bfd3-b87dd95cc761']
     for(var j=0;j<FlnkIDList.length;j++){
-      vueDataPersonlist[j]={"FlnkID":'"'+FlnkIDList[j]+'"',"CriminalName":'"'+personlist_hash[FlnkIDList[j]].CriminalName+'"',"Photo":'"'+personlist_hash[FlnkIDList[j]].Photo+'"'}
+      vueDataPersonlist[j]={"FlnkID":FlnkIDList[j],"CriminalName":personlist_hash[FlnkIDList[j]].CriminalName,"Photo":personlist_hash[FlnkIDList[j]].Photo}
     }
-    console.log(vueDataPersonlist[0])
-
-
-
+//    console.log(personlist_hash)
+  },
+  mounted() {
+//    //    重构罪犯信息哈希数据
+//    for(var i=0;i<personlists.length;i++){
+//      personlist_hash[personlists[i].FlnkID] = {"CriminalName":personlists[i].CriminalName,"Photo":personlists[i].Photo};
+//    }
+////   模拟数据（网关推送过来的罪犯FlnkID）
+//    var FlnkIDList=['dfd825d1-c4d3-43ce-a55b-242cc622a2c1','9c2e3994-54d4-43ea-bfd3-b87dd95cc761']
+//    for(var j=0;j<FlnkIDList.length;j++){
+//      vueDataPersonlist[j]={"FlnkID":FlnkIDList[j],"CriminalName":personlist_hash[FlnkIDList[j]].CriminalName,"Photo":personlist_hash[FlnkIDList[j]].Photo}
+//    }
+    this.getaraeList()
   },
   methods: {
     close: function (chose) {
       if(chose=="alertYHDL"){
-          this.alertYHDL=false
+        this.alertYHDL=false
       }else  if (chose=="alertJQXZ"){
         this.alertJQXZ=false
       }else  if (chose=="alertBJXX"){
@@ -404,9 +399,15 @@ export default {
       }else  if (chose=="alertYDMD"){
         this.alertYDMD=false
       }
+    },
+    getaraeList: function () {
+      var vm = this
+//      var areaList = $.getApiJson('http://10.58.1.145:88/api/HomeIndex/GetBindJQ',{});
+      vm.areaList = areaList;
     }
 
   }
+
 }
 
 </script>
