@@ -19,7 +19,7 @@
               <div class="titleDescribe">（本监区总人数：200人，<span style="color: #1443cd">已点人数23人</span>）</div>
             </div>
             <div class="bodyCon">
-              <el-col :span="2" v-for="criminal in inCriminals">
+              <el-col :span="2" v-for="criminal in inCriminals" :key="1">
                 <div class="criminal" >
                   <img :src="criminal.headimg" width="98%" height="85" alt=""/>
                   <span class="criminalName">{{ criminal.name }}</span>
@@ -44,7 +44,7 @@
               <div class="title">外出未点人员</div>
             </div>
             <div class="bodyCon" style="height: 135px;">
-              <el-col :span="2" v-for="criminal in outCriminals">
+              <el-col :span="2" v-for="criminal in outCriminals" :key="1">
                 <div class="criminal" >
                   <img :src="criminal.headimg" width="98%" height="85" alt=""/>
                   <span class="criminalName">{{ criminal.name }}</span>
@@ -88,7 +88,7 @@
                 </tr>
 
 
-                <tr v-for="record in inventoryRecords">
+                <tr v-for="record in inventoryRecords" :key="1">
                   <td>{{record.n1}}</td>
                   <td>{{record.n2}}</td>
                   <td>{{record.n3}}</td>

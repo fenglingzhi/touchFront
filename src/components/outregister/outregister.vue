@@ -225,7 +225,7 @@
                       外出人员
                     </div>
                     <div class="deailBody" style="height:269px;">
-                      <el-col :span="4" v-for="criminal in inCriminals">
+                      <el-col :span="4" v-for="criminal in inCriminals" :key="1">
                         <div class="criminal" >
                           <img :src="criminal.headimg" width="98%" height="85" alt=""/>
                           <span class="criminalName">{{ criminal.name }}</span>
@@ -250,7 +250,7 @@
                       陪同民警
                     </div>
                     <div class="deailBody" style="height:131px;">
-                      <el-col :span="4" v-for="police in polices">
+                      <el-col :span="4" v-for="police in polices" :key="1">
                         <div class="criminal" >
                           <img :src="police.headimg" width="98%" height="85" alt=""/>
                           <span class="criminalName">{{ police.name }}</span>

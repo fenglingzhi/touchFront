@@ -7,17 +7,19 @@
           <div class="content">
             <el-col :span="3" style="height: 10px;"></el-col>
             <el-col :span="21">
-              <p>监区人数：{{prison_situation[0].prison_num}}人</p>
-              <p>在监人数：{{prison_situation[0].in_prison_num}}人</p>
-              <p>外出人数（监内）：{{prison_situation[0].out_prison_num_in}}人</p>
-              <p>外出人数（监外）：{{prison_situation[0].out_prison_num_out}}人</p>
-              <p>非法流动人数：{{prison_situation[0].float_num}}人</p>
+              <p>监区人数：{{prison_situations[0].prison_num}}人</p>
+              <p>在监人数：{{prison_situations[0].in_prison_num}}人</p>
+              <p>外出人数（监内）：{{prison_situations[0].out_prison_num_in}}人</p>
+              <p>外出人数（监外）：{{prison_situations[0].out_prison_num_out}}人</p>
+              <p>非法流动人数：{{prison_situations[0].float_num}}人</p>
             </el-col>
           </div>
         </div>
         <div class="member_distribute">
           <h4 class="home_title">人员分布</h4>
-          <div class="cycle_chart"></div>
+          <div class="cycle_chart">
+            <div id="myChart"></div>
+          </div>
         </div>
       </el-col>
       <el-col :span="18">
@@ -27,7 +29,7 @@
             <span class="out">本监外出{{float_personnel[0].out}}人）</span>
           </h4>
           <el-row class="float_person_wrap">
-            <el-col :span="8" v-for="item in float_person_card">
+            <el-col :span="8" v-for="item in float_person_cards" :key='1'>
               <div class="float_person_card" :class="item.prisonstatus">
                 <el-col :span="10" class="photo">
                   <img :src="item.imgurl" alt="" width="100%" height="100%">
@@ -59,7 +61,7 @@
         <div class="outside_persion_personnel">
           <h4 class="home_title">外监进入人员</h4>
           <el-row class="outside_person_wrap">
-            <el-col :span="6" v-for="item in outside_persion_personnel">
+            <el-col :span="6" v-for="item in outside_persion_personnels" :key="2">
               <div class="outside_person_card" :class="item.prisonstatus">
                 <el-col :span="6" class="photo">
                   <img :src="item.imgurl" alt="" width="100%" height="100%">
@@ -95,13 +97,13 @@ export default {
   data () {
     return {
       // 监区概况
-      prison_situation: [
+      prison_situations: [
         {prison_num: 200, in_prison_num: 100, out_prison_num_in: 123, out_prison_num_out: 234, float_num: 345}
       ],
       float_personnel: [
         {float: 12, out: 13}
       ],
-      float_person_card: [
+      float_person_cards: [
         {
           imgurl: '/static/img/crimal_1_03.5a235b3.jpg',
           name: '王小明',
@@ -169,7 +171,7 @@ export default {
           prisonstatus: 'outperson'
         }
       ],
-      outside_persion_personnel: [
+      outside_persion_personnels: [
         {
           imgurl: '/static/img/crimal_1_03.5a235b3.jpg',
           name: '王小明',
@@ -224,6 +226,9 @@ export default {
 <style lang="scss">
   .home{
     height: 780px !important;
+  }
+  #myChart{
+    height:480px;
   }
   .body{
     height: 100%;
