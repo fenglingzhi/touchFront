@@ -45,11 +45,44 @@
       }
     },
     beforeCreate () {
-
+      var vm = this;
+      setInterval(function () {
+        var Year = new Date().getFullYear()
+        var Months = new Date().getMonth()
+        var Days = new Date().getDay()
+        var getDay = new Date().getDay()
+        var Hours = new Date().getHours()
+        var Minutes = new Date().getMinutes()
+        var Seconds = new Date().getSeconds()
+        var getTime = Hours + ':' + Minutes + ':' + Seconds
+        var getYear = Year + '-' + Months + '-' + Days
+        var week
+        if (getDay === '0') {
+          week = '星期日'
+        } else if (getDay == '1') {
+          week = '星期一'
+        } else if (getDay == '2') {
+          week = '星期二'
+        } else if (getDay == '3') {
+          week = '星期三'
+        } else if (getDay == '4') {
+          week = '星期四'
+        } else if (getDay == '5') {
+          week = '星期五'
+        } else if (getDay == '6') {
+          week = '星期六'
+        }
+        vm.localTime = getTime
+        vm.localWeek = week
+        vm.localYear = getYear
+      }, 1000)
     },
     methods: {
       getPosition : function () {
         var vm = this
+        alert(1)
+        vm.$emit('alertJQXZ','true');
+        console.log()
 //        $.ajax({
 //          url:shanlei+'HomeIndex/GetBindJQ',
 ////          url:'http://rapapi.org/mockjsdata/23163/RFajax',
@@ -69,69 +102,41 @@
 //          }
 //        })
       },
-
-      /* websocket通信 */
       webSockets: function () {
-        var socket = new WebSocket("ws://10.58.1.177:20010");
-
-        /* websocket 开启*/
+        var socket = new WebSocket("ws://10.58.1.177:20001");
+        var _this = this;
         socket.onopen = function(){
           // Web Socket 已连接上，使用 send() 方法发送数据
-          var aaa=
-            '{"header": {"MsgID":"201501260000000001","MsgType":"DOOR001",},"body":[{"action":"1","doorID":"123"},{"action":"1","doorID":"123"}]}'
-          socket.send(aaa);
-          alert(aaa);
+          var aaa= {
+            "header": {
+              "MsgID":"201501260000000001",
+              "MsgType":"DOOR001",
+            },
+            "body":[
+              {
+                "action":"1",
+                "doorID":"123"
+              },{
+                "action":"1",
+                "doorID":"123"
+              }
+            ]
+          }
+      socket.send(aaa);
+          alert("数据发送123");
         };
-        /* websocket 服务端返回信息*/
         socket.onmessage=function(event){
+          _this.test();
           console.log('message',event.data)
         }
-        /* websocket 关闭*/
         socket.onclose = function(){
           // 关闭 websocket
           alert("连接已关闭...");
-
         };
-      },
-
-      /* 导航时间计时器 */
-      TimerFormat: function () {
-        var vm = this;
-        setInterval(function () {
-          var Year = new Date().getFullYear()
-          var Months = new Date().getMonth()
-          var Days = new Date().getDay()
-          var getDay = new Date().getDay()
-          var Hours = new Date().getHours()
-          var Minutes = new Date().getMinutes()
-          var Seconds = new Date().getSeconds()
-          var getTime = Hours + ':' + Minutes + ':' + Seconds
-          var getYear = Year + '-' + Months + '-' + Days
-          var week
-          if (getDay === '0') {
-            week = '星期日'
-          } else if (getDay == '1') {
-            week = '星期一'
-          } else if (getDay == '2') {
-            week = '星期二'
-          } else if (getDay == '3') {
-            week = '星期三'
-          } else if (getDay == '4') {
-            week = '星期四'
-          } else if (getDay == '5') {
-            week = '星期五'
-          } else if (getDay == '6') {
-            week = '星期六'
-          }
-          vm.localTime = getTime
-          vm.localWeek = week
-          vm.localYear = getYear
-        }, 1000)
       }
     },
     mounted(){
 //      this.webSockets()
-      this.TimerFormat()
     }
   }
 </script>
