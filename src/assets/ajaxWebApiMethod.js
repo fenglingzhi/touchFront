@@ -120,7 +120,7 @@ jQuery.extend({
         m_backfun(result)
       },
       error: function (err) {
-        m_backfun(null);
+        // m_backfun(null);
       },
       complete: function (XHR, TS) {
         XHR = null;  //回收资源

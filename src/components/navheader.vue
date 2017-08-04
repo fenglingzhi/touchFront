@@ -130,7 +130,7 @@
       }
     },
     mounted(){
-      this.webSockets()
+//      this.webSockets()
       this.TimerFormat()
     }
   }

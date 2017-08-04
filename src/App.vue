@@ -41,7 +41,7 @@
           <el-row>
             <el-col :span="5">
               <div style="width:10px;"></div>
-              <div class="areas"></div>
+              <div class="areas">第一监区</div>
             </el-col>
 
           </el-row>
@@ -333,8 +333,8 @@
     <!--报警弹框 end-->
   </div>
 </template>
-
 <script>
+
   //  监区列表
   $(function () {
 
@@ -342,17 +342,36 @@
   import navheader from './components/navheader.vue'                  // 引入组件头部导航
   import menufooter from './components/menufooter.vue'                // 引入组件底部菜单
 
+
   var personlists=[{"FlnkID":"9c2e3994-54d4-43ea-bfd3-b87dd95cc761",
     "CriminalName":"科比.波密斯",
     "Photo":"\/Document\/Photos\/Criminals\/2017072510103420170624084751李丽超.jpg"
   },
     {"FlnkID":"dfd825d1-c4d3-43ce-a55b-242cc622a2c1","CriminalName":"8b96罪犯未绑卡",
       "Photo":"\/Document\/Photos\/Criminals\/2017073119045020170624090400张博.jpg"}];
+
+
+  $.ajax({
+    type: "get",
+    contentType: "application/json; charset=utf-8",
+    dataType: "jsonp",
+    jsonp: "callback",
+    async: false,
+    url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalList' + "?callback=?",
+    success: function (result) {
+      personlists=result
+      console.log(result)
+
+    },
+    complete: function (XHR, TS) {
+      XHR = null;  //回收资源
+    }
+  });
+
   //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
   var personlist_hash = new Array();
   //所有罪犯信息缓存(传进vue的数据用于渲染页面)
   var vueDataPersonlist=new Array();
-  var list ;
   export default {
     name: 'app',
     components: {
@@ -367,7 +386,6 @@
         alertSSLD: false,
         alertYDMD: false,
         alertBJTK:true,
-        JQlist:""
       }
     },
     beforeCreate () {
@@ -381,7 +399,7 @@
       for(var j=0;j<FlnkIDList.length;j++){
         vueDataPersonlist[j]={"FlnkID":FlnkIDList[j],"CriminalName":personlist_hash[FlnkIDList[j]].CriminalName,"Photo":personlist_hash[FlnkIDList[j]].Photo}
       }
-//    console.log(vueDataPersonlist[0])
+       console.log("wa",vueDataPersonlist)
     },
     methods: {
       close: function (chose) {

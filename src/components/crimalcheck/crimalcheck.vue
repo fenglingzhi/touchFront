@@ -9,8 +9,8 @@
           <!--<div class="tab tabing"  v-on:click="toggle()">清点记录</div>-->
         <!--</div>-->
         <div class="tabHead">
-          <div  :class="['tab', { tabing: isB1}]"  v-on:click="toggle()">人员清点</div>
-          <div  :class="['tab', { tabing: isB2}]"  v-on:click="toggle()">清点记录</div>
+          <div  :class="['tab', { tabing: isB1}]"  v-on:click="toggle1()">人员清点</div>
+          <div  :class="['tab', { tabing: isB2}]"  v-on:click="toggle2()">清点记录</div>
         </div>
         <div class="tab1" v-show="isShow1">
           <div class="partsBody" style="height:392px;">
@@ -41,7 +41,7 @@
           </div>
           <div class="partsBody" style="height:260px;">
             <div class="bodyHead">
-              <div class="title">外出未点人员</div>
+              <div class="title">外出未点人员150人</div>
             </div>
             <div class="bodyCon" style="height: 135px;">
               <el-col :span="2" v-for="criminal in outCriminals" :key="1">
@@ -181,11 +181,17 @@
       }
     },
     methods: {
-      toggle: function () {
-        this.isShow1 = !this.isShow1
-        this.isShow2 = !this.isShow2
-        this.isB1 = !this.isB1
-        this.isB2 = !this.isB2
+      toggle1: function () {
+        this.isShow1 = true
+        this.isShow2 =false
+        this.isB1 =  true
+        this.isB2 = false
+      },
+      toggle2: function () {
+        this.isShow1 = false
+        this.isShow2 = true
+        this.isB1 = false
+        this.isB2 = true
       }
     }
   }
