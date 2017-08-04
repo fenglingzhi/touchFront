@@ -1,35 +1,35 @@
 -/<template>
   <div id="app">
     <!-- <img src="./assets/logo.png"> -->
-    <navheader @getPosition="onClickPosition" @getTime="onClickTime"></navheader>
-    <router-view></router-view>
+    <navheader @getPosition="onClickPosition"></navheader>
+    <router-view  @hasCheaked="onHasCheaked"></router-view>
     <menufooter></menufooter>
     <!--用户登录 star-->
     <div class="alertTip alertYHDL" v-show="alertYHDL">
-          <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 408px;">
-            <div class="bodyHead"><div class="title">用户登录</div><div  v-on:click="close('alertYHDL')" class="close">X</div></div>
-            <div class="bodyCon">
-              <el-row class="menu_title_wrap">
-                <el-col :span="6" >
-                  <div style="height: 57px"></div>
-                    <p>登录名：</p>
-                  <div style="height:12px"></div>
-                    <p>密码：</p>
-                </el-col>
-                <el-col :span="12">
-                 <span class="tipHead">请民警登录或刷卡确认</span>
-                  <input type="text">
-                  <input type="password">
-                </el-col>
-                <el-col :span="6" style="height: 10px"></el-col>
-              </el-row>
-            </div>
-            <div class="partsFoot">
-              <div style="margin: 20px 2px;float: right">
-                <div class="sure">确定</div>
-              </div>
-            </div>
+      <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 408px;">
+        <div class="bodyHead"><div class="title">用户登录</div><div  v-on:click="close('alertYHDL')" class="close">X</div></div>
+        <div class="bodyCon">
+          <el-row class="menu_title_wrap">
+            <el-col :span="6" >
+              <div style="height: 57px"></div>
+              <p>登录名：</p>
+              <div style="height:12px"></div>
+              <p>密码：</p>
+            </el-col>
+            <el-col :span="12">
+              <span class="tipHead">请民警登录或刷卡确认</span>
+              <input type="text">
+              <input type="password">
+            </el-col>
+            <el-col :span="6" style="height: 10px"></el-col>
+          </el-row>
+        </div>
+        <div class="partsFoot">
+          <div style="margin: 20px 2px;float: right">
+            <div class="sure">确定</div>
           </div>
+        </div>
+      </div>
     </div>
     <!--用户登录 end-->
 
@@ -79,30 +79,30 @@
           <div class="lists" v-show="true">
             <el-row>
 
-                <div class="tipName">报警事件名称</div>
-                <el-row>
-                  <el-col :span="4"  >
+              <div class="tipName">报警事件名称</div>
+              <el-row>
+                <el-col :span="4"  >
 
-                    <div ><img width="100%"  src="./assets/crimal_1_03.jpg" alt=""></div>
-                    <span>张学友 <br> 123456</span>
-                  </el-col>
-                  <el-col :span="4"  >
-                    <div ><img width="100%"  src="./assets/crimal_1_03.jpg" alt=""></div>
-                    <span>张学友 <br> 123456</span>
-                  </el-col>
-                  <el-col :span="4"  >
-                    <div ><img width="100%"  src="./assets/crimal_1_03.jpg" alt=""></div>
-                    <span style="color: red">张学友 <br> 123456</span>
-                  </el-col>
-                  <el-col :span="4"  >
-                    <div ><img width="100%"  src="./assets/crimal_1_03.jpg" alt=""></div>
-                    <span>张学友 <br> 123456</span>
-                  </el-col>
-                  <el-col :span="4"  >
-                    <div ><img width="100%"  src="./assets/crimal_1_03.jpg" alt=""></div>
-                    <span>张学友 <br> 123456</span>
-                  </el-col>
-                </el-row>
+                  <div ><img width="100%"  src="./assets/crimal_1_03.jpg" alt=""></div>
+                  <span>张学友 <br> 123456</span>
+                </el-col>
+                <el-col :span="4"  >
+                  <div ><img width="100%"  src="./assets/crimal_1_03.jpg" alt=""></div>
+                  <span>张学友 <br> 123456</span>
+                </el-col>
+                <el-col :span="4"  >
+                  <div ><img width="100%"  src="./assets/crimal_1_03.jpg" alt=""></div>
+                  <span style="color: red">张学友 <br> 123456</span>
+                </el-col>
+                <el-col :span="4"  >
+                  <div ><img width="100%"  src="./assets/crimal_1_03.jpg" alt=""></div>
+                  <span>张学友 <br> 123456</span>
+                </el-col>
+                <el-col :span="4"  >
+                  <div ><img width="100%"  src="./assets/crimal_1_03.jpg" alt=""></div>
+                  <span>张学友 <br> 123456</span>
+                </el-col>
+              </el-row>
 
             </el-row>
             <el-row >
@@ -153,7 +153,7 @@
               <el-col :span="8" style="height: 10px"></el-col>
             </el-row>
           </div>
-         </div>
+        </div>
         <div class="partsFoot">
           <div style="margin: 20px 2px;float: right">
             <div class="sure">处理</div>
@@ -171,14 +171,14 @@
           <el-row>
             <el-col :span="12" >
               <el-col :span="7" >
-                  <div class="moveCrimal">
-                    <div><img src="./assets/crimal_1_03.jpg" width="70%" height="100" alt=""></div>
-                    <span>张家辉 <br> 13:23出门</span>
-                  </div>
+                <div class="moveCrimal">
+                  <div><img src="./assets/crimal_1_03.jpg" width="70%" height="100" alt=""></div>
+                  <span>张家辉 <br> 13:23出门</span>
+                </div>
               </el-col>
               <el-col :span="7" >
                 <div class="moveCrimal">
-                <div><img src="./assets/crimal_1_03.jpg" width="70%" height="100" alt=""></div>
+                  <div><img src="./assets/crimal_1_03.jpg" width="70%" height="100" alt=""></div>
                   <span>张家辉 <br> 13:23出门</span>
                 </div>
               </el-col>
@@ -255,7 +255,7 @@
     <!--已点名单 star-->
     <div class="alertTip alertYDMD" v-show="alertYDMD">
       <div class="alertBody " style="margin: -330px -550px;width: 1100px;height: 660px;">
-        <div class="bodyHead"><div class="title">已点名单</div><div v-on:click="close('alertYDMD')" class="close">X</div></div>
+        <div class="bodyHead"><div class="title">已点名单(50)</div><div v-on:click="close('alertYDMD')" class="close">X</div></div>
         <div class="bodyCon" style="height: 514px;">
 
           <el-col :span="24" >
@@ -338,7 +338,12 @@
 
 
     <!--报警弹框 star-->
-    <div class="alertAlarm" v-show="false">
+    <div class="alertAlarm" v-show="alertBJTK"  v-on:click="alertAlarm()">
+      <div class="alarmImg">
+        <img class="alarmIco" src='./assets/a1.png' alt="">
+      </div>
+      <div class="alarmNum">999</div>
+      <div class="alarmText">第一监狱 越狱报警</div>
 
     </div>
     <!--报警弹框 end-->
@@ -346,143 +351,153 @@
 </template>
 
 <script>
-import navheader from './components/navheader.vue'                  // 引入组件头部导航
-import menufooter from './components/menufooter.vue'                // 引入组件底部菜单
+  $(function () {
 
-var personlists=[{"FlnkID":"9c2e3994-54d4-43ea-bfd3-b87dd95cc761",
-  "CriminalName":"科比.波密斯",
-  "Photo":"\/Document\/Photos\/Criminals\/2017072510103420170624084751李丽超.jpg"
-},
-  {"FlnkID":"dfd825d1-c4d3-43ce-a55b-242cc622a2c1","CriminalName":"8b96罪犯未绑卡",
-    "Photo":"\/Document\/Photos\/Criminals\/2017073119045020170624090400张博.jpg"}];
-//所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
-var personlist_hash = new Array();
-//所有罪犯信息缓存(传进vue的数据用于渲染页面)
-var vueDataPersonlist=new Array();
+  })
+  import navheader from './components/navheader.vue'                  // 引入组件头部导航
+  import menufooter from './components/menufooter.vue'                // 引入组件底部菜单
 
-export default {
-  name: 'app',
-  components: {
-    navheader: navheader,         // 引入组件头部导航
-    menufooter: menufooter        // 引入组件底部菜单
+  var personlists=[{"FlnkID":"9c2e3994-54d4-43ea-bfd3-b87dd95cc761",
+    "CriminalName":"科比.波密斯",
+    "Photo":"\/Document\/Photos\/Criminals\/2017072510103420170624084751李丽超.jpg"
   },
-  data () {
-    return {
-      alertYHDL: false,
-      alertJQXZ: false,
-      alertBJXX: false,
-      alertSSLD: false,
-      alertYDMD: false
-    }
-  },
-  beforeCreate () {
-//    console.log($.getApiJson('http://10.58.1.145:88/api/HomeIndex/GetBindJQ',''))
-    // 重构罪犯信息哈希数据
-    for(var i=0;i<personlists.length;i++){
-      personlist_hash[personlists[i].FlnkID] = {"CriminalName":'"'+personlists[i].CriminalName+'"',"Photo":'"'+personlists[i].Photo+'"'};
-    }
-    // 模拟数据（网关推送过来的罪犯FlnkID）
-    var FlnkIDList=['dfd825d1-c4d3-43ce-a55b-242cc622a2c1','9c2e3994-54d4-43ea-bfd3-b87dd95cc761']
-    for(var j=0;j<FlnkIDList.length;j++){
-      vueDataPersonlist[j]={"FlnkID":'"'+FlnkIDList[j]+'"',"CriminalName":'"'+personlist_hash[FlnkIDList[j]].CriminalName+'"',"Photo":'"'+personlist_hash[FlnkIDList[j]].Photo+'"'}
-    }
-    console.log(vueDataPersonlist[0])
-  },
-  methods: {
-    close: function (chose) {
-      if(chose=="alertYHDL"){
-          this.alertYHDL=false
-      }else  if (chose=="alertJQXZ"){
-        this.alertJQXZ=false
-      }else  if (chose=="alertBJXX"){
-        this.alertBJXX=false
-      }else  if (chose=="alertSSLD"){
-        this.alertSSLD=false
-      }else  if (chose=="alertYDMD"){
-        this.alertYDMD=false
+    {"FlnkID":"dfd825d1-c4d3-43ce-a55b-242cc622a2c1","CriminalName":"8b96罪犯未绑卡",
+      "Photo":"\/Document\/Photos\/Criminals\/2017073119045020170624090400张博.jpg"}];
+  //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
+  var personlist_hash = new Array();
+  //所有罪犯信息缓存(传进vue的数据用于渲染页面)
+  var vueDataPersonlist=new Array();
+
+  export default {
+    name: 'app',
+    components: {
+      navheader: navheader,         // 引入组件头部导航
+      menufooter: menufooter        // 引入组件底部菜单
+    },
+    data () {
+      return {
+        alertYHDL: false,
+        alertJQXZ: false,
+        alertBJXX: false,
+        alertSSLD: false,
+        alertYDMD: false,
+        alertBJTK:true
       }
     },
-    onClickPosition: function () {
-      this.alertJQXZ=true
+    beforeCreate () {
+      console.log($.getDomainApiJson('http://10.58.1.145:88/api/HomeIndex/GetBindJQ',{},''))
+      // 重构罪犯信息哈希数据
+      for(var i=0;i<personlists.length;i++){
+        personlist_hash[personlists[i].FlnkID] = {"CriminalName":personlists[i].CriminalName,"Photo":personlists[i].Photo};
+      }
+      // 模拟数据（网关推送过来的罪犯FlnkID）
+      var FlnkIDList=['dfd825d1-c4d3-43ce-a55b-242cc622a2c1','9c2e3994-54d4-43ea-bfd3-b87dd95cc761']
+      for(var j=0;j<FlnkIDList.length;j++){
+        vueDataPersonlist[j]={"FlnkID":FlnkIDList[j],"CriminalName":personlist_hash[FlnkIDList[j]].CriminalName,"Photo":personlist_hash[FlnkIDList[j]].Photo}
+      }
+//    console.log(vueDataPersonlist[0])
     },
-    onClickTime: function () {
-      alert(2)
-    }
-  },
+    methods: {
+      close: function (chose) {
+        if(chose=="alertYHDL"){
+          this.alertYHDL=false
+        }else  if (chose=="alertJQXZ"){
+          this.alertJQXZ=false
+        }else  if (chose=="alertBJXX"){
+          this.alertBJXX=false
+        }else  if (chose=="alertSSLD"){
+          this.alertSSLD=false
+        }else  if (chose=="alertYDMD"){
+          this.alertYDMD=false
+        }
+      },
+      onClickPosition: function () {
+        this.alertYHDL=true
+      },
+      onHasCheaked: function () {
+        this.alertYDMD=true
+      },
+      alertAlarm:function () {
+        this.alertBJXX=true
+      }
+    },
+    mounted () {
 
-}
+    }
+
+  }
 
 </script>
 
 <style>
-body{
-  margin: 0;
-  padding: 0;
-}
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  width: 100%;
-  background: url('./assets/bg.png');
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-}
+  body{
+    margin: 0;
+    padding: 0;
+  }
+  #app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    width: 100%;
+    background: url('./assets/bg.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
 
-.alertTip {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 9999;
-  top: 0;
-  background: rgba(0, 0, 0, 0.78);
-}
-.alertTip .title {
-  font-size: 25px;
-  font-weight: 800;
-  color: #1d68e8;
-  text-shadow: 2px 2px 2px #fff;
-  line-height: 45px;
-  text-indent: 15px;
-  float: left;
-}
-.alertTip .bodyHead {
-  width: 100%;
-  height: 46px;
-  background: #c5cfdb;
-}
-.alertTip .bodyCon {
-  height: 240px;
-  padding: 20px;
-}
-.alertTip .partsFoot {
-  width: 100%;
-  height: 84px;
-  /* margin-top: -48px; */
-  background: #c5cfdb;
-}
-.alertTip .sure {
-  width: 126px;
-  height: 40px;
-  background: #004bdc;
-  text-align: center;
-  color: white;
-  font-size: 20px;
-  line-height: 36px;
-  letter-spacing: 2px;
-  float: right;
-  margin: 0px 35px;
-}
-.alertTip .alertBody{
+  .alertTip {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    top: 0;
+    background: rgba(0, 0, 0, 0.78);
+  }
+  .alertTip .title {
+    font-size: 25px;
+    font-weight: 800;
+    color: #1d68e8;
+    text-shadow: 2px 2px 2px #fff;
+    line-height: 45px;
+    text-indent: 15px;
+    float: left;
+  }
+  .alertTip .bodyHead {
+    width: 100%;
+    height: 46px;
+    background: #c5cfdb;
+  }
+  .alertTip .bodyCon {
+    height: 240px;
+    padding: 20px;
+  }
+  .alertTip .partsFoot {
+    width: 100%;
+    height: 84px;
+    /* margin-top: -48px; */
+    background: #c5cfdb;
+  }
+  .alertTip .sure {
+    width: 126px;
+    height: 40px;
+    background: #004bdc;
+    text-align: center;
+    color: white;
+    font-size: 20px;
+    line-height: 36px;
+    letter-spacing: 2px;
+    float: right;
+    margin: 0px 35px;
+  }
+  .alertTip .alertBody{
 
     position: absolute;
     top: 50%;
     left: 50%;
-  background: white;
+    background: white;
   }
-.alertTip  .close{
+  .alertTip  .close{
     float: right;
     font-weight: 900;
     font-size: 30px;
@@ -492,126 +507,150 @@ body{
 
 
 
-/*用户登录*/
+  /*用户登录*/
 
-.alertYHDL input{
-  width: 100%;
-  margin: 20px 0px;
-  font-size: 25px;
-  height: 40px;
-  border: 1px solid rgba(0, 0, 0, 0.38);
-  text-indent: 10px;
-}
-.alertYHDL .tipHead{
+  .alertYHDL input{
+    width: 100%;
+    margin: 20px 0px;
+    font-size: 25px;
+    height: 40px;
+    border: 1px solid rgba(0, 0, 0, 0.38);
+    text-indent: 10px;
+  }
+  .alertYHDL .tipHead{
     display: inline-block;
     height: 60px;
     font-size: 20px;
     line-height: 70px;
 
   }
-.alertYHDL p{
-  font-size: 23px;
-  text-align: right;
-}
-/*监区选择*/
-.alertJQXZ .areas{
-  width:100%;
-  height: 50px;
-  color: blue;
-  border: 1px solid;
-  font-size: 21px;
-  text-align: center;
-  line-height: 51px;
-}
-.alertJQXZ .areas:hover{
-  background: blue;
-  color: #fff;
-}
-.alertJQXZ .el-col-5 {
-  padding: 10px;
-}
-.alertJQXZ .bodyCon{
-  height: 99px;
-  padding: 20px
-}
-
-/*报警信息*/
- .alertBJXX p{
-   text-align: left;
-   font-size: 19px;
-   color: red;
-   font-weight: 800;
-   height:15px;
+  .alertYHDL p{
+    font-size: 23px;
+    text-align: right;
   }
-.alertBJXX .tipName{
-  display: inline-block;
-  height: 39px;
-  font-size: 22px;
-  color: rgba(0, 0, 255, 0.72);
-  font-weight: 800;
-   }
-.alertBJXX .pages{
-  width: 273px;
-  height: 50px;
-  margin: 18px auto;
-}
-.alertBJXX .pageControl{
+  /*监区选择*/
+  .alertJQXZ .areas{
+    width:100%;
+    height: 50px;
+    color: blue;
+    border: 1px solid;
+    font-size: 21px;
+    text-align: center;
+    line-height: 51px;
+  }
+  .alertJQXZ .el-col-5 {
+    padding: 10px;
+  }
+  .alertJQXZ .bodyCon{
+    height: 99px;
+    padding: 20px
+  }
 
-}
-.alertBJXX .pagesText {
-  font-size: 24px;
-  display: inline-block;
-  width: 155px;
-  text-align: center;
-}
+  /*报警信息*/
+  .alertBJXX p{
+    text-align: left;
+    font-size: 19px;
+    color: red;
+    font-weight: 800;
+    height:15px;
+  }
+  .alertBJXX .tipName{
+    display: inline-block;
+    height: 39px;
+    font-size: 22px;
+    color: rgba(0, 0, 255, 0.72);
+    font-weight: 800;
+  }
+  .alertBJXX .pages{
+    width: 273px;
+    height: 50px;
+    margin: 18px auto;
+  }
+  .alertBJXX .pageControl{
+
+  }
+  .alertBJXX .pagesText {
+    font-size: 24px;
+    display: inline-block;
+    width: 155px;
+    text-align: center;
+  }
   .lists span{
     font-weight: 800;
     font-size: 20px;
   }
-.alertBJXX .el-col-4 {
-  width: 16.66667%;
-  margin: 0px 12px;
-}
+  .alertBJXX .el-col-4 {
+    width: 16.66667%;
+    margin: 0px 12px;
+  }
 
 
   /*实时流动*/
   .alertSSLD .moveCrimal{
     margin:6px 0px;
   }
-.alertSSLD span{
-  color: black;
-}
-/*已点名单*/
-.alertYDMD .pages{
-  width: 273px;
-  height: 50px;
-  margin: 18px auto;
-}
-.alertYDMD .pageControl{
+  .alertSSLD span{
+    color: black;
+  }
+  /*已点名单*/
+  .alertYDMD .pages{
+    width: 273px;
+    height: 50px;
+    margin: 18px auto;
+  }
+  .alertYDMD .pageControl{
 
-}
-.alertYDMD .pagesText {
-  font-size: 24px;
-  display: inline-block;
-  width: 155px;
-  text-align: center;
-}
-.alertYDMD .tab{
-  width: 100%;
-  border: 1px solid rgb(0, 0, 0);
-  height: 33px;
-  font-size: 18px;
-  font-weight: 800;
-  line-height: 33px;
-}
+  }
+  .alertYDMD .pagesText {
+    font-size: 24px;
+    display: inline-block;
+    width: 155px;
+    text-align: center;
+  }
+  .alertYDMD .tab{
+    width: 100%;
+    border: 1px solid rgb(0, 0, 0);
+    height: 33px;
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 33px;
+  }
 
-/*报警弹框*/
-.alertAlarm{
-  width: 370px;
-  height: 90px;
-  background: #ff3333;
-  position: fixed;
-  bottom: 38px;
-  right: 34px;
-}
+  /*报警弹框*/
+  .alertAlarm{
+    width: 200px;
+    height: 80px;
+    position: fixed;
+    bottom: 80px;
+    right: 34px;
+    background: rgb(255, 51, 51);
+  }
+  .alarmImg{
+    float: left;
+    padding: 1px;
+    margin: 12px 0px;
+  }
+  .alarmImg img{
+    width: 64px;
+  }
+  .alarmText{
+    background: white;
+    float: right;
+    margin: 6px 6px;
+    width: 120px;
+    height: 64px;
+    color: black;
+    text-align: left;
+    font-size: 15px;
+    padding: 1px;
+    line-height: 23px;
+    overflow: hidden;
+  }
+  .alarmNum{
+    width: 30px;
+    position: absolute;
+    color: white;
+    margin: 5px 36px;
+    font-size: 16px;
+  }
 </style>
