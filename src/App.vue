@@ -39,27 +39,11 @@
         <div class="bodyHead"><div class="title">监区选择</div><div v-on:click="close('alertJQXZ')" class="close">X</div></div>
         <div class="bodyCon">
           <el-row>
-            <el-col :span="5" >
+            <el-col :span="5"  v-for="JQ in JQlist">
               <div style="width:10px;"></div>
-
-              <div class="areas">一监区</div>
-            </el-col>
-            <el-col :span="5" >
-              <div style="width:10px;"></div>
-
-              <div class="areas">二监区</div>
+              <div class="areas">{{JQ.text}}</div>
             </el-col>
 
-            <el-col :span="5" >
-              <div style="width:10px;"></div>
-
-              <div class="areas">三监区</div>
-            </el-col>
-            <el-col :span="5" >
-              <div style="width:10px;"></div>
-
-              <div class="areas">四监区</div>
-            </el-col>
           </el-row>
         </div>
         <div class="partsFoot">
@@ -351,6 +335,7 @@
 </template>
 
 <script>
+  //  监区列表
   $(function () {
 
   })
@@ -367,7 +352,7 @@
   var personlist_hash = new Array();
   //所有罪犯信息缓存(传进vue的数据用于渲染页面)
   var vueDataPersonlist=new Array();
-
+  var list ;
   export default {
     name: 'app',
     components: {
@@ -377,15 +362,16 @@
     data () {
       return {
         alertYHDL: false,
-        alertJQXZ: false,
+        alertJQXZ: true,
         alertBJXX: false,
         alertSSLD: false,
         alertYDMD: false,
-        alertBJTK:true
+        alertBJTK:true,
+        JQlist:""
       }
     },
     beforeCreate () {
-      console.log($.getDomainApiJson('http://10.58.1.145:88/api/HomeIndex/GetBindJQ',{},''))
+
       // 重构罪犯信息哈希数据
       for(var i=0;i<personlists.length;i++){
         personlist_hash[personlists[i].FlnkID] = {"CriminalName":personlists[i].CriminalName,"Photo":personlists[i].Photo};
@@ -419,9 +405,13 @@
       },
       alertAlarm:function () {
         this.alertBJXX=true
+
       }
+
     },
+
     mounted () {
+      this.getareaList()
 
     }
 
