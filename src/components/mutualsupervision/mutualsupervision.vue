@@ -225,7 +225,7 @@
                       刷卡区域
                     </div>
                     <div class="deailBody" style="height:269px;">
-                      <el-col :span="8" v-for="criminal in inCriminals">
+                      <el-col :span="8" v-for="criminal in inCriminals" :key="1">
                         <div class="criminal" >
                           <img :src="criminal.headimg" width="98%" height="100" alt=""/>
                           <span class="criminalName">{{ criminal.name }}</span>

@@ -376,7 +376,7 @@ export default {
     }
   },
   beforeCreate () {
-    console.log($.getApiJson('http://10.58.1.145:88/api/HomeIndex/GetBindJQ',''))
+//    console.log($.getApiJson('http://10.58.1.145:88/api/HomeIndex/GetBindJQ',''))
     // 重构罪犯信息哈希数据
     for(var i=0;i<personlists.length;i++){
       personlist_hash[personlists[i].FlnkID] = {"CriminalName":'"'+personlists[i].CriminalName+'"',"Photo":'"'+personlists[i].Photo+'"'};
@@ -403,8 +403,7 @@ export default {
       }
     },
     onClickPosition: function () {
-      alert(1)
-      this.alertYHDL=true
+      this.alertJQXZ=true
     },
     onClickTime: function () {
       alert(2)
@@ -523,6 +522,10 @@ body{
   font-size: 21px;
   text-align: center;
   line-height: 51px;
+}
+.alertJQXZ .areas:hover{
+  background: blue;
+  color: #fff;
 }
 .alertJQXZ .el-col-5 {
   padding: 10px;
