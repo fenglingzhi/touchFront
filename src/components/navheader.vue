@@ -12,8 +12,8 @@
     <el-col :span="8" class="navoption">
       <el-col :span="22">
         <p>
-          <span @click="$emit('getPosition')" class="nowposition">当前位置：{{ abbbbb }}</span>
-          <span @click="$emit('getTime')">{{localTime}}</span>
+          <span @click="$emit('getPosition')" class="nowposition">当前位置：{{  }}</span>
+          <span>{{localTime}}</span>
           <span>{{localWeek}}</span>
           <span>{{localYear}}</span>
         </p>
@@ -40,60 +40,12 @@
         localTime: '',
         localWeek: '',
         localYear: '',
-        info:{},
-        abbbbb:'',
       }
     },
     beforeCreate () {
 
     },
     methods: {
-      getPosition : function () {
-        var vm = this
-//        $.ajax({
-//          url:shanlei+'HomeIndex/GetBindJQ',
-////          url:'http://rapapi.org/mockjsdata/23163/RFajax',
-////          url:'http://10.58.1.125:8881/api/CriminalCnt/GetCriminalList',
-//          type:'get',
-////          data:{ OrgID: "3F012C0B-2EFC-4194-AB18-FE4BCBB39C6D" },
-//          dataType:'jsonp',
-//          jsonp:'callback',
-//          success:function (res) {
-//            vm.res = res
-//            console.log(vm.res)
-////            vm.abbbbb = res.data[0].name
-////            console.log(vm.abbbbb)
-//          },
-//          error:function (res) {
-//            console.log(res)
-//          }
-//        })
-      },
-
-      /* websocket通信 */
-      webSockets: function () {
-        var socket = new WebSocket("ws://10.58.1.177:20010");
-
-        /* websocket 开启*/
-        socket.onopen = function(){
-          // Web Socket 已连接上，使用 send() 方法发送数据
-          var aaa=
-            '{"header": {"MsgID":"201501260000000001","MsgType":"DOOR001",},"body":[{"action":"1","doorID":"123"},{"action":"1","doorID":"123"}]}'
-          socket.send(aaa);
-          alert(aaa);
-        };
-        /* websocket 服务端返回信息*/
-        socket.onmessage=function(event){
-          console.log('message',event.data)
-        }
-        /* websocket 关闭*/
-        socket.onclose = function(){
-          // 关闭 websocket
-          alert("连接已关闭...");
-
-        };
-      },
-
       /* 导航时间计时器 */
       TimerFormat: function () {
         var vm = this;
@@ -130,7 +82,6 @@
       }
     },
     mounted(){
-//      this.webSockets()
       this.TimerFormat()
     }
   }
