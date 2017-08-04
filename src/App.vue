@@ -39,9 +39,9 @@
         <div class="bodyHead"><div class="title">监区选择</div><div v-on:click="close('alertJQXZ')" class="close">X</div></div>
         <div class="bodyCon">
           <el-row>
-            <el-col :span="5"  v-for="JQ in JQlist">
+            <el-col :span="5">
               <div style="width:10px;"></div>
-              <div class="areas">{{JQ.text}}</div>
+              <div class="areas"></div>
             </el-col>
 
           </el-row>
@@ -411,7 +411,6 @@
     },
 
     mounted () {
-      this.getareaList()
 
     }
 
