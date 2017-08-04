@@ -22,7 +22,7 @@ export default {
     }
 
     /* webSocket封装 */
-    // Vue.prototype.ws = new WebSocket('ws:10.58.1.177:20010')
+    Vue.prototype.ws = new WebSocket('ws:10.58.1.177:20010')
 
   }
 
