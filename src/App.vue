@@ -531,7 +531,7 @@
     width: 16.66667%;
     margin: 0px 12px;
   }
-  /*实时流动*/
+  /*实时流动 */
   .alertSSLD .moveCrimal{
     margin:6px 0px;
   }
