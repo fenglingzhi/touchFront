@@ -32,6 +32,9 @@
   import axios from 'axios'
   import { shanlei } from '../config'
   export default {
+    props: [
+      'inputValue'
+    ],
     name: 'navheader',
     data () {
       return {
@@ -40,6 +43,7 @@
         localTime: '',
         localWeek: '',
         localYear: '',
+
       }
     },
     beforeCreate () {
@@ -83,6 +87,7 @@
     },
     mounted(){
       this.TimerFormat()
+      console.log('566666666',this.inputValue)
     }
   }
 </script>

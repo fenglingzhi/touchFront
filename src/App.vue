@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- <img src="./assets/logo.png"> -->
-    <navheader @getPosition="onClickPosition" @getTime="onClickTime"></navheader>
+    <navheader @getPosition="onClickPosition" @getTime="onClickTime" :inputValue="criminalList"></navheader>
     <router-view  @hasCheaked="onHasCheaked"></router-view>
     <menufooter></menufooter>
     <!--用户登录 star-->
@@ -136,64 +136,17 @@
         <div class="bodyCon" style="height: 466px;">
           <el-row>
             <el-col :span="12" >
-              <el-col :span="7" >
-                <div class="moveCrimal">
-                  <div><img src="./assets/crimal_1_03.jpg" width="70%" height="100" alt=""></div>
-                  <span>张家辉 <br> 13:23出门</span>
-                </div>
-              </el-col>
-              <el-col :span="7" >
-                <div class="moveCrimal">
-                  <div><img src="./assets/crimal_1_03.jpg" width="70%" height="100" alt=""></div>
-                  <span>张家辉 <br> 13:23出门</span>
-                </div>
-              </el-col>
-              <el-col :span="7" >
-                <div class="moveCrimal">
-                  <div><img src="./assets/crimal_1_03.jpg" width="70%" height="100" alt=""></div>
-                  <span>张家辉 <br> 13:23出门</span>
-                </div>
-              </el-col>
-              <el-col :span="7" >
-                <div class="moveCrimal">
-                  <div><img src="./assets/crimal_1_03.jpg" width="70%" height="100" alt=""></div>
-                  <span>张家辉 <br> 13:23出门</span>
-                </div>
-              </el-col>
-              <el-col :span="7" >
-                <div class="moveCrimal">
-                  <div><img src="./assets/crimal_1_03.jpg" width="70%" height="100" alt=""></div>
-                  <span>张家辉 <br> 13:23出门</span>
-                </div>
-              </el-col>
-              <el-col :span="7" >
-                <div class="moveCrimal">
-                  <div><img src="./assets/crimal_1_03.jpg" width="70%" height="100" alt=""></div>
-                  <span>张家辉 <br> 13:23出门</span>
-                </div>
-              </el-col>
-              <el-col :span="7" >
-                <div class="moveCrimal">
-                  <div><img src="./assets/crimal_1_03.jpg" width="70%" height="100" alt=""></div>
-                  <span>张家辉 <br> 13:23出门</span>
-                </div>
-              </el-col>
-              <el-col :span="7" >
-                <div class="moveCrimal">
-                  <div><img src="./assets/crimal_1_03.jpg" width="70%" height="100" alt=""></div>
-                  <span>张家辉 <br> 13:23出门</span>
-                </div>
-              </el-col>
-              <el-col :span="7" >
-                <div class="moveCrimal">
-                  <div><img src="./assets/crimal_1_03.jpg" width="70%" height="100" alt=""></div>
-                  <span>张家辉 <br> 13:23出门</span>
-                </div>
-              </el-col>
+
+                <el-col :span="7" >
+                  <div class="moveCrimal">
+                    <div><img src="./assets/crimal_1_03.jpg" width="70%" height="100" alt=""></div>
+                    <span>张家辉 <br> 13:23出门</span>
+                  </div>
+                </el-col>
+
             </el-col>
             <el-col :span="12">
               <el-col :span="7" style="height: 10px">
-
               </el-col>
               <el-col :span="10" >
                 <div class="moveCrimal">
@@ -238,53 +191,6 @@
               <div class="tab">条目一内容</div>
             </el-col>
           </el-col>
-
-          <el-col :span="24" >
-            <el-col :span="6" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="6" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-            <el-col :span="6" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="6" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-          </el-col>
-
-          <el-col :span="24" >
-            <el-col :span="6" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="6" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-            <el-col :span="6" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="6" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-          </el-col>
-
-          <el-col :span="24" >
-            <el-col :span="6" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="6" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-            <el-col :span="6" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="6" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-          </el-col>
-
-
 
         </div>
         <el-row >
@@ -343,7 +249,8 @@
         alertYDMD: false,
         alertBJTK: true,
         prisonSelect: [],
-        alertJQXZactive:false
+        alertJQXZactive:false,
+        criminalList:{}
       }
     },
     beforeCreate () {
@@ -351,44 +258,10 @@
 
       /*ym e*/
       /* mj B*/
-      var personlists=[{"FlnkID":"9c2e3994-54d4-43ea-bfd3-b87dd95cc761",
-        "CriminalName":"科比.波密斯",
-        "Photo":"\/Document\/Photos\/Criminals\/2017072510103420170624084751李丽超.jpg"
-      },
-        {"FlnkID":"dfd825d1-c4d3-43ce-a55b-242cc622a2c1","CriminalName":"8b96罪犯未绑卡",
-          "Photo":"\/Document\/Photos\/Criminals\/2017073119045020170624090400张博.jpg"}];
 
-      $.ajax({
-        type: "get",
-        contentType: "application/json; charset=utf-8",
-        dataType: "jsonp",
-        jsonp: "callback",
-        async: false,
-        url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalList' + "?callback=?",
-        success: function (result) {
-          personlists=result
-          console.log(result)
-        },
-        complete: function (XHR, TS) {
-          XHR = null;  //回收资源
-        }
-      });
-      //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
-      var personlist_hash = new Array();
-      //所有罪犯信息缓存(传进vue的数据用于渲染页面)
-      var vueDataPersonlist=new Array();
       /* mj e*/
-//    console.log($.getApiJson('http://10.58.1.145:88/api/HomeIndex/GetBindJQ',''))
-      // 重构罪犯信息哈希数据
-      for(var i=0;i<personlists.length;i++){
-        personlist_hash[personlists[i].FlnkID] = {"CriminalName":'"'+personlists[i].CriminalName+'"',"Photo":'"'+personlists[i].Photo+'"'};
-      }
-      // 模拟数据（网关推送过来的罪犯FlnkID）
-      var FlnkIDList=['dfd825d1-c4d3-43ce-a55b-242cc622a2c1','9c2e3994-54d4-43ea-bfd3-b87dd95cc761']
-      for(var j=0;j<FlnkIDList.length;j++){
-        vueDataPersonlist[j]={"FlnkID":'"'+FlnkIDList[j]+'"',"CriminalName":'"'+personlist_hash[FlnkIDList[j]].CriminalName+'"',"Photo":'"'+personlist_hash[FlnkIDList[j]].Photo+'"'}
-      }
-      console.log(vueDataPersonlist[0])
+
+
     },
     methods: {
       /*ym B*/
@@ -448,7 +321,48 @@
 
       /*ym e*/
       /* mj B*/
+      var personlists;
+      var vm=this
+//      var personlists=[{"FlnkID":"9c2e3994-54d4-43ea-bfd3-b87dd95cc761",
+//        "CriminalName":"科比.波密斯",
+//        "Photo":"\/Document\/Photos\/Criminals\/2017072510103420170624084751李丽超.jpg"
+//      },
+//        {"FlnkID":"dfd825d1-c4d3-43ce-a55b-242cc622a2c1","CriminalName":"8b96罪犯未绑卡",
+//          "Photo":"\/Document\/Photos\/Criminals\/2017073119045020170624090400张博.jpg"}];
+      $.ajax({
+        type: "get",
+        contentType: "application/json; charset=utf-8",
+        dataType: "jsonp",
+        jsonp: "callback",
+        async: false,
+        url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalList' + "?callback=?",
+        success: function (result) {
 
+          personlists=result
+          //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
+          var personlist_hash = new Array();
+
+          // 重构罪犯信息哈希数据
+          for(var i=0;i<personlists.length;i++){
+            personlist_hash[personlists[i].FlnkID] = {"CriminalName":'"'+personlists[i].CriminalName+'"',"Photo":'"'+personlists[i].Photo+'"'};
+          }
+          //所有罪犯信息缓存(传进vue的数据用于渲染页面)
+          vm.criminalList=personlist_hash
+
+          // 模拟数据（网关推送过来的罪犯FlnkID）
+          var FlnkIDList=['dfd825d1-c4d3-43ce-a55b-242cc622a2c1','9c2e3994-54d4-43ea-bfd3-b87dd95cc761']
+          /* 筛选后数据用于VUE渲染 */
+          var vueDataPersonlist=new Array();
+          for(var j=0;j<FlnkIDList.length;j++){
+            vueDataPersonlist[j]={"FlnkID":'"'+FlnkIDList[j]+'"',"CriminalName":'"'+personlist_hash[FlnkIDList[j]].CriminalName+'"',"Photo":'"'+personlist_hash[FlnkIDList[j]].Photo+'"'}
+          }
+        },
+
+        complete: function (XHR, TS) {
+          XHR = null;  //回收资源
+        }
+      });
+      console.log("mmakm",this.criminalList)
       /* mj e*/
       this.PrisonSelect()
 //    this.ws.onopen = function(){
