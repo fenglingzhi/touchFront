@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <!-- <img src="./assets/logo.png"> -->
-    <navheader @getPosition="onClickPosition" @getTime="onClickTime" :inputValue="criminalList"></navheader>
+    <navheader
+      @getPosition="onClickPosition()"
+      :message="prisonSelectText"></navheader>
     <router-view  @hasCheaked="onHasCheaked"></router-view>
     <menufooter></menufooter>
     <!--用户登录 star-->
@@ -36,18 +38,18 @@
     <!--监区选择 star-->
     <div class="alertTip alertJQXZ" v-show="alertJQXZ">
       <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 270px;">
-        <div class="bodyHead"><div class="title">监区选择</div><div v-on:click="close('alertJQXZ')" class="close">X</div></div>
+        <div class="bodyHead"><div class="title">监区选择</div><div @click="close('alertJQXZ')" class="close">X</div></div>
         <div class="bodyCon">
           <el-row>
-            <el-col :span="5" v-for="item in prisonSelect" @click="selectArea($index)" :class="{'jqxz_active': alertJQXZactive}" :key="1">
+            <el-col :span="5" v-for="(item,index) in prisonSelect" :key="1">
               <div style="width:10px;"></div>
-              <div class="areas">{{item.text}}</div>
+              <div class="areas" @click="selectArea(index)" :class="{ 'jqxz_active': alertJQXZactive === index}">{{item.text}}</div>
             </el-col>
           </el-row>
         </div>
         <div class="partsFoot">
           <div style="margin: 20px 2px;float: right">
-            <div class="sure">确定</div>
+            <div class="sure" @click="prisonAreaSbumit()">确定</div>
           </div>
         </div>
       </div>
@@ -147,6 +149,7 @@
             </el-col>
             <el-col :span="12">
               <el-col :span="7" style="height: 10px">
+
               </el-col>
               <el-col :span="10" >
                 <div class="moveCrimal">
@@ -236,9 +239,11 @@
     },
     data () {
       return {
-        /*ym B*/
-
-        /*ym e*/
+        /* Coding By YanM */
+        prisonSelect: [],
+        prisonSelectText:'',
+        alertJQXZactive:false,
+        /* Coding By YanM */
         /* mj B*/
 
         /* mj e*/
@@ -248,15 +253,13 @@
         alertSSLD: false,
         alertYDMD: false,
         alertBJTK: true,
-        prisonSelect: [],
-        alertJQXZactive:false,
-        criminalList:{}
+
       }
     },
     beforeCreate () {
-      /*ym B*/
+      /* Coding By YanM */
 
-      /*ym e*/
+      /* Coding By YanM */
       /* mj B*/
 
       /* mj e*/
@@ -264,12 +267,46 @@
 
     },
     methods: {
-      /*ym B*/
+    /* Coding By YanM */
 
-      /*ym e*/
-      /* mj B*/
+      /* 选择监区 */
+      selectArea: function (index) {
+        this.alertJQXZactive = index
+        this.setLocalStorage('prisonSelectText',this.prisonSelect[index].text)
+      },
 
-      /* mj e*/
+      /* 默认初始化监区 */
+      initPrison: function () {
+        var vm = this
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          url: 'http://10.58.1.145:88/api/HomeIndex/GetBindJQ',
+          success: function (result) {
+            vm.prisonSelect=result
+            vm.prisonSelectText = vm.prisonSelect[0].text
+          },
+          error: function (err) {
+            console.log(err)
+          }
+        })
+      },
+
+      /* 提交选择监区 */
+      prisonAreaSbumit: function () {
+        this.alertJQXZ=false
+        this.prisonSelectText = this.getLocalStorage('prisonSelectText')
+        console.log(this.prisonSelectText)
+      },
+
+    /* Coding By YanM */
+
+    /* Coding By Qianjf */
+
+    /* Coding By Qianjf */
       close: function (chose) {
         if(chose=="alertYHDL"){
           this.alertYHDL=false
@@ -286,41 +323,20 @@
       onClickPosition: function () {
         this.alertJQXZ=true
       },
-      onClickTime: function () {
-        console.log(this.prisonSelect)
-      },
-      selectArea: function ($index) {
-        this.prisonSelect[$index].alertJQXZactive=true
-      },
+
       onHasCheaked: function () {
         this.alertYDMD=true
       },
       alertAlarm:function () {
         this.alertBJXX=true
       },
-      PrisonSelect: function () {
-        var vm = this
-        $.ajax({
-          type: "get",
-          contentType: "application/json; charset=utf-8",
-          dataType: "jsonp",
-          jsonp: "callback",
-          async: false,
-          url: 'http://10.58.1.145:88/api/HomeIndex/GetBindJQ',
-          success: function (result) {
-            vm.prisonSelect=result
-          },
-          error: function (err) {
-            console.log(err)
-          }
-        })
-      }
+
     },
     mounted () {
-      /*ym B*/
+      /* Coding By YanM */
 
-      /*ym e*/
-      /* mj B*/
+      /* Coding By YanM */
+      /* Coding By Qianjf */
       var personlists;
       var vm=this
 //      var personlists=[{"FlnkID":"9c2e3994-54d4-43ea-bfd3-b87dd95cc761",
@@ -363,8 +379,8 @@
         }
       });
       console.log("mmakm",this.criminalList)
-      /* mj e*/
-      this.PrisonSelect()
+      /* Coding By Qianjf */
+      this.initPrison()
 //    this.ws.onopen = function(){
 //      this.ws.send('aaaaaaa ')
 //      alert('开启');
@@ -441,6 +457,7 @@
     letter-spacing: 2px;
     float: right;
     margin: 0px 35px;
+    cursor: pointer;
   }
   .alertTip .alertBody{
     position: absolute;
@@ -454,6 +471,7 @@
     font-size: 30px;
     margin: 0px 16px;
     color: #1d68e8;
+    cursor: pointer;
   }
   /*用户登录*/
   .alertYHDL input{
@@ -475,6 +493,10 @@
     text-align: right;
   }
   /*监区选择*/
+  .jqxz_active{
+    background: blue;
+    color: #fff !important;
+  }
   .alertJQXZ .areas{
     width:100%;
     height: 50px;
@@ -483,10 +505,7 @@
     font-size: 21px;
     text-align: center;
     line-height: 51px;
-  }
-  .alertJQXZ .areas:hover{
-    background: blue;
-    color: #fff;
+    cursor: pointer;
   }
   .alertJQXZ .el-col-5 {
     padding: 10px;

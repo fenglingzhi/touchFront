@@ -12,7 +12,7 @@
     <el-col :span="8" class="navoption">
       <el-col :span="22">
         <p>
-          <span @click="$emit('getPosition')" class="nowposition">当前位置：{{  }}</span>
+          <span @click="$emit('getPosition')" class="nowposition">当前位置：{{ message }}</span>
           <span>{{localTime}}</span>
           <span>{{localWeek}}</span>
           <span>{{localYear}}</span>
@@ -36,10 +36,12 @@
       'inputValue'
     ],
     name: 'navheader',
+    props:{
+      message:String
+    },
     data () {
       return {
         logoIsShow: true,
-        position: '厂房第一监区',
         localTime: '',
         localWeek: '',
         localYear: '',
