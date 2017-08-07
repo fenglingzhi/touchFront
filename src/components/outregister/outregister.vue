@@ -23,114 +23,6 @@
                           部门名称
                         </div>
                       </el-col>
-                      <el-col :span="4">
-                        <div class="choose">
-                          部门名称
-                        </div>
-                      </el-col>
-                      <el-col :span="4">
-                        <div class="choose">
-                          部门名称
-                        </div>
-                      </el-col>
-                      <el-col :span="4">
-                        <div class="choose">
-                          部门名称
-                        </div>
-                      </el-col>
-                      <el-col :span="4">
-                        <div class="choose">
-                          部门名称
-                        </div>
-                      </el-col>
-                      <el-col :span="4">
-                        <div class="choose">
-                          部门名称
-                        </div>
-                      </el-col>
-                      <el-col :span="4">
-                        <div class="choose">
-                          部门名称
-                        </div>
-                      </el-col>
-                      <el-col :span="4">
-                        <div class="choose">
-                          部门名称
-                        </div>
-                      </el-col>
-                      <el-col :span="4">
-                        <div class="choose">
-                          部门名称
-                        </div>
-                      </el-col> <el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col> <el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col> <el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col> <el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col> <el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col> <el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col> <el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col> <el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col> <el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col> <el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col> <el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col> <el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col> <el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col><el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col> <el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col> <el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col> <el-col :span="4">
-                      <div class="choose">
-                        部门名称
-                      </div>
-                    </el-col>
 
                     </div>
                   </el-row>
@@ -345,7 +237,95 @@
     },
     methods: {
 
+    },
+    mounted () {
+      /* Coding By YanM */
+
+      /* Coding By YanM */
+      /* Coding By Qianjf */
+      var vm = this
+//      获取第一页记录数据
+      $.ajax({
+        type: "get",
+        contentType: "application/json; charset=utf-8",
+        dataType: "jsonp",
+        jsonp: "callback",
+        async: false,
+        data:{"OrgID":localStorage.getItem("OrgID")},
+        url: 'http://10.58.1.145:88/api/Move/GetOutAreaList' + "?callback=?",
+        success: function (result) {
+          vm.records=result
+        },
+        error: function (err) {
+          alert("请求异常")
+        },
+        complete: function (XHR, TS) {
+          XHR = null;  //回收资源
+        }
+      });
+//      获取清点记录总条数
+      $.ajax({
+        type: "get",
+        contentType: "application/json; charset=utf-8",
+        dataType: "jsonp",
+        jsonp: "callback",
+        async: false,
+        data:{"OrgID":localStorage.getItem("OrgID")},
+        url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCntRecordsCount' + "?callback=?",
+        success: function (result) {
+          vm.recordCount=result
+        },
+        error: function (err) {
+          alert("请求异常")
+        },
+        complete: function (XHR, TS) {
+          XHR = null;  //回收资源
+        }
+      });
+//      获取已点人员总数,本监区总人数
+      setInterval(function () {
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          data:{"OrgID":localStorage.getItem("OrgID")},
+          url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+          success: function (result) {
+            vm.hascelled=result
+          },
+          error: function (err) {
+            alert("请求异常")
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        });
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          data:{"OrgID":localStorage.getItem("OrgID")},
+          url: 'http://10.58.1.145:88/api/CriminalCnt/GetCurOrgCriminalCount' + "?callback=?",
+          success: function (result) {
+            vm.orgCriminalCount=result
+          },
+          error: function (err) {
+            alert("请求异常")
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        });
+      },1000)
+
+      /* Coding By Qianjf */
+
     }
+
   }
 </script>
 

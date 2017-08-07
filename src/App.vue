@@ -178,31 +178,37 @@
     <div class="alertTip alertYDMD" v-show="alertYDMD">
       <div class="alertBody " style="margin: -330px -550px;width: 1100px;height: 660px;">
         <div class="bodyHead"><div class="title">已点名单</div><div v-on:click="close('alertYDMD')" class="close">X</div></div>
-        <div class="bodyCon" style="height: 514px;">
+        <div class="bodyCon" style="height: 514px;" >
 
-          <el-col :span="24" >
-            <el-col :span="6" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="6" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-            <el-col :span="6" >
-              <div class="tab">条目一</div>
-            </el-col>
-            <el-col :span="6" >
-              <div class="tab">条目一内容</div>
-            </el-col>
-          </el-col>
+
+
+          <table  border="1" width="100%">
+            <tr>
+              <th>罪犯姓名</th>
+              <th>清点时间</th>
+              <th>监区名称</th>
+              <th>区域名称</th>
+              <th>点名状态</th>
+
+            </tr>
+            <tr v-for="GetCriminal in GetCriminalCalledList" :key="1">
+              <td>{{GetCriminal.CriminalName}}</td>
+              <td>{{(GetCriminal.CountTime==""||GetCriminal.CountTime==null)?"":GetCriminal.CountTime.replace("T"," ")}}</td>
+              <td>{{GetCriminal.OrgName}}</td>
+              <td>{{GetCriminal.AreaName}}</td>
+              <td>{{GetCriminal.StatusName}}</td>
+            </tr>
+          </table>
+
 
         </div>
         <el-row >
           <el-col :span="8" style="height: 10px"></el-col>
           <el-col :span="8" >
             <div class="pages">
-              <span class="pageControl"><img src="./assets/q1.png" alt=""/></span>
-              <span class="pagesText">11/30</span>
-              <span class="pageControl"><img src="./assets/q2.png" alt=""/></span>
+              <span class="pageControl"><img src="./assets/q1.png" v-on:click="getCriminalback()" alt=""/></span>
+              <span class="pagesText">{{criminalPage+1}}/{{Math.ceil(criminalCount/18)==0?1:Math.ceil(criminalCount/18)}}</span>
+              <span class="pageControl"><img src="./assets/q2.png" v-on:click="getCriminalGo()" alt=""/></span>
             </div>
           </el-col>
           <el-col :span="8" style="height: 10px"></el-col>
@@ -217,8 +223,8 @@
       <div class="alarmImg">
         <img class="alarmIco" src='./assets/a1.png' alt="">
       </div>
-      <div class="alarmNum">999</div>
-      <div class="alarmText">第一监狱 越狱报警</div>
+      <div class="alarmNum" v-on:click="makePageDataBack()">999</div>
+      <div class="alarmText" v-on:click="makePageDataGo()">第一监狱 越狱报警</div>
 
     </div>
     <!--报警弹框 end-->
@@ -245,7 +251,10 @@
         alertJQXZactive:false,
         /* Coding By YanM */
         /* mj B*/
-
+        GetCriminalCalledList:[],//已点罪犯
+        criminalCalledIsLastPage:false,//已点罪犯是否是最后一页
+        criminalCount:0,//已点罪犯总页码
+        criminalPage:0,//已点罪犯当前页
         /* mj e*/
         alertYHDL: false,
         alertJQXZ: false,
@@ -254,7 +263,6 @@
         alertYDMD: false,
         alertBJTK: true,
         criminalList:{}
-
       }
     },
     beforeCreate () {
@@ -262,6 +270,7 @@
 
       /* Coding By YanM */
       /* mj B*/
+      localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
 
       /* mj e*/
 
@@ -308,8 +317,124 @@
     /* Coding By YanM */
 
     /* Coding By Qianjf */
+        makePageDataGo:function () {
+          var data=[{"name":"1"},{"name":"2"},{"name":"3"},{"name":"4"},{"name":"5"},{"name":"6"},{"name":"7"},{"name":"8"},{"name":"9"}]
+          var lastData=[];
+          var baginPage=0;
 
+          for (var i=3;i<7;i++){
+              var dataNew=data[i]
+            dataNew["ischoose"]="0"
+            lastData.push(dataNew)
+          }
+          console.log(lastData)
+        },
+//      已点人员名单翻页
+      getCriminalGo:function () {
+        var vm = this
+        if(!vm.criminalCalledIsLastPage){
+          vm.criminalPage=vm.criminalPage+1
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.criminalPage,"PageSize":18},
+            url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCntRecord' + "?callback=?",
+            success: function (result) {
+              if(result.length!=18){
+                vm.criminalCalledIsLastPage=true
+              }else {
+                vm.criminalCalledIsLastPage=false
+              }
+              vm.GetCriminalCalledList=result
+            },
+            error: function (err) {
+              alert("请求异常")
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
+          });
+
+          //      获取总条数
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            data:{"OrgID":localStorage.getItem("OrgID")},
+            url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+            success: function (result) {
+              vm.criminalCount=result
+            },
+            error: function (err) {
+              alert("请求异常")
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
+          });
+        }else {
+          alert("已经到了最后一页了")
+        }
+
+
+      },
+      getCriminalback:function () {
+        var vm = this
+        if(vm.criminalPage==0){
+          alert("已经是第一页了")
+        }else {
+          vm.criminalPage=vm.criminalPage-1
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.criminalPage,"PageSize":18},
+            url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCntRecord' + "?callback=?",
+            success: function (result) {
+              if(result.length!=18){
+                vm.criminalCalledIsLastPage=true
+              }else {
+                vm.criminalCalledIsLastPage=false
+              }
+              vm.GetCriminalCalledList=result
+            },
+            error: function (err) {
+              alert("请求异常")
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
+          });
+          //      获取总条数
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            data:{"OrgID":localStorage.getItem("OrgID")},
+            url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+            success: function (result) {
+              vm.criminalCount=result
+            },
+            error: function (err) {
+              alert("请求异常")
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
+          });
+        }
+      },
     /* Coding By Qianjf */
+
       close: function (chose) {
         if(chose=="alertYHDL"){
           this.alertYHDL=false
@@ -321,6 +446,7 @@
           this.alertSSLD=false
         }else  if (chose=="alertYDMD"){
           this.alertYDMD=false
+          this.criminalPage=0
         }
       },
       onClickPosition: function () {
@@ -329,11 +455,56 @@
 
       onHasCheaked: function () {
         this.alertYDMD=true
+//      罪犯清点，已点名单
+        var vm = this
+//      获取第一页记录数据
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":18},
+          url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCalledList' + "?callback=?",
+          success: function (result) {
+
+            if(result.length!=18){
+              vm.criminalCalledIsLastPage=true
+            }else {
+              vm.criminalCalledIsLastPage=false
+            }
+            vm.GetCriminalCalledList=result
+          },
+          error: function (err) {
+            alert("请求异常")
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        });
+//      获取总条数
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          data:{"OrgID":localStorage.getItem("OrgID")},
+          url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+          success: function (result) {
+            vm.criminalCount=result
+          },
+          error: function (err) {
+            alert("请求异常")
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        });
       },
       alertAlarm:function () {
         this.alertBJXX=true
       },
-
     },
     mounted () {
       /* Coding By YanM */
@@ -379,7 +550,7 @@
           XHR = null;  //回收资源
         }
       });
-      console.log("mmakm",this.criminalList)
+//      console.log("mmakm",this.criminalList)
       /* Coding By Qianjf */
       this.initPrison()
 //      this.ws.onopen = function(){

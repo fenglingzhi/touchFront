@@ -2,11 +2,11 @@
   <el-row class="navheader" >
     <el-col :span="8" class="logo" v-show="logoIsShow">
       <el-col :span="2"><img src="../assets/hui.png" alt=""></el-col>
-      <el-col :span="22"><p>区域定位管控系统</p></el-col>
+      <el-col :span="22"><p style="width: 500px">区域定位管控系统</p></el-col>
     </el-col>
     <el-col :span="8" class="logo logo-hui" v-show="!logoIsShow">
       <el-col :span="2"><img src="../assets/hu.png" alt=""></el-col>
-      <el-col :span="22"><p>区域定位管控系统</p></el-col>
+      <el-col :span="22"><p  style="width: 500px">区域定位管控系统</p></el-col>
     </el-col>
     <el-col :span="8" class="logo"></el-col>
     <el-col :span="8" class="navoption">

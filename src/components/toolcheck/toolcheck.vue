@@ -11,7 +11,7 @@
         <!--</div>-->
         <div class="tabHead">
           <div  :class="['tab', { tabing: isB1}]"  v-on:click="toggle1()">工具清点</div>
-          <div  :class="['tab', { tabing: isB2}]"  v-on:click="toggle2()">清点记录</div>
+          <div  :class="['tab', { tabing: isB2}]"  v-on:click="toggle2()">清点记录({{recordCount}})</div>
         </div>
         <div class="tab1" v-show="isShow1">
           <div class="partsBody" style="height:392px;">
@@ -91,7 +91,7 @@
                 </tr>
                 <tr v-for="record in records" :key="1">
                   <td>{{record.CountTypeName}}</td>
-                  <td>{{record.CountTime}}</td>
+                  <td>{{(record.CountTime==""||record.CountTime==null)?"":record.CountTime.replace("T"," ")}}</td>
                   <td>{{record.ShouldCount}}</td>
                   <td>{{record.RealCount}}</td>
                   <td>{{record.InnerCount}}</td>
@@ -108,7 +108,7 @@
               <el-col :span="8" >
                 <div class="pages">
                   <span class="pageControl"><img src="../../assets/q1.png" v-on:click="getRecordback()" alt=""/></span>
-                  <span class="pagesText">{{recordPage+1}}/{{Math.ceil(recordCount/20)}}</span>
+                  <span class="pagesText">{{recordPage+1}}/{{Math.ceil(recordCount/20)==0?1:Math.ceil(recordCount/20)}}</span>
                   <span class="pageControl"><img src="../../assets/q2.png" v-on:click="getRecordGo()" alt=""/></span>
                 </div>
               </el-col>
@@ -186,6 +186,7 @@
         this.isShow2 =false
         this.isB1 =  true
         this.isB2 = false
+        this.recordPage=0
       },
       toggle2: function () {
         this.isShow1 = false
@@ -211,7 +212,6 @@
                     vm.recordIsLastPage=true
                 }else {
                   vm.recordIsLastPage=false
-
                 }
               vm.records=result
             },

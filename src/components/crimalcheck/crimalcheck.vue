@@ -15,8 +15,8 @@
         <div class="tab1" v-show="isShow1">
           <div class="partsBody" style="height:392px;">
             <div class="bodyHead">
-              <div class="title">监内未点人员150人</div>
-              <div class="titleDescribe">（本监区总人数：200人，<span @click="$emit('hasCheaked')" style="color: #1443cd">已点人数23人</span>）</div>
+              <div class="title">监内未点人员{{orgCriminalCount-hascelled}}人</div>
+              <div class="titleDescribe">（本监区总人数：{{orgCriminalCount}}人，<span @click="$emit('hasCheaked')" style="color: #1443cd">已点人数{{hascelled}}人</span>）</div>
             </div>
             <div class="bodyCon">
               <el-col :span="2" v-for="criminal in inCriminals" :key="1">
@@ -89,7 +89,7 @@
                 </tr>
                 <tr v-for="record in records" :key="1">
                   <td>{{record.CountTypeName}}</td>
-                  <td>{{record.CountTime}}</td>
+                  <td>{{(record.CountTime==""||record.CountTime==null)?"":record.CountTime.replace("T"," ")}}</td>
                   <td>{{record.ShouldCount}}</td>
                   <td>{{record.RealCount}}</td>
                   <td>{{record.UnCount}}</td>
@@ -105,7 +105,7 @@
               <el-col :span="8" >
                 <div class="pages">
                   <span class="pageControl"><img src="../../assets/q1.png" v-on:click="getRecordback()" alt=""/></span>
-                  <span class="pagesText">{{recordPage+1}}/{{Math.ceil(recordCount/20)}}</span>
+                  <span class="pagesText">{{recordPage+1}}/{{Math.ceil(recordCount/20)==0?1:Math.ceil(recordCount/20)}}</span>
                   <span class="pageControl"><img src="../../assets/q2.png" v-on:click="getRecordGo()" alt=""/></span>
                 </div>
               </el-col>
@@ -174,7 +174,9 @@
         records:[],
         recordPage:0,
         recordIsLastPage:false,
-        recordCount:0
+        recordCount:0,
+        hascelled:0,
+        orgCriminalCount:0
       }
     },
     methods: {
@@ -183,6 +185,7 @@
         this.isShow2 =false
         this.isB1 =  true
         this.isB2 = false
+        this.recordPage=0
       },
       toggle2: function () {
         this.isShow1 = false
@@ -193,7 +196,6 @@
       getRecordGo:function () {
         var vm = this
         if(!vm.recordIsLastPage){
-          localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
           vm.recordPage=vm.recordPage+1
           $.ajax({
             type: "get",
@@ -252,7 +254,7 @@
           alert("已经是第一页了")
         }else {
           vm.recordPage=vm.recordPage-1
-          localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
+//          localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
           $.ajax({
             type: "get",
             contentType: "application/json; charset=utf-8",
@@ -304,7 +306,7 @@
       /* Coding By YanM */
       /* Coding By Qianjf */
       var vm = this
-      localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
+//      localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
 //      获取第一页记录数据
       $.ajax({
         type: "get",
@@ -329,7 +331,7 @@
           XHR = null;  //回收资源
         }
       });
-//      获取总条数
+//      获取清点记录总条数
       $.ajax({
         type: "get",
         contentType: "application/json; charset=utf-8",
@@ -348,6 +350,45 @@
           XHR = null;  //回收资源
         }
       });
+//      获取已点人员总数,本监区总人数
+      setInterval(function () {
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          data:{"OrgID":localStorage.getItem("OrgID")},
+          url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+          success: function (result) {
+            vm.hascelled=result
+          },
+          error: function (err) {
+            alert("请求异常")
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        });
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          data:{"OrgID":localStorage.getItem("OrgID")},
+          url: 'http://10.58.1.145:88/api/CriminalCnt/GetCurOrgCriminalCount' + "?callback=?",
+          success: function (result) {
+            vm.orgCriminalCount=result
+          },
+          error: function (err) {
+            alert("请求异常")
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        });
+      },1000)
 
       /* Coding By Qianjf */
 
