@@ -89,7 +89,6 @@
     },
     mounted(){
       this.TimerFormat()
-      console.log('566666666',this.inputValue)
     }
   }
 </script>

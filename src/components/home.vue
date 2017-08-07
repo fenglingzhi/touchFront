@@ -92,6 +92,7 @@
 </template>
 
 <script>
+  import echarts from 'echarts'
 export default {
   name: 'home',
   data () {
@@ -216,8 +217,75 @@ export default {
           outreasons: '无',
           prisonstatus: 'outperson'
         }
+      ],
+      chartsData:[
+        {
+          value: 3661,
+          name: '<条目一'
+        }, {
+          value: 5713,
+          name: '条目二'
+        }, {
+          value: 9938,
+          name: '条目三'
+        }, {
+          value: 17623,
+          name: '条目四'
+        }
       ]
     }
+  },
+  methods:{
+    charts:function () {
+      let myCharts = echarts.init(document.getElementById('myChart'))
+      let chartsDataName = []
+      for(let i=0; i<this.chartsData.length; i++){
+          chartsDataName.push(this.chartsData[i].name)
+      }
+      console.log('yyyyyyyy',chartsDataName)
+      let option = {
+        backgroundColor: 'transparent',
+        legend: {
+          orient: 'horizontal',
+          top: '0%',
+          data: chartsDataName
+        },
+        series: [{
+          type: 'pie',
+          selectedMode: 'single',
+          radius: ['45%', '78%'],
+          hoverAnimation :false,
+          color: ['#98c93c', '#22b9d6', '#f9a61a', '#cf445b'],
+          label: {
+            normal: {
+              position: 'inner',
+              formatter: '{d}%',
+              textStyle: {
+                color: '#fff',
+                fontWeight: 'bold',
+                fontSize: 14
+              }
+            }
+          },
+          labelLine: {
+            normal: {
+              lineStyle: {
+                color: 'rgba(255, 255, 255, 0.3)'
+              },
+              smooth: 0.2,
+              length: 10,
+              length2: 20
+            }
+          },
+          data: this.chartsData
+        }]
+      };
+      myCharts.setOption(option)
+    }
+
+  },
+  mounted(){
+    this.charts()
   }
 }
 </script>
@@ -274,7 +342,7 @@ export default {
     .member_distribute{
       height:520px;
       background: rgba(255,255,255,.8);
-      overflow: auto;
+      overflow: hidden;
       text-align: left;
     }
     .floating_personnel{

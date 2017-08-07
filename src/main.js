@@ -10,6 +10,7 @@ import axios from 'axios'
 import ajax from './assets/ajaxWebApiMethod.js'
 import global from './plugins/vue.global.js'
 import Vuex from 'vuex'
+import echarts from 'echarts'
 
 Vue.use(Vuex)
 Vue.use(ElementUI)

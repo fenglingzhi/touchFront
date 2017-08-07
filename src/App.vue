@@ -273,6 +273,7 @@
       selectArea: function (index) {
         this.alertJQXZactive = index
         this.setLocalStorage('prisonSelectText',this.prisonSelect[index].text)
+        this.setLocalStorage('prisonSelectId',this.prisonSelect[index].id)
       },
 
       /* 默认初始化监区 */
@@ -299,6 +300,7 @@
       prisonAreaSbumit: function () {
         this.alertJQXZ=false
         this.prisonSelectText = this.getLocalStorage('prisonSelectText')
+
         console.log(this.prisonSelectText)
       },
 
@@ -381,19 +383,19 @@
       console.log("mmakm",this.criminalList)
       /* Coding By Qianjf */
       this.initPrison()
-//    this.ws.onopen = function(){
-//      this.ws.send('aaaaaaa ')
-//      alert('开启');
-//    };
+//      this.ws.onopen = function(){
+//        alert('开启');
+//      };
 //
-//    this.ws.onmessage=function(event){
-//      console.log('message',event.data)
-//    }
+//      this.ws.onmessage=function(event){
+//        alert('接收数据')
+//        console.log('message',event.data)
+//      }
 //
-//    this.ws.onclose = function(){
-//      // 关闭 websocket
-//      alert("连接已关闭...");
-//    };
+//      this.ws.onclose = function(){
+//        // 关闭 websocket
+//        alert("连接已关闭...");
+//      };
     }
   }
 </script>
