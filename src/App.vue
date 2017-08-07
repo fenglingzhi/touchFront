@@ -4,7 +4,7 @@
     <navheader
       @getPosition="onClickPosition()"
       :message="prisonSelectText"></navheader>
-    <router-view  @hasCheaked="onHasCheaked"></router-view>
+    <router-view  @hasCheaked="onHasCheaked"   :criminalList="criminalList"></router-view>
     <menufooter></menufooter>
     <!--用户登录 star-->
     <div class="alertTip alertYHDL" v-show="alertYHDL">
@@ -253,6 +253,7 @@
         alertSSLD: false,
         alertYDMD: false,
         alertBJTK: true,
+        criminalList:{}
 
       }
     },
@@ -355,11 +356,9 @@
         async: false,
         url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalList' + "?callback=?",
         success: function (result) {
-
           personlists=result
           //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
           var personlist_hash = new Array();
-
           // 重构罪犯信息哈希数据
           for(var i=0;i<personlists.length;i++){
             personlist_hash[personlists[i].FlnkID] = {"CriminalName":'"'+personlists[i].CriminalName+'"',"Photo":'"'+personlists[i].Photo+'"'};

@@ -32,9 +32,7 @@
   import axios from 'axios'
   import { shanlei } from '../config'
   export default {
-    props: [
-      'inputValue'
-    ],
+
     name: 'navheader',
     props:{
       message:String

@@ -121,7 +121,7 @@
     height: 40px;
   }
   .li1_parts .tab{
-    width: 127px;
+    width: 155px;
     height: 40px;
     background: #004bdc;
     font-size: 18px;
