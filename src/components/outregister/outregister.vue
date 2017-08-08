@@ -18,9 +18,11 @@
                       外出地点
                     </div>
                     <div class="deailBody" style="height:269px;">
-                      <el-col :span="4">
-                        <div class="choose">
-                          部门名称
+
+                      <el-col :span="4" v-for="(areaName,index) in areaNameList.slice(areaA-1,areaB-1)" >
+
+                        <div  :class="['choose', {choosed: areaName.ischoose}]" v-on:click="chooseArea(index)">
+                          {{areaName.AreaName}}
                         </div>
                       </el-col>
 
@@ -30,9 +32,9 @@
                     <el-col :span="3" style="height: 10px"></el-col>
                     <el-col :span="18" >
                       <div class="pages">
-                        <span class="pageControl"><img src="../../assets/q1.png" alt=""/></span>
-                        <span class="pagesText">11/30</span>
-                        <span class="pageControl"><img src="../../assets/q2.png" alt=""/></span>
+                        <span class="pageControl"><img  v-on:click="areaBack()" src="../../assets/q1.png" alt=""/></span>
+                        <span class="pagesText">{{areaNowPage}}/{{areaPages}}</span>
+                        <span class="pageControl"><img  v-on:click="areaGo()" src="../../assets/q2.png" alt=""/></span>
                       </div>
                     </el-col>
                     <el-col :span="3" style="height: 10px"></el-col>
@@ -46,49 +48,10 @@
                         外出事由
                       </div>
                       <div class="deailBody" style="height:110px;">
-                        <el-col :span="4">
-                          <div class="choose">
-                            事由名称
-                          </div>
-                        </el-col>
-                        <el-col :span="4">
-                          <div class="choose">
-                            事由名称
-                          </div>
-                        </el-col>
-                        <el-col :span="4">
-                          <div class="choose">
-                            事由名称
-                          </div>
-                        </el-col>
-                        <el-col :span="4">
-                          <div class="choose">
-                            事由名称
-                          </div>
-                        </el-col>
-                        <el-col :span="4">
-                          <div class="choose">
-                            事由名称
-                          </div>
-                        </el-col>
-                        <el-col :span="4">
-                          <div class="choose">
-                            事由名称
-                          </div>
-                        </el-col>
-                        <el-col :span="4">
-                          <div class="choose">
-                            事由名称
-                          </div>
-                        </el-col>
-                        <el-col :span="4">
-                          <div class="choose">
-                            事由名称
-                          </div>
-                        </el-col>
-                        <el-col :span="4">
-                          <div class="choose">
-                            事由名称
+                        <el-col :span="4" v-for="(reason,index) in reasonList" >
+
+                          <div  :class="['choose', {choosed: reason.ischoose}]" v-on:click="chooseReason(index)">
+                            {{reason.DictCodeName}}
                           </div>
                         </el-col>
 
@@ -99,7 +62,7 @@
                       <el-col :span="18" >
                         <div class="pages" style="    margin: 23px auto;">
                           <span class="pageControl"><img src="../../assets/q1.png" alt=""/></span>
-                          <span class="pagesText">11/30</span>
+                          <span class="pagesText">{{reasonNowPage}}/{{reasonPages}}</span>
                           <span class="pageControl"><img src="../../assets/q2.png" alt=""/></span>
                         </div>
                       </el-col>
@@ -188,7 +151,6 @@
     name: 'navheader',
     data () {
       return {
-        // 外出人员明细
         inCriminals: [
           {name: '12321', headimg: '/static/img/tol.png'},
           {name: '123', headimg: '/static/img/tol.png'},
@@ -202,8 +164,7 @@
           {name: '23445', headimg: '/static/img/tol.png'},
           {name: '123344', headimg: '/static/img/tol.png'},
           {name: '5555666', headimg: '/static/img/tol.png'}
-        ],
-        // 陪同民警明细
+        ],// 外出人员明细
         polices: [
           {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
           {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
@@ -212,31 +173,51 @@
           {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
           {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'}
 
-        ],
-        // 清点记录
-        inventoryRecords: [
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'},
-          {n1: '张学友', n2: '张学友', n3: '张学友', n4: '张学友', n5: '张学友', n6: '张学友', n7: '张学友'}
-        ]
+        ], // 陪同民警明细
+        areaNameList:[],//外出地点
+        areaPages:0,//外出地点总页数
+        areaNowPage:1,//外出地点当前页
+        areaListAll:0,//外出地点总数
+        areaA:1,
+        areaB:24,
+        reasonList:[],// 外出事由
+        reasonNowPage:1,// 外出事由当前页码
+        reasonPages:0// 外出事由总页码
+
       }
     },
     methods: {
+      chooseArea:function (dom) {
+        this.areaNameList.ischoose=false
+        for(var i=0;i< this.areaNameList.length;i++){
+          this.areaNameList[i].ischoose=false
+        }
+        this.areaNameList[dom].ischoose=!this.areaNameList[dom].ischoose
+      },
+      chooseReason:function (dom) {
+        this.reasonList.ischoose=false
+        for(var i=0;i< this.reasonList.length;i++){
+          this.reasonList[i].ischoose=false
+        }
+        this.reasonList[dom].ischoose=!this.reasonList[dom].ischoose
+      },
+      areaGo:function () {
+        if((this.areaListAll-this.areaB)<24){
+            alert("已经最后一页了")
+        }else {
+          this.areaA=this.areaA+24
+          this.areaB=this.areaB+24
+        }
+      },
+      areaBack:function () {
+        if(this.areaA-24<0||this.areaA-24==0){
+            alert("已经是第一页了")
+        }else {
+          this.areaA=this.areaA-24
+          this.areaB=this.areaB-24
+        }
 
+      }
     },
     mounted () {
       /* Coding By YanM */
@@ -244,7 +225,7 @@
       /* Coding By YanM */
       /* Coding By Qianjf */
       var vm = this
-//      获取第一页记录数据
+//      获取外出地点
       $.ajax({
         type: "get",
         contentType: "application/json; charset=utf-8",
@@ -254,7 +235,15 @@
         data:{"OrgID":localStorage.getItem("OrgID")},
         url: 'http://10.58.1.145:88/api/Move/GetOutAreaList' + "?callback=?",
         success: function (result) {
-          vm.records=result
+          if(result!=""||result!=null){
+              vm.areaListAll=result.length
+              vm.areaPages=Math.ceil(result.length/24)==0?1:Math.ceil(result.length/24)
+            for (var i=0;i<result.length;i++){
+               result[i]["ischoose"]=false
+            }
+            vm.areaNameList=result
+          }
+
         },
         error: function (err) {
           alert("请求异常")
@@ -263,7 +252,7 @@
           XHR = null;  //回收资源
         }
       });
-//      获取清点记录总条数
+//      获取外出事由
       $.ajax({
         type: "get",
         contentType: "application/json; charset=utf-8",
@@ -271,9 +260,17 @@
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID")},
-        url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCntRecordsCount' + "?callback=?",
+        url: 'http://10.58.1.145:88/api/Move/GetMoveReasonList' + "?callback=?",
         success: function (result) {
-          vm.recordCount=result
+          if(result!=""||result!=null){
+            vm.reasonPages=Math.ceil(result.length/12)==0?1:Math.ceil(result.length/12)
+            for (var i=0;i<result.length;i++){
+              result[i]["ischoose"]=false
+            }
+            vm.reasonList=result
+            console.log(result)
+          }
+
         },
         error: function (err) {
           alert("请求异常")
@@ -282,46 +279,6 @@
           XHR = null;  //回收资源
         }
       });
-//      获取已点人员总数,本监区总人数
-      setInterval(function () {
-        $.ajax({
-          type: "get",
-          contentType: "application/json; charset=utf-8",
-          dataType: "jsonp",
-          jsonp: "callback",
-          async: false,
-          data:{"OrgID":localStorage.getItem("OrgID")},
-          url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCalledCount' + "?callback=?",
-          success: function (result) {
-            vm.hascelled=result
-          },
-          error: function (err) {
-            alert("请求异常")
-          },
-          complete: function (XHR, TS) {
-            XHR = null;  //回收资源
-          }
-        });
-        $.ajax({
-          type: "get",
-          contentType: "application/json; charset=utf-8",
-          dataType: "jsonp",
-          jsonp: "callback",
-          async: false,
-          data:{"OrgID":localStorage.getItem("OrgID")},
-          url: 'http://10.58.1.145:88/api/CriminalCnt/GetCurOrgCriminalCount' + "?callback=?",
-          success: function (result) {
-            vm.orgCriminalCount=result
-          },
-          error: function (err) {
-            alert("请求异常")
-          },
-          complete: function (XHR, TS) {
-            XHR = null;  //回收资源
-          }
-        });
-      },1000)
-
       /* Coding By Qianjf */
 
     }
@@ -456,5 +413,19 @@
     line-height: 35px;
     margin: 6px 5px;
     color: blue;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .choosed{
+    border: 1px solid blue;
+    height: 37px;
+    line-height: 35px;
+    margin: 6px 5px;
+    color: white;
+    background: blue;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 </style>

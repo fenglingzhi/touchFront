@@ -437,5 +437,19 @@
     line-height: 35px;
     margin: 6px 5px;
     color: blue;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .li4_parts .choosed{
+    border: 1px solid blue;
+    height: 37px;
+    line-height: 35px;
+    margin: 6px 5px;
+    color: white;
+    background: blue;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 </style>

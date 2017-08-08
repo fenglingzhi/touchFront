@@ -364,7 +364,7 @@
             vm.hascelled=result
           },
           error: function (err) {
-            alert("请求异常")
+//            alert("请求异常")
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
