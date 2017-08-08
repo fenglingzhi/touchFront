@@ -236,7 +236,7 @@ export default {
     }
   },
   methods:{
-    /* 人员分布 */
+    /* 人员分布图表 */
     charts:function () {
       let myCharts = echarts.init(document.getElementById('myChart'))
       let chartsDataName = []

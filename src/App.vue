@@ -43,7 +43,7 @@
           <el-row>
             <el-col :span="5" v-for="(item,index) in prisonSelect" :key="1">
               <div style="width:10px;"></div>
-              <div class="areas" @click="selectArea(index)" :class="{ 'jqxz_active': alertJQXZactive === index}">{{item.text}}</div>
+              <div class="areas" @click="selectArea(index)" :class="{ 'jqxz_active': alertJQXZactive === index}">{{item.AreaName}}</div>
             </el-col>
           </el-row>
         </div>
@@ -252,6 +252,7 @@
         OrgID:'',                         //监区ID
         flowPerson_outPrison:{},          //流动人员 && 外监进入人员
         personnel_distribution:{},        //人员分布
+        AllPersionData:{},                //
         /* Coding By YanM */
         /* mj B*/
         GetCriminalCalledList:[],//已点罪犯
@@ -265,7 +266,7 @@
         alertSSLD: false,
         alertYDMD: false,
         alertBJTK: true,
-        criminalList:{}
+        criminalList:[]                   //罪犯基础信息集合
 
       }
     },
@@ -274,7 +275,6 @@
 
       /* Coding By YanM */
       /* mj B*/
-      localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
 
       /* mj e*/
 
@@ -286,8 +286,8 @@
       /* 选择监区 */
       selectArea: function (index) {
         this.alertJQXZactive = index
-        this.setLocalStorage('prisonSelectText',this.prisonSelect[index].text)
-        this.setLocalStorage('OrgID',this.prisonSelect[index].id)
+        this.setLocalStorage('prisonSelectText',this.prisonSelect[index].AreaName)
+        this.setLocalStorage('OrgID',this.prisonSelect[index].OrgID)
       },
 
       /* 默认初始化监区 */
@@ -302,8 +302,8 @@
           url: SHANLEI + 'HomeIndex/GetBindJQ',
           success: function (result) {
             vm.prisonSelect=result
-            vm.prisonSelectText = vm.prisonSelect[0].text
-            vm.setLocalStorage('OrgID',vm.prisonSelect[0].id)
+            vm.prisonSelectText = vm.prisonSelect[0].AreaName
+            vm.setLocalStorage('OrgID',vm.prisonSelect[0].OrgID)
           },
           error: function (err) {
             console.log(err)
@@ -315,8 +315,6 @@
       prisonAreaSbumit: function () {
         this.alertJQXZ=false
         this.prisonSelectText = this.getLocalStorage('prisonSelectText')
-
-        console.log(this.prisonSelectText)
       },
 
       /* Coding By YanM */
@@ -510,12 +508,74 @@
       alertAlarm:function () {
         this.alertBJXX=true
       },
+      /*  */
+      allDataInit:function () {
+        var vm = this
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalList' + "?callback=?",
+          success: function (result) {
+            //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
+            var personlist_hash = new Array();
+            // 重构罪犯信息哈希数据
+            for(var i=0;i<result.length;i++){
+              personlist_hash[result[i].FlnkID] = {
+                FlnkID:result[i].FlnkID,
+                CriminalID:result[i].CriminalID,
+                CriminalName:result[i].CriminalName,
+                Sex:result[i].Sex,
+                MZ:result[i].MZ,
+                SFZ:result[i].SFZ,
+                ZM:result[i].ZM,
+                XQ:result[i].XQ,
+                ZFLB:result[i].ZFLB,
+                Photo:result[i].Photo,
+                ThumbUrl:result[i].ThumbUrl,
+                OrgID:result[i].OrgID,
+                RoomID:result[i].RoomID,
+                BedID:result[i].BedID,
+                InterimOrgID:result[i].InterimOrgID,
+                ManageLevel:result[i].ManageLevel,
+                IsZDRY:result[i].IsZDRY,
+                Pinyin:result[i].Pinyin,
+                DBID:result[i].DBID,
+                Status:result[i].Status,
+                HostID:result[i].HostID,
+                IsDelete:result[i].IsDelete,
+                UpdateTime:result[i].UpdateTime,
+              };
+            }
+            //所有罪犯信息缓存(传进vue的数据用于渲染页面)
+            vm.criminalList.push(personlist_hash)
+            console.log('罪犯基础信息集合',vm.criminalList)
+//            // 模拟数据（网关推送过来的罪犯FlnkID）
+//            var FlnkIDList=['0c942407-4eb5-4389-b91c-38d3bb188d62']
+//            /* 筛选后数据用于VUE渲染 */
+//            var vueDataPersonlist=new Array();
+//            for(var j=0;j<FlnkIDList.length;j++){
+//              vueDataPersonlist[j]={
+//                FlnkID:FlnkIDList[j],
+//                CriminalName:personlist_hash[FlnkIDList[j]].CriminalName,
+//                Photo:personlist_hash[FlnkIDList[j]].Photo
+//              }
+//            }
+//            console.log('需要渲染页面的数据',vueDataPersonlist)
+
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        });
+      }
 
     },
     mounted () {
       let vm = this
       this.initPrison()
-      console.log('OrgID',vm.getLocalStorage('OrgID'))
       /* Coding By YanM */
         /* 人员分布 */
         var flowPerson_outPrison = {
@@ -542,23 +602,24 @@
         /* 打开websocket */
         vm.ws.onopen = function(){
           alert('开启');
+          /* 人员分布-参数-14 */
           vm.ws.send(JSON.stringify(flowPerson_outPrison))
-          console.log('流动人员 && 外监进入人员-参数',JSON.stringify(flowPerson_outPrison))
+          /* 流动人员 && 外监进入人员-参数-24 */
           vm.ws.send(JSON.stringify(personnel_distribution))
-          console.log('人员分布-参数',JSON.stringify(personnel_distribution))
         };
         /* 接收返回信息 */
         this.ws.onmessage=function(event){
           /* 人员分布返回数据 */
+          var personDistribution //人员返回数据全量-单雷部分
           if(JSON.parse(event.data).Header.MsgType === 14){
-            vm.flowPerson_outPrison = JSON.parse(JSON.parse(event.data).Body)
-            console.log('人员分布-返回数据',vm.flowPerson_outPrison)
+            var personnel_distribution_rec = JSON.parse(JSON.parse(event.data).Body)
+            console.log('人员分布-返回数据-14',personnel_distribution_rec)
           }
 
           /* 流动人员 && 外监进入人员返回数据 */
           if(JSON.parse(event.data).Header.MsgType === 24){
-            vm.personnel_distribution = JSON.parse(JSON.parse(event.data).Body)
-            console.log('流动人员 && 外监进入人员-返回数据',vm.personnel_distribution)
+            var  flowPerson_outPrison_rec = JSON.parse(JSON.parse(event.data).Body)
+            console.log('流动人员 && 外监进入人员-返回数据-24',flowPerson_outPrison_rec)
           }
 
         }
@@ -569,45 +630,7 @@
         };
       /* Coding By YanM */
       /* Coding By Qianjf */
-      var personlists;
-//      var personlists=[{"FlnkID":"9c2e3994-54d4-43ea-bfd3-b87dd95cc761",
-//        "CriminalName":"科比.波密斯",
-//        "Photo":"\/Document\/Photos\/Criminals\/2017072510103420170624084751李丽超.jpg"
-//      },
-//        {"FlnkID":"dfd825d1-c4d3-43ce-a55b-242cc622a2c1","CriminalName":"8b96罪犯未绑卡",
-//          "Photo":"\/Document\/Photos\/Criminals\/2017073119045020170624090400张博.jpg"}];
-      $.ajax({
-        type: "get",
-        contentType: "application/json; charset=utf-8",
-        dataType: "jsonp",
-        jsonp: "callback",
-        async: false,
-        url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalList' + "?callback=?",
-        success: function (result) {
-          personlists=result
-          //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
-          var personlist_hash = new Array();
-          // 重构罪犯信息哈希数据
-          for(var i=0;i<personlists.length;i++){
-            personlist_hash[personlists[i].FlnkID] = {"CriminalName":'"'+personlists[i].CriminalName+'"',"Photo":'"'+personlists[i].Photo+'"'};
-          }
-          //所有罪犯信息缓存(传进vue的数据用于渲染页面)
-          vm.criminalList=personlist_hash
-
-          // 模拟数据（网关推送过来的罪犯FlnkID）
-          var FlnkIDList=['dfd825d1-c4d3-43ce-a55b-242cc622a2c1','9c2e3994-54d4-43ea-bfd3-b87dd95cc761']
-          /* 筛选后数据用于VUE渲染 */
-          var vueDataPersonlist=new Array();
-          for(var j=0;j<FlnkIDList.length;j++){
-            vueDataPersonlist[j]={"FlnkID":'"'+FlnkIDList[j]+'"',"CriminalName":'"'+personlist_hash[FlnkIDList[j]].CriminalName+'"',"Photo":'"'+personlist_hash[FlnkIDList[j]].Photo+'"'}
-          }
-        },
-
-        complete: function (XHR, TS) {
-          XHR = null;  //回收资源
-        }
-      });
-      console.log("mmakm",this.criminalList)
+        this.allDataInit()
       /* Coding By Qianjf */
     }
   }
@@ -717,7 +740,7 @@
     height: 50px;
     color: blue;
     border: 1px solid;
-    font-size: 21px;
+    font-size: 14px;
     text-align: center;
     line-height: 51px;
     cursor: pointer;
