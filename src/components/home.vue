@@ -221,7 +221,7 @@ export default {
       chartsData:[
         {
           value: 3661,
-          name: '<条目一'
+          name: '条目一'
         }, {
           value: 5713,
           name: '条目二'
@@ -236,13 +236,13 @@ export default {
     }
   },
   methods:{
+    /* 人员分布 */
     charts:function () {
       let myCharts = echarts.init(document.getElementById('myChart'))
       let chartsDataName = []
       for(let i=0; i<this.chartsData.length; i++){
           chartsDataName.push(this.chartsData[i].name)
       }
-      console.log('yyyyyyyy',chartsDataName)
       let option = {
         backgroundColor: 'transparent',
         legend: {
