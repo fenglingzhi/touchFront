@@ -18,14 +18,11 @@
                       外出地点
                     </div>
                     <div class="deailBody" style="height:269px;">
-
-                      <el-col :span="4" v-for="(areaName,index) in areaNameList.slice(areaA-1,areaB-1)" >
-
+                      <el-col :span="4" v-for="(areaName,index) in areaNameList.slice(areaA-1,areaB)" >
                         <div  :class="['choose', {choosed: areaName.ischoose}]" v-on:click="chooseArea(index)">
                           {{areaName.AreaName}}
                         </div>
                       </el-col>
-
                     </div>
                   </el-row>
                   <el-row >
@@ -48,9 +45,8 @@
                         外出事由
                       </div>
                       <div class="deailBody" style="height:110px;">
-                        <el-col :span="4" v-for="(reason,index) in reasonList" >
-
-                          <div  :class="['choose', {choosed: reason.ischoose}]" v-on:click="chooseReason(index)">
+                        <el-col :span="4" v-for="(reason,index) in reasonList.slice(reasonA-1,reasonB)" >
+                          <div :class="['choose', {choosed: reason.ischoose}]" v-on:click="chooseReason(index)">
                             {{reason.DictCodeName}}
                           </div>
                         </el-col>
@@ -61,9 +57,9 @@
                       <el-col :span="3" style="height: 10px"></el-col>
                       <el-col :span="18" >
                         <div class="pages" style="    margin: 23px auto;">
-                          <span class="pageControl"><img src="../../assets/q1.png" alt=""/></span>
+                          <span class="pageControl"><img src="../../assets/q1.png" v-on:click="ReasonBack()" alt=""/></span>
                           <span class="pagesText">{{reasonNowPage}}/{{reasonPages}}</span>
-                          <span class="pageControl"><img src="../../assets/q2.png" alt=""/></span>
+                          <span class="pageControl"><img src="../../assets/q2.png" v-on:click="ReasonGo()" alt=""/></span>
                         </div>
                       </el-col>
                       <el-col :span="3" style="height: 10px"></el-col>
@@ -175,46 +171,69 @@
 
         ], // 陪同民警明细
         areaNameList:[],//外出地点
-        areaPages:0,//外出地点总页数
+        areaPages:1,//外出地点总页数
         areaNowPage:1,//外出地点当前页
         areaListAll:0,//外出地点总数
         areaA:1,
-        areaB:24,
+        areaB:30,
         reasonList:[],// 外出事由
         reasonNowPage:1,// 外出事由当前页码
-        reasonPages:0// 外出事由总页码
+        reasonPages:1,// 外出事由总页码
+        reasonListAll:0,
+        reasonA:1,
+        reasonB:12
 
       }
     },
     methods: {
       chooseArea:function (dom) {
-        this.areaNameList.ischoose=false
         for(var i=0;i< this.areaNameList.length;i++){
           this.areaNameList[i].ischoose=false
         }
-        this.areaNameList[dom].ischoose=!this.areaNameList[dom].ischoose
+        this.areaNameList[dom+this.areaA-1].ischoose=!this.areaNameList[dom+this.areaA-1].ischoose
       },
       chooseReason:function (dom) {
-        this.reasonList.ischoose=false
         for(var i=0;i< this.reasonList.length;i++){
           this.reasonList[i].ischoose=false
         }
-        this.reasonList[dom].ischoose=!this.reasonList[dom].ischoose
+        this.reasonList[dom+this.reasonA-1].ischoose=!this.reasonList[dom+this.reasonA-1].ischoose
       },
       areaGo:function () {
-        if((this.areaListAll-this.areaB)<24){
-            alert("已经最后一页了")
+        if(this.areaNowPage<this.areaPages){
+          this.areaNowPage=this.areaNowPage+1
+          this.areaA=this.areaA+30
+          this.areaB=this.areaB+30
         }else {
-          this.areaA=this.areaA+24
-          this.areaB=this.areaB+24
+          alert("已经最后一页了")
         }
       },
       areaBack:function () {
-        if(this.areaA-24<0||this.areaA-24==0){
-            alert("已经是第一页了")
+        if(this.areaNowPage==1){
+          alert("已经是第一页了")
         }else {
-          this.areaA=this.areaA-24
-          this.areaB=this.areaB-24
+          this.areaNowPage=this.areaNowPage-1
+          this.areaA=this.areaA-30
+          this.areaB=this.areaB-30
+        }
+
+      }
+      ,
+      ReasonGo:function () {
+          if(this.reasonNowPage<this.reasonPages){
+            this.reasonNowPage=this.reasonNowPage+1
+            this.reasonA=this.reasonA+12
+            this.reasonB=this.reasonB+12
+          }else {
+            alert("已经最后一页了")
+          }
+      },
+      ReasonBack:function () {
+        if(this.reasonNowPage==1){
+          alert("已经是第一页了")
+        }else {
+          this.reasonNowPage=this.reasonNowPage-1
+          this.reasonA=this.reasonA-12
+          this.reasonB=this.reasonB-12
         }
 
       }
@@ -236,8 +255,8 @@
         url: 'http://10.58.1.145:88/api/Move/GetOutAreaList' + "?callback=?",
         success: function (result) {
           if(result!=""||result!=null){
-              vm.areaListAll=result.length
-              vm.areaPages=Math.ceil(result.length/24)==0?1:Math.ceil(result.length/24)
+            vm.areaListAll=result.length
+              vm.areaPages=Math.ceil(result.length/30)==0?1:Math.ceil(result.length/30)
             for (var i=0;i<result.length;i++){
                result[i]["ischoose"]=false
             }
@@ -263,12 +282,13 @@
         url: 'http://10.58.1.145:88/api/Move/GetMoveReasonList' + "?callback=?",
         success: function (result) {
           if(result!=""||result!=null){
+
+            vm.reasonListAll=result.length
             vm.reasonPages=Math.ceil(result.length/12)==0?1:Math.ceil(result.length/12)
             for (var i=0;i<result.length;i++){
               result[i]["ischoose"]=false
             }
             vm.reasonList=result
-            console.log(result)
           }
 
         },

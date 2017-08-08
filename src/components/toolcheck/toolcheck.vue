@@ -17,7 +17,7 @@
           <div class="partsBody" style="height:392px;">
             <div class="bodyHead">
               <div class="title">柜内工具</div>
-              <!--<div class="titleDescribe">（本监区总人数：200人，<span style="color: #1443cd">已点人数23人</span>）</div>-->
+              <div class="titleDescribe">（柜内工具总数：200个，<span style="color: #1443cd">已点工具{{toolCalledCount}}个</span>）</div>
             </div>
             <div class="bodyCon">
               <el-col :span="2" v-for="criminal in inCriminals" :key="1">
@@ -177,7 +177,8 @@
         records:[],
         recordPage:0,
         recordIsLastPage:false,
-        recordCount:0
+        recordCount:0,
+        toolCalledCount:0//已点工具总数
       }
     },
     methods: {
@@ -333,7 +334,7 @@
           XHR = null;  //回收资源
         }
       });
-//      获取总条数
+//      获取总记录条数
       $.ajax({
         type: "get",
         contentType: "application/json; charset=utf-8",
@@ -343,7 +344,7 @@
         data:{"OrgID":localStorage.getItem("OrgID")},
         url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCntRecordsCount' + "?callback=?",
         success: function (result) {
-         vm.recordCount=result
+          vm.recordCount=result
         },
         error: function (err) {
           alert("请求异常")
@@ -352,6 +353,45 @@
           XHR = null;  //回收资源
         }
       });
+//      获取已点工具总数,本监区工具总数
+      setInterval(function () {
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          data:{"OrgID":localStorage.getItem("OrgID")},
+          url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCalledCount' + "?callback=?",
+          success: function (result) {
+            vm.toolCalledCount=result
+          },
+          error: function (err) {
+            alert("请求异常")
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        });
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          data:{"OrgID":localStorage.getItem("OrgID")},
+          url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCalledCount' + "?callback=?",
+          success: function (result) {
+            vm.orgCriminalCount=result
+          },
+          error: function (err) {
+            alert("请求异常")
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        });
+      },1000)
 
       /* Coding By Qianjf */
 
