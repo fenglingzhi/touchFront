@@ -11,7 +11,7 @@
         <!--</div>-->
         <div class="tabHead">
           <div  :class="['tab', { tabing: isB1}]"  v-on:click="toggle1()">工具清点</div>
-          <div  :class="['tab', { tabing: isB2}]"  v-on:click="toggle2()">清点记录({{recordCount}})</div>
+          <div  :class="['tab', { tabing: isB2}]"  v-on:click="toggle2()">清点记录</div>
         </div>
         <div class="tab1" v-show="isShow1">
           <div class="partsBody" style="height:392px;">
@@ -217,7 +217,7 @@
               vm.records=result
             },
             error: function (err) {
-              alert("请求异常")
+//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -239,7 +239,7 @@
             vm.recordCount=result
           },
           error: function (err) {
-            alert("请求异常")
+//            alert("请求异常")
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
@@ -272,7 +272,7 @@
               vm.records=result
             },
             error: function (err) {
-              alert("请求异常")
+//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -291,7 +291,7 @@
               vm.recordCount=result
             },
             error: function (err) {
-              alert("请求异常")
+//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -328,7 +328,7 @@
           vm.records=result
         },
         error: function (err) {
-          alert("请求异常")
+//          alert("请求异常")
         },
         complete: function (XHR, TS) {
           XHR = null;  //回收资源
@@ -347,7 +347,7 @@
           vm.recordCount=result
         },
         error: function (err) {
-          alert("请求异常")
+//          alert("请求异常")
         },
         complete: function (XHR, TS) {
           XHR = null;  //回收资源
@@ -367,7 +367,7 @@
             vm.toolCalledCount=result
           },
           error: function (err) {
-            alert("请求异常")
+//            alert("请求异常")
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
@@ -385,7 +385,7 @@
             vm.orgCriminalCount=result
           },
           error: function (err) {
-            alert("请求异常")
+//            alert("请求异常")
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源

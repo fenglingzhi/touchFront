@@ -20,7 +20,7 @@
                     <div class="deailBody" style="height:269px;">
                       <el-col :span="4" v-for="(generalGroup,index) in generalGroupList.slice(generalGroupA-1,generalGroupB)" :key="1">
                         <div  :class="['choose', {choosed: generalGroup.ischoose}]" v-on:click="chooseGeneralGroup(index)">
-                          {{generalGroup.GroupName}}
+                          {{generalGroup.GroupCode}}
                         </div>
                       </el-col>
 
@@ -48,7 +48,7 @@
                       <div class="deailBody" style="height:110px;">
                         <el-col :span="4" v-for="(provisionalGroup,index) in provisionalGroupList.slice(provisionalGroupA-1,provisionalGroupB)" :key="1">
                           <div  :class="['choose', {choosed: provisionalGroup.ischoose}]" v-on:click="chooseProvisionalGroup(index)">
-                            {{provisionalGroup.GroupName}}
+                            {{provisionalGroup.GroupCode}}
                           </div>
                         </el-col>
                       </div>
@@ -245,10 +245,7 @@
         data:{"OrgID":localStorage.getItem("OrgID")},
         url: 'http://10.58.1.145:88/api/Group/GetProvisionalGroupList' + "?callback=?",
         success: function (result) {
-          console.log("pages:",result)
           if(result!=""||result!=null){
-            console.log("page:",result)
-
             vm.provisionalGroupListAll=result.length
             vm.provisionalGroupPages=Math.ceil(result.length/12)==0?1:Math.ceil(result.length/12)
             for (var i=0;i<result.length;i++){

@@ -228,8 +228,8 @@
       <div class="alarmImg">
         <img class="alarmIco" src='./assets/a1.png' alt="">
       </div>
-      <div class="alarmNum" v-on:click="makePageDataBack()">999</div>
-      <div class="alarmText" v-on:click="makePageDataGo()">第一监狱 越狱报警</div>
+      <div class="alarmNum" >{{alarmList.length}}</div>
+      <div class="alarmText" >第一监狱 越狱报警</div>
 
     </div>
     <!--报警弹框 end-->
@@ -268,6 +268,7 @@
         criminalCalledIsLastPage:false,//已点罪犯是否是最后一页
         criminalCount:0,//已点罪犯总页码
         criminalPage:0,//已点罪犯当前页
+        alarmList:[{name:"jk"},{name:"wdaad"}],//报警集合
         /* mj e*/
         alertYHDL: false,
         alertJQXZ: false,
@@ -646,6 +647,17 @@
 //            }
 //            console.log('需要渲染页面的数据',vueDataPersonlist)
           }
+          /* Coding By Qianjf */
+//          报警信息
+          if(JSON.parse(event.data).Header.MsgType === 2){
+            var alarmNews = JSON.parse(JSON.parse(event.data).Body)
+            if(alarmNews.OrgID==localStorage.getItem("OrgID")){
+             vm.alarmList.clone(alarmNews)
+            }
+            console.log('报警信息++——+——+——+——+——+',vm.alarmList)
+          }
+          /* Coding By Qianjf */
+
 
           /* 流动人员 && 外监进入人员返回数据 */
           if(JSON.parse(event.data).Header.MsgType === 24){

@@ -171,7 +171,7 @@
 
         ], // 陪同民警明细
         areaNameList:[],//外出地点
-        areaPages:1,//外出地点总页数
+        areaPages:0,//外出地点总页数
         areaNowPage:1,//外出地点当前页
         areaListAll:0,//外出地点总数
         areaA:1,
@@ -182,7 +182,6 @@
         reasonListAll:0,
         reasonA:1,
         reasonB:12
-
       }
     },
     methods: {
@@ -201,8 +200,8 @@
       areaGo:function () {
         if(this.areaNowPage<this.areaPages){
           this.areaNowPage=this.areaNowPage+1
-          this.areaA=this.areaA+30
-          this.areaB=this.areaB+30
+          this.areaA=this.areaA+12
+          this.areaB=this.areaB+12
         }else {
           alert("已经最后一页了")
         }
@@ -212,8 +211,8 @@
           alert("已经是第一页了")
         }else {
           this.areaNowPage=this.areaNowPage-1
-          this.areaA=this.areaA-30
-          this.areaB=this.areaB-30
+          this.areaA=this.areaA-12
+          this.areaB=this.areaB-12
         }
 
       }
@@ -265,7 +264,7 @@
 
         },
         error: function (err) {
-          alert("请求异常")
+//          alert("请求异常")
         },
         complete: function (XHR, TS) {
           XHR = null;  //回收资源
@@ -282,18 +281,18 @@
         url: 'http://10.58.1.145:88/api/Move/GetMoveReasonList' + "?callback=?",
         success: function (result) {
           if(result!=""||result!=null){
-
             vm.reasonListAll=result.length
             vm.reasonPages=Math.ceil(result.length/12)==0?1:Math.ceil(result.length/12)
             for (var i=0;i<result.length;i++){
               result[i]["ischoose"]=false
             }
             vm.reasonList=result
+             console.log(result)
           }
 
         },
         error: function (err) {
-          alert("请求异常")
+//          alert("请求异常")
         },
         complete: function (XHR, TS) {
           XHR = null;  //回收资源

@@ -10,7 +10,7 @@
         <!--</div>-->
         <div class="tabHead">
           <div  :class="['tab', { tabing: isB1}]"  v-on:click="toggle1()">人员清点</div>
-          <div  :class="['tab', { tabing: isB2}]"  v-on:click="toggle2()">清点记录({{recordCount}})</div>
+          <div  :class="['tab', { tabing: isB2}]"  v-on:click="toggle2()">清点记录</div>
         </div>
         <div class="tab1" v-show="isShow1">
           <div class="partsBody" style="height:392px;">
@@ -325,7 +325,7 @@
           vm.records=result
         },
         error: function (err) {
-          alert("请求异常")
+//          alert("请求异常")
         },
         complete: function (XHR, TS) {
           XHR = null;  //回收资源
@@ -344,7 +344,7 @@
           vm.recordCount=result
         },
         error: function (err) {
-          alert("请求异常")
+//          alert("请求异常")
         },
         complete: function (XHR, TS) {
           XHR = null;  //回收资源
@@ -379,10 +379,10 @@
           data:{"OrgID":localStorage.getItem("OrgID")},
           url: 'http://10.58.1.145:88/api/CriminalCnt/GetCurOrgCriminalCount' + "?callback=?",
           success: function (result) {
-            vm.orgCriminalCount=result
+            vm.orgCriminalCount=result[0].Total
           },
           error: function (err) {
-            alert("请求异常")
+//            alert("请求异常")
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
