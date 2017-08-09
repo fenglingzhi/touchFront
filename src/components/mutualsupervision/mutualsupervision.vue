@@ -18,7 +18,7 @@
                       普通互监组
                     </div>
                     <div class="deailBody" style="height:269px;">
-                      <el-col :span="4" v-for="(generalGroup,index) in generalGroupList.slice(generalGroupA-1,generalGroupB)" >
+                      <el-col :span="4" v-for="(generalGroup,index) in generalGroupList.slice(generalGroupA-1,generalGroupB)" :key="1">
                         <div  :class="['choose', {choosed: generalGroup.ischoose}]" v-on:click="chooseGeneralGroup(index)">
                           {{generalGroup.GroupName}}
                         </div>
@@ -46,7 +46,7 @@
                         临时互监组
                       </div>
                       <div class="deailBody" style="height:110px;">
-                        <el-col :span="4" v-for="(provisionalGroup,index) in provisionalGroupList.slice(provisionalGroupA-1,provisionalGroupB)" >
+                        <el-col :span="4" v-for="(provisionalGroup,index) in provisionalGroupList.slice(provisionalGroupA-1,provisionalGroupB)" :key="1">
                           <div  :class="['choose', {choosed: provisionalGroup.ischoose}]" v-on:click="chooseProvisionalGroup(index)">
                             {{provisionalGroup.GroupName}}
                           </div>

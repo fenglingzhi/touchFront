@@ -61,15 +61,15 @@
         <div class="outside_persion_personnel">
           <h4 class="home_title">外监进入人员</h4>
           <el-row class="outside_person_wrap">
-            <el-col :span="6" v-for="item in outside_persion_personnels" :key="2">
+            <el-col :span="6" v-for="item in FlnkIDList2" :key="2">
               <div class="outside_person_card" :class="item.prisonstatus">
                 <el-col :span="6" class="photo">
-                  <img :src="item.imgurl" alt="" width="100%" height="100%">
+                  <img :src="item.Photo" alt="" width="100%" height="100%">
                 </el-col>
                 <el-col :span="16" class="crimal_content">
-                  <p>姓名：{{item.name}}</p>
-                  <p>罪犯编号：{{item.crimalNum}}</p>
-                  <p>所属监区：{{item.area}}</p>
+                  <p>姓名：{{item.CriminalName}}</p>
+                  <p>罪犯编号：{{item.CriminalName}}</p>
+                  <p>所属监区：{{item.CriminalName}}</p>
                 </el-col>
               </div>
             </el-col>
@@ -95,6 +95,12 @@
   import echarts from 'echarts'
 export default {
   name: 'home',
+  props:[
+    'FlnkIDList1',
+    'FlnkIDList2',
+    'FlnkIDList3',
+    'FlnkIDList4',
+  ],
   data () {
     return {
       // 监区概况

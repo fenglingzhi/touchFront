@@ -18,7 +18,7 @@
                       外出地点
                     </div>
                     <div class="deailBody" style="height:269px;">
-                      <el-col :span="4" v-for="(areaName,index) in areaNameList.slice(areaA-1,areaB)" >
+                      <el-col :span="4" v-for="(areaName,index) in areaNameList.slice(areaA-1,areaB)" :key="1">
                         <div  :class="['choose', {choosed: areaName.ischoose}]" v-on:click="chooseArea(index)">
                           {{areaName.AreaName}}
                         </div>
@@ -45,7 +45,7 @@
                         外出事由
                       </div>
                       <div class="deailBody" style="height:110px;">
-                        <el-col :span="4" v-for="(reason,index) in reasonList.slice(reasonA-1,reasonB)" >
+                        <el-col :span="4" v-for="(reason,index) in reasonList.slice(reasonA-1,reasonB)" :key="1">
                           <div :class="['choose', {choosed: reason.ischoose}]" v-on:click="chooseReason(index)">
                             {{reason.DictCodeName}}
                           </div>

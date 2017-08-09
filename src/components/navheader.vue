@@ -30,7 +30,7 @@
 
 <script>
   import axios from 'axios'
-  import { shanlei } from '../config'
+  import { SHANLEI } from '../config'
   export default {
 
     name: 'navheader',
@@ -43,7 +43,6 @@
         localTime: '',
         localWeek: '',
         localYear: '',
-
       }
     },
     beforeCreate () {

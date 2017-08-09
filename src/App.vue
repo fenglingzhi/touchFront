@@ -3,7 +3,12 @@
     <!-- <img src="./assets/logo.png"> -->
     <navheader
       @getPosition="onClickPosition()"
-      :message="prisonSelectText"></navheader>
+      :message="prisonSelectText"
+      :FlnkIDList1="FlnkIDList_1"
+      :FlnkIDList2="FlnkIDList_22"
+      :FlnkIDList3="FlnkIDList_3"
+      :FlnkIDList4="FlnkIDList_4"
+      ></navheader>
     <router-view  @hasCheaked="onHasCheaked"   :criminalList="criminalList"></router-view>
     <menufooter></menufooter>
     <!--用户登录 star-->
@@ -252,7 +257,11 @@
         OrgID:'',                         //监区ID
         flowPerson_outPrison:{},          //流动人员 && 外监进入人员
         personnel_distribution:{},        //人员分布
-        AllPersionData:{},                //
+        FlnkIDList_1 : [],                //外出人数（监内）
+        FlnkIDList_2 : [],                //非法流动
+        FlnkIDList_3 : [],                //外监进入人员
+        FlnkIDList_4 : [],                //在监人数（非在线）
+        FlnkIDList_22: [],
         /* Coding By YanM */
         /* mj B*/
         GetCriminalCalledList:[],//已点罪犯
@@ -320,6 +329,7 @@
       /* Coding By YanM */
 
       /* Coding By Qianjf */
+
       makePageDataGo:function () {
         var data=[{"name":"1"},{"name":"2"},{"name":"3"},{"name":"4"},{"name":"5"},{"name":"6"},{"name":"7"},{"name":"8"},{"name":"9"}]
         var lastData=[];
@@ -332,7 +342,7 @@
         }
         console.log(lastData)
       },
-//      已点人员名单翻页
+      /* 已点人员名单翻页 */
       getCriminalGo:function () {
         var vm = this
         if(!vm.criminalCalledIsLastPage){
@@ -386,6 +396,7 @@
 
 
       },
+
       getCriminalback:function () {
         var vm = this
         if(vm.criminalPage==0){
@@ -438,6 +449,7 @@
       },
       /* Coding By Qianjf */
 
+      /* 弹窗关闭 */
       close: function (chose) {
         if(chose=="alertYHDL"){
           this.alertYHDL=false
@@ -452,6 +464,8 @@
           this.criminalPage=0
         }
       },
+
+      /*  */
       onClickPosition: function () {
         this.alertJQXZ=true
       },
@@ -505,10 +519,12 @@
           }
         });
       },
+
       alertAlarm:function () {
         this.alertBJXX=true
       },
-      /*  */
+
+      /* 所有罪犯基础全量数据 */
       allDataInit:function () {
         var vm = this
         $.ajax({
@@ -517,6 +533,7 @@
           dataType: "jsonp",
           jsonp: "callback",
           async: false,
+          data: {OrgID: localStorage.getItem('OrgID')},
           url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalList' + "?callback=?",
           success: function (result) {
             //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
@@ -551,33 +568,35 @@
             }
             //所有罪犯信息缓存(传进vue的数据用于渲染页面)
             vm.criminalList.push(personlist_hash)
-            console.log('罪犯基础信息集合',vm.criminalList)
-//            // 模拟数据（网关推送过来的罪犯FlnkID）
-//            var FlnkIDList=['0c942407-4eb5-4389-b91c-38d3bb188d62']
-//            /* 筛选后数据用于VUE渲染 */
-//            var vueDataPersonlist=new Array();
-//            for(var j=0;j<FlnkIDList.length;j++){
-//              vueDataPersonlist[j]={
-//                FlnkID:FlnkIDList[j],
-//                CriminalName:personlist_hash[FlnkIDList[j]].CriminalName,
-//                Photo:personlist_hash[FlnkIDList[j]].Photo
-//              }
-//            }
-//            console.log('需要渲染页面的数据',vueDataPersonlist)
-
+            var FlnkIDList = vm.FlnkIDList_2
+//            console.log('1111111',vm.FlnkIDList_2[0].CriminalID)
+            /* 筛选后数据用于VUE渲染 */
+            var vueDataPersonlist_1=new Array();
+            for(var j=0;j<FlnkIDList.length;j++){
+              vueDataPersonlist_1[j]={
+                FlnkID:FlnkIDList[j],
+                CriminalName:vm.criminalList[0][FlnkIDList[j]].CriminalName,
+                Photo:vm.criminalList[0][FlnkIDList[j]].Photo
+              }
+            }
+            console.log('需要渲染页面的数据',vueDataPersonlist_1)
+            vm.FlnkIDList_22.push(vueDataPersonlist_1)
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
           }
         });
+        console.log('4234234234234234',vm.FlnkIDList_22)
       }
-
     },
     mounted () {
       let vm = this
       this.initPrison()
+      this.allDataInit()
+
+
       /* Coding By YanM */
-        /* 人员分布 */
+        /* 人员分布-14 */
         var flowPerson_outPrison = {
           Header: {
             MsgID:"201501260000000001",
@@ -588,7 +607,7 @@
             PSType:0
           })
         }
-        /* 流动人员 && 外监进入人员 */
+        /* 流动人员 && 外监进入人员-24 */
         var personnel_distribution = {
           Header: {
             MsgID:"201501260000000001",
@@ -614,12 +633,41 @@
           if(JSON.parse(event.data).Header.MsgType === 14){
             var personnel_distribution_rec = JSON.parse(JSON.parse(event.data).Body)
             console.log('人员分布-返回数据-14',personnel_distribution_rec)
+            // 模拟数据（网关推送过来的罪犯FlnkID）
+//            var FlnkIDList=["8a5a9f56-aece-449a-b6c5-72f35423e8f4"]
+//            /* 筛选后数据用于VUE渲染 */
+//            var vueDataPersonlist=new Array();
+//            for(var j=0;j<FlnkIDList.length;j++){
+//              vueDataPersonlist[j]={
+//                FlnkID:FlnkIDList[j],
+//                CriminalName:vm.criminalList[FlnkIDList[j]].CriminalName,
+//                Photo:vm.criminalList[FlnkIDList[j]].Photo
+//              }
+//            }
+//            console.log('需要渲染页面的数据',vueDataPersonlist)
           }
 
           /* 流动人员 && 外监进入人员返回数据 */
           if(JSON.parse(event.data).Header.MsgType === 24){
             var  flowPerson_outPrison_rec = JSON.parse(JSON.parse(event.data).Body)
             console.log('流动人员 && 外监进入人员-返回数据-24',flowPerson_outPrison_rec)
+            // 1、外出人数（监内）
+            for (var i = 0; i<flowPerson_outPrison_rec[0].People.length; i++){
+              vm.FlnkIDList_1.push(flowPerson_outPrison_rec[0].People[i].CriminalID)
+            }
+            // 2、非法流动
+            for (var i = 0; i<flowPerson_outPrison_rec[1].People.length; i++){
+              vm.FlnkIDList_2.push(flowPerson_outPrison_rec[1].People[i].CriminalID)
+            }
+            console.log('vm.FlnkIDList_2',vm.FlnkIDList_2)
+            // 3、外监进入人员
+            for (var i = 0; i<flowPerson_outPrison_rec[2].People.length; i++){
+              vm.FlnkIDList_3.push(flowPerson_outPrison_rec[2].People[i].CriminalID)
+            }
+            // 4、在监人数（非在线）
+            for (var i = 0; i<flowPerson_outPrison_rec[3].People.length; i++){
+              vm.FlnkIDList_4.push(flowPerson_outPrison_rec[3].People[i].CriminalID)
+            }
           }
 
         }
@@ -630,7 +678,7 @@
         };
       /* Coding By YanM */
       /* Coding By Qianjf */
-        this.allDataInit()
+
       /* Coding By Qianjf */
     }
   }
