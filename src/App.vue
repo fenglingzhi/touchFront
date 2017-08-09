@@ -283,7 +283,7 @@
         alertSSLD: false,
         alertYDMD: false,
         alertBJTK: true,
-        criminalList:[]                   //罪犯基础信息集合
+        criminalList:[]                 //罪犯基础信息集合
 
       }
     },
