@@ -262,6 +262,7 @@
         FlnkIDList_3 : [],                //外监进入人员
         FlnkIDList_4 : [],                //在监人数（非在线）
         FlnkIDList_22: [],
+        FlnkIDList_23: [],
         /* Coding By YanM */
         /* mj B*/
         GetCriminalCalledList:[],//已点罪犯
@@ -569,8 +570,8 @@
             }
             //所有罪犯信息缓存(传进vue的数据用于渲染页面)
             vm.criminalList.push(personlist_hash)
-            var FlnkIDList = vm.FlnkIDList_2
-//            console.log('1111111',vm.FlnkIDList_2[0].CriminalID)
+            var FlnkIDList = []
+            FlnkIDList = vm.FlnkIDList_2
             /* 筛选后数据用于VUE渲染 */
             var vueDataPersonlist_1=new Array();
             for(var j=0;j<FlnkIDList.length;j++){
@@ -580,17 +581,21 @@
                 Photo:vm.criminalList[0][FlnkIDList[j]].Photo
               }
             }
-            console.log('需要渲染页面的数据',vueDataPersonlist_1)
+            vueDataPersonlist_1 = ['123123','123123123','12312312']
+            console.log('vueDataPersonlist_1',vueDataPersonlist_1)
             vm.FlnkIDList_22.push(vueDataPersonlist_1)
+            vm.FlnkIDList_23.push(['22','333333'])
+            console.log('ajax inside',vm.FlnkIDList_22,'23',vm.FlnkIDList_23)
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
           }
         });
-        console.log('4234234234234234',vm.FlnkIDList_22)
+        console.log('ajax outside',vm.FlnkIDList_22,'23',vm.FlnkIDList_23)
       }
     },
     mounted () {
+//        console.log('kajsdkljfalkdj',this.FlnkIDList_23)
       let vm = this
       this.initPrison()
       this.allDataInit()
@@ -669,7 +674,8 @@
             }
             // 2、非法流动
             for (var i = 0; i<flowPerson_outPrison_rec[1].People.length; i++){
-              vm.FlnkIDList_2.push(flowPerson_outPrison_rec[1].People[i].CriminalID)
+//              vm.FlnkIDList_2.push(flowPerson_outPrison_rec[1].People[i].CriminalID)
+              vm.FlnkIDList_2.push(['8a5a9f56-aece-449a-b6c5-72f35423e8f4','fb48a424-827e-4198-8e44-11f99791f290','a7e0c921-ef7d-4d36-a78c-259f44e3f2d8'])
             }
             console.log('vm.FlnkIDList_2',vm.FlnkIDList_2)
             // 3、外监进入人员

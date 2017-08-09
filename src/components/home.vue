@@ -95,12 +95,9 @@
   import echarts from 'echarts'
 export default {
   name: 'home',
-  props:[
-    'FlnkIDList1',
-    'FlnkIDList2',
-    'FlnkIDList3',
-    'FlnkIDList4',
-  ],
+  props:{
+    FlnkIDList2:[]
+  },
   data () {
     return {
       // 监区概况
@@ -292,6 +289,7 @@ export default {
   },
   mounted(){
     this.charts()
+    console.log('home',this.FlnkIDList2)
   }
 }
 </script>
