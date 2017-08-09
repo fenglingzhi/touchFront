@@ -4,6 +4,7 @@
       <el-col :span="6">
         <div class="prison_situation">
           <h4 class="home_title">监区概况</h4>
+
           <div class="content">
             <el-col :span="3" style="height: 10px;"></el-col>
             <el-col :span="21">
@@ -11,7 +12,7 @@
               <p>在监人数：{{prison_situations[0].in_prison_num}}人</p>
               <p>外出人数（监内）：{{prison_situations[0].out_prison_num_in}}人</p>
               <p>外出人数（监外）：{{prison_situations[0].out_prison_num_out}}人</p>
-              <p>非法流动人数：{{prison_situations[0].float_num}}人</p>
+              <p>非法流动人数：{{FlnkIDList2.length}}人</p>
             </el-col>
           </div>
         </div>
@@ -25,23 +26,23 @@
       <el-col :span="18">
         <div class="floating_personnel">
           <h4 class="home_title">流动人员
-            <span class="float">（非法流动{{float_personnel[0].float}}人，</span>
+            <span class="float">（非法流动{{FlnkIDList2.length}}人，</span>
             <span class="out">本监外出{{float_personnel[0].out}}人）</span>
           </h4>
           <el-row class="float_person_wrap">
-            <el-col :span="8" v-for="item in float_person_cards" :key='1'>
-              <div class="float_person_card" :class="item.prisonstatus">
+            <el-col :span="8" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)":key='1'>
+              <div class="float_person_card outperson" :class="item.prisonstatus">
                 <el-col :span="10" class="photo">
-                  <img :src="item.imgurl" alt="" width="100%" height="100%">
+                  <img :src="item.Photo" alt="" width="100%" height="100%">
                 </el-col>
                 <el-col :span="12" class="crimal_content">
-                  <p>姓名：{{item.name}}</p>
-                  <p>罪犯编号：{{item.crimalNum}}</p>
-                  <p>当前区域：{{item.area}}</p>
-                  <p>外出地点：{{item.destination}}</p>
-                  <p>陪同民警：{{item.withplace}}</p>
-                  <p>外出时间：{{item.outtime}}</p>
-                  <p>外出事由：{{item.outreasons}}</p>
+                  <p>姓名：{{item.CriminalName}}</p>
+                  <p>罪犯编号：{{item.CriminalID}}</p>
+                  <!--<p>当前区域：{{item.area}}</p>-->
+                  <!--<p>外出地点：{{item.destination}}</p>-->
+                  <!--<p>陪同民警：{{item.withplace}}</p>-->
+                  <p>外出时间：{{item.UpdateTime}}</p>
+                  <!--<p>外出事由：{{item.outreasons}}</p>-->
                 </el-col>
               </div>
             </el-col>
@@ -50,9 +51,9 @@
             <el-col :span="8" style="height: 10px"></el-col>
             <el-col :span="8" >
               <div class="pages">
-                <span class="pageControl"><img src="../assets/q1.png" alt=""/></span>
-                <span class="pagesText">11/30</span>
-                <span class="pageControl"><img src="../assets/q2.png" alt=""/></span>
+                <span class="pageControl" @click="floating_personnelBack"><img src="../assets/q1.png" alt=""/></span>
+                <span class="pagesText">{{float_personnelNowPage}}/{{float_personnelAllPages}}</span>
+                <span class="pageControl" @click="floating_personnelGo"><img src="../assets/q2.png" alt=""/></span>
               </div>
             </el-col>
             <el-col :span="8" style="height: 10px"></el-col>
@@ -61,15 +62,15 @@
         <div class="outside_persion_personnel">
           <h4 class="home_title">外监进入人员</h4>
           <el-row class="outside_person_wrap">
-            <el-col :span="6" v-for="item in FlnkIDList2" :key="2">
+            <el-col :span="6" v-for="item in outside_persion_personnels" :key="2">
               <div class="outside_person_card" :class="item.prisonstatus">
                 <el-col :span="6" class="photo">
-                  <img :src="item.Photo" alt="" width="100%" height="100%">
+                  <img :src="item.imgurl" alt="" width="100%" height="100%">
                 </el-col>
                 <el-col :span="16" class="crimal_content">
-                  <p>姓名：{{item.CriminalName}}</p>
-                  <p>罪犯编号：{{item.CriminalName}}</p>
-                  <p>所属监区：{{item.CriminalName}}</p>
+                  <p>姓名：{{item.name}}</p>
+                  <p>罪犯编号：{{item.crimalNum}}</p>
+                  <p>所属监区：{{item.area}}</p>
                 </el-col>
               </div>
             </el-col>
@@ -95,9 +96,9 @@
   import echarts from 'echarts'
 export default {
   name: 'home',
-  props:{
-    FlnkIDList2:[]
-  },
+  props:[
+    'FlnkIDList2'
+  ],
   data () {
     return {
       // 监区概况
@@ -235,7 +236,14 @@ export default {
           value: 17623,
           name: '条目四'
         }
-      ]
+      ],
+
+      float_personnelList:this.FlnkIDList2,//外出地点
+      float_personnelAllPages:1,//外出地点总页数
+      float_personnelNowPage:1,//外出地点当前页
+      float_personnelListAll:0,//外出地点总数
+      float_personnelA:1,
+      float_personnelB:6,
     }
   },
   methods:{
@@ -284,12 +292,35 @@ export default {
         }]
       };
       myCharts.setOption(option)
+    },
+    floating_personnelGo:function () {
+      if(this.float_personnelNowPage<this.float_personnelAllPages){
+        this.float_personnelNowPage=this.float_personnelNowPage+1
+        this.float_personnelA=this.float_personnelA+6
+        this.float_personnelB=this.float_personnelB+6
+      }else {
+        alert("已经最后一页了")
+      }
+    },
+    floating_personnelBack:function () {
+      if(this.float_personnelNowPage === 1){
+        alert("已经是第一页了")
+      }else {
+        this.float_personnelNowPage=this.float_personnelNowPage-1
+        this.float_personnelA=this.float_personnelA-6
+        this.float_personnelB=this.float_personnelB-6
+      }
+
     }
 
   },
   mounted(){
+    var vm = this
     this.charts()
     console.log('home',this.FlnkIDList2)
+    vm.float_personnelListAll=vm.float_personnelList.length
+    vm.float_personnelAllPages=Math.ceil(vm.float_personnelList.length/6)===0?1:Math.ceil(vm.float_personnelList.length/6)
+    console.log('alllllllllllll',vm.float_personnelAllPages)
   }
 }
 </script>
@@ -367,6 +398,7 @@ export default {
       }
       .float_person_wrap{
         padding: 0 40px;
+        height: 380px;
         .float_person_card{
           padding: 10px;
           height: 150px;

@@ -176,6 +176,7 @@
         areaListAll:0,//外出地点总数
         areaA:1,
         areaB:30,
+
         reasonList:[],// 外出事由
         reasonNowPage:1,// 外出事由当前页码
         reasonPages:1,// 外出事由总页码

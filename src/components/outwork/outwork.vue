@@ -11,7 +11,7 @@
         <div class="partsBody" v-show="isShow1">
           <div class="bodyCon">
 
-            <el-col :span="2" v-for="(outCrimina,index)  in outCriminalList.slice(outA-1,outB)" >
+            <el-col :span="2" v-for="(outCrimina,index)  in outCriminalList.slice(outA-1,outB)" :key="1">
               <div class="criminal">
                 <img :src="outCrimina.Photo" width="98%" height="85" alt=""/>
                 <span class="criminalName">{{outCrimina.CriminalName}}</span>
@@ -33,7 +33,7 @@
         </div>
         <div class="partsBody" v-show="isShow2">
           <div class="bodyCon">
-            <el-col :span="2" v-for="(inCriminal,index) in inCriminalList.slice(inA-1,inB)">
+            <el-col :span="2" v-for="(inCriminal,index) in inCriminalList.slice(inA-1,inB)" :key="1">
               <div class="criminal">
                 <img :src="inCriminal.Photo" width="98%" height="85" alt=""/>
                 <span class="criminalName">{{inCriminal.CriminalName}}</span>
