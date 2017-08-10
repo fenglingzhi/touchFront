@@ -13,6 +13,8 @@
       :FlnkIDList3="FlnkIDList_33"
       :FlnkIDList4="FlnkIDList_44"
       :SocketAllData="SocketAllData"
+      :chartsDatas="chartsDatas"
+      :chartsDatasName="chartsDatasName"
     ></router-view>
     <menufooter></menufooter>
     <!--用户登录 star-->
@@ -99,7 +101,7 @@
             <el-row style="    height: 265px;">
               <el-col :span="4" style="height:1px;">
               </el-col>
-              <el-col :span="14" v-for="(alarm,index) in alarmList.slice(alarmA-1,alarmB)" >
+              <el-col :span="14" v-for="(alarm,index) in alarmList.slice(alarmA-1,alarmB)" :key="1">
                 <div class="tipName">{{alarm.Description}}</div>
                 <div style="height:18px;"></div>
                 <el-row>
@@ -271,6 +273,8 @@
         FlnkIDList_33: [],
         FlnkIDList_4 : [],                //在监人数（非在线）ID
         FlnkIDList_44: ['123123123'],
+        chartsDatas:[],                                //人员分布图表渲染数据
+        chartsDatasName:[],
         /* Coding By YanM */
         /* mj B*/
         GetCriminalCalledList:[],//已点罪犯
@@ -285,7 +289,7 @@
         AlarmRecordID:"",
         alarmA:1,
         alarmB:1,
-        SocketAllData:'',
+        SocketAllData:{},
         /* mj e*/
         alertYHDL: false,
         alertJQXZ: false,
@@ -312,80 +316,7 @@
       let vm = this
       /* Coding By YanM */
 
-      /* 人员分布-14 */
-      var flowPerson_outPrison = {
-        Header: {
-          MsgID:"201501260000000001",
-          MsgType:14,
-        },
-        Body: JSON.stringify({
-          OrgID : vm.getLocalStorage('OrgID'),
-          PSType:0
-        })
-      }
-      /* 流动人员 && 外监进入人员-24 */
-      var personnel_distribution = {
-        Header: {
-          MsgID:"201501260000000001",
-          MsgType:24
-        },
-        Body: JSON.stringify({
-          OrgID : vm.getLocalStorage('OrgID'),
-        })
-      }
 
-      /* 打开websocket */
-      vm.ws.onopen = function(){
-        alert('开启');
-        /* 人员分布-参数-14 */
-        vm.ws.send(JSON.stringify(flowPerson_outPrison))
-        /* 流动人员 && 外监进入人员-参数-24 */
-        vm.ws.send(JSON.stringify(personnel_distribution))
-      };
-      /* 接收返回信息 */
-      vm.ws.onmessage=function(event){
-
-        /* 人员分布返回数据-14 */
-        if(JSON.parse(event.data).Header.MsgType === 14){
-          var personnel_distribution_rec = JSON.parse(JSON.parse(event.data).Body)
-          console.log('人员分布-返回数据-14',personnel_distribution_rec)
-        }
-
-        /* 流动人员 && 外监进入人员返回数据 */
-        if(JSON.parse(event.data).Header.MsgType === 24){
-          var  flowPerson_outPrison_rec = JSON.parse(JSON.parse(event.data).Body)
-          console.log('流动人员 && 外监进入人员-返回数据-24',flowPerson_outPrison_rec)
-
-          // 1、外出人数（监内）
-          for (var i = 0; i<flowPerson_outPrison_rec[0].People.length; i++){
-            vm.FlnkIDList_1.push(flowPerson_outPrison_rec[0].People[i].CriminalID)
-          }
-
-          // 2、非法流动
-          for (var i = 0; i<flowPerson_outPrison_rec[1].People.length; i++){
-            vm.FlnkIDList_2.push(flowPerson_outPrison_rec[1].People[i].CriminalID)
-          }
-
-          // 3、外监进入人员
-          for (var i = 0; i<flowPerson_outPrison_rec[2].People.length; i++){
-            vm.FlnkIDList_3.push(flowPerson_outPrison_rec[2].People[i].CriminalID)
-          }
-
-          // 4、在监人数（非在线）
-          for (var i = 0; i<flowPerson_outPrison_rec[3].People.length; i++){
-            vm.FlnkIDList_4.push(flowPerson_outPrison_rec[3].People[i].CriminalID)
-          }
-          /* 调用ajax全量数据 */
-
-        }
-
-      }
-      console.log('------------',vm.SocketAllData)
-      /* 关闭状态 */
-      this.ws.onclose = function(){
-        // 关闭 websocket
-        alert("连接已关闭...");
-      };
 
       /* Coding By YanM */
     },
@@ -424,6 +355,70 @@
       prisonAreaSbumit: function () {
         this.alertJQXZ=false
         this.prisonSelectText = this.getLocalStorage('prisonSelectText')
+      },
+
+      /* 首页渲染数据 */
+      homeData:function () {
+        let vm = this
+        /* 外出人数（监内）-1 筛选后数据用于VUE渲染 */
+        var vueDataPersonlist_1=new Array();
+        for(let j=0;j<vm.FlnkIDList_1.length;j++){
+          vueDataPersonlist_1[j]={
+            CriminalID:vm.criminalList[0][vm.FlnkIDList_1[j]].CriminalID,
+            CriminalName:vm.criminalList[0][vm.FlnkIDList_1[j]].CriminalName,
+            Photo:vm.criminalList[0][vm.FlnkIDList_1[j]].Photo,
+            UpdateTime:vm.criminalList[0][vm.FlnkIDList_1[j]].UpdateTime,
+          }
+        }
+//            console.log('vueDataPersonlist_1',vueDataPersonlist_1)
+        vm.FlnkIDList_11=vueDataPersonlist_1
+
+        /* 非法流动 -2 筛选后数据用于VUE渲染 */
+        var vueDataPersonlist_2=new Array();
+        for(let j=0;j<vm.FlnkIDList_2.length;j++){
+          vueDataPersonlist_2[j]={
+            CriminalID:vm.criminalList[0][vm.FlnkIDList_2[j]].CriminalID,
+            CriminalName:vm.criminalList[0][vm.FlnkIDList_2[j]].CriminalName,
+            Photo:vm.criminalList[0][vm.FlnkIDList_2[j]].Photo,
+            UpdateTime:vm.criminalList[0][vm.FlnkIDList_2[j]].UpdateTime,
+          }
+        }
+        console.log('vueDataPersonlist_2',vueDataPersonlist_2)
+        vm.FlnkIDList_22=vueDataPersonlist_2
+
+        /* 外监进入人员 -3 筛选后数据用于VUE渲染 */
+        var vueDataPersonlist_3=[];
+        for(let j=0;j<vm.FlnkIDList_3.length;j++){
+//            console.log('vm.FlnkIDList_3.length',vm.FlnkIDList_3.length)
+//            console.log('count',j)
+          console.log('aaaaaaaaaaaaaaaaaa',vm.criminalList);
+          debugger;
+//          console.log('bbbbbbbbbbbbbbbbbb',vm.FlnkIDList_2.length,vm.FlnkIDList_3)
+          console.log('cccccccccccccccccc',vm.FlnkIDList_3)
+//          console.log('vvvvvvvvvvvvvvvvvvv',vm.criminalList[0]["0d126c60-2865-46df-8244-4367215ab813"].CriminalName)
+          debugger;
+          vueDataPersonlist_3[j] = {
+            CriminalID:vm.criminalList[0][vm.FlnkIDList_3[j]].CriminalID,
+            CriminalName:vm.criminalList[0][vm.FlnkIDList_3[j]].CriminalName,
+            Photo:vm.criminalList[0][vm.FlnkIDList_3[j]].Photo
+          }
+
+        }
+        console.log('vueDataPersonlist_3',vueDataPersonlist_3)
+        vm.FlnkIDList_33=vueDataPersonlist_3
+
+        /* 在监人数（非在线）-4 筛选后数据用于VUE渲染 */
+        var vueDataPersonlist_4=new Array();
+        for(let j=0;j<vm.FlnkIDList_4.length;j++){
+          vueDataPersonlist_4[j]={
+            CriminalID:vm.criminalList[0][vm.FlnkIDList_4[j]].CriminalID,
+            CriminalName:vm.criminalList[0][vm.FlnkIDList_4[j]].CriminalName,
+            Photo:vm.criminalList[0][vm.FlnkIDList_4[j]].Photo,
+            UpdateTime:vm.criminalList[0][vm.FlnkIDList_4[j]].UpdateTime,
+          }
+        }
+//            console.log('vueDataPersonlist_4',vueDataPersonlist_4)
+        vm.FlnkIDList_44=vueDataPersonlist_4
       },
 
       /* Coding By YanM */
@@ -672,7 +667,7 @@
             //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
             var personlist_hash = new Array();
             // 重构罪犯信息哈希数据
-            for(var i=0;i<result.length;i++){
+            for(let i=0;i<result.length;i++){
               personlist_hash[result[i].FlnkID] = {
                 FlnkID:result[i].FlnkID,
                 CriminalID:result[i].CriminalID,
@@ -702,100 +697,148 @@
             //所有罪犯信息缓存(传进vue的数据用于渲染页面)
             vm.criminalList.push(personlist_hash)
 
-            /* 筛选后数据用于VUE渲染 */
-            var vueDataPersonlist_1=new Array();
-            for(var j=0;j<vm.FlnkIDList_2.length;j++){
-              vueDataPersonlist_1[j]={
-                CriminalID:vm.criminalList[0][vm.FlnkIDList_2[j]].CriminalID,
-                CriminalName:vm.criminalList[0][vm.FlnkIDList_2[j]].CriminalName,
-                Photo:vm.criminalList[0][vm.FlnkIDList_2[j]].Photo,
-                UpdateTime:vm.criminalList[0][vm.FlnkIDList_2[j]].UpdateTime,
-              }
-            }
-            console.log('vueDataPersonlist_1',vueDataPersonlist_1)
-            vm.FlnkIDList_11=vueDataPersonlist_1
-            console.log('ajax inside11',vm.FlnkIDList_11)
 
-            var vueDataPersonlist_2=new Array();
-            for(var j=0;j<vm.FlnkIDList_2.length;j++){
-              vueDataPersonlist_2[j]={
-                CriminalID:vm.criminalList[0][vm.FlnkIDList_2[j]].CriminalID,
-                CriminalName:vm.criminalList[0][vm.FlnkIDList_2[j]].CriminalName,
-                Photo:vm.criminalList[0][vm.FlnkIDList_2[j]].Photo,
-                UpdateTime:vm.criminalList[0][vm.FlnkIDList_2[j]].UpdateTime,
-              }
-            }
-            console.log('vueDataPersonlist_2',vueDataPersonlist_2)
-            vm.FlnkIDList_22=vueDataPersonlist_2
-            console.log('ajax inside22',vm.FlnkIDList_22)
-
-            var vueDataPersonlist_3=new Array();
-            for(var j=0;j<vm.FlnkIDList_2.length;j++){
-              vueDataPersonlist_2[j]={
-                CriminalID:vm.criminalList[0][vm.FlnkIDList_2[j]].CriminalID,
-                CriminalName:vm.criminalList[0][vm.FlnkIDList_2[j]].CriminalName,
-                Photo:vm.criminalList[0][vm.FlnkIDList_2[j]].Photo,
-                UpdateTime:vm.criminalList[0][vm.FlnkIDList_2[j]].UpdateTime,
-              }
-            }
-            console.log('vueDataPersonlist_3',vueDataPersonlist_3)
-            vm.FlnkIDList_33=vueDataPersonlist_3
-            console.log('ajax inside33',vm.FlnkIDList_33)
-
-            var vueDataPersonlist_4=new Array();
-            for(var j=0;j<vm.FlnkIDList_2.length;j++){
-              vueDataPersonlist_2[j]={
-                CriminalID:vm.criminalList[0][vm.FlnkIDList_2[j]].CriminalID,
-                CriminalName:vm.criminalList[0][vm.FlnkIDList_2[j]].CriminalName,
-                Photo:vm.criminalList[0][vm.FlnkIDList_2[j]].Photo,
-                UpdateTime:vm.criminalList[0][vm.FlnkIDList_2[j]].UpdateTime,
-              }
-            }
-            console.log('vueDataPersonlist_4',vueDataPersonlist_4)
-            vm.FlnkIDList_44=vueDataPersonlist_4
-            console.log('ajax inside44',vm.FlnkIDList_44)
 
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
           }
         });
-      }
+      },
+
+
     },
     befroeMounted () {
 
     },
     mounted () {
       let vm = this
-      vm.allDataInit()
       window.aaa = this
       /* Coding By YanM */
       this.initPrison()
-//      this.allDataInit()
-      /* Coding By YanM */
-      /* Coding By Qianjf */
-//          报警信息
+      /* 人员分布-14 */
+      var flowPerson_outPrison = {
+        Header: {
+          MsgID:"201501260000000001",
+          MsgType:14,
+        },
+        Body: JSON.stringify({
+          OrgID : vm.getLocalStorage('OrgID'),
+          PSType:0
+        })
+      }
+      /* 流动人员 && 外监进入人员-24 */
+      var personnel_distribution = {
+        Header: {
+          MsgID:"201501260000000001",
+          MsgType:24
+        },
+        Body: JSON.stringify({
+          OrgID : vm.getLocalStorage('OrgID'),
+        })
+      }
+
+      /* 打开websocket */
+      vm.ws.onopen = function(){
+        alert('开启');
+        setInterval(function () {
+          /* 人员分布-参数-14 */
+          vm.ws.send(JSON.stringify(flowPerson_outPrison))
+          /* 流动人员 && 外监进入人员-参数-24 */
+          vm.ws.send(JSON.stringify(personnel_distribution))
+        },1000)
+      };
+      vm.allDataInit()
       vm.ws.onmessage=function(event) {
-      vm.SocketAllData = event.data
-        if (JSON.parse(vm.SocketAllData).Header.MsgType === 2) {
-          var alarmNews = JSON.parse(JSON.parse(vm.SocketAllData).Body)
-          if (alarmNews[0].OrgID == localStorage.getItem("OrgID")) {
+        vm.SocketAllData = event.data
+        /* 报警信息 */
+        if (JSON.parse(event.data).Header.MsgType == 2) {
+//            alert(1)
+          var alarmNews = JSON.parse(JSON.parse(event.data).Body)
+          if (alarmNews.OrgID === localStorage.getItem("OrgID")) {
             vm.alarmText = alarmNews[0].Description
             var criminalData = alarmNews[0]
             criminalData.criminalID = vm.criminalList[0][alarmNews[0].ObjectID].CriminalID
             criminalData.Photo = vm.criminalList[0][alarmNews[0].ObjectID].Photo
             vm.alarmList.unshift(criminalData)
             vm.alarmPages = vm.alarmList.length
-            if (vm.alarmList.length != 0) {
+            if (vm.alarmList.length !== 0) {
               vm.alertBJTK = true
             } else {
               vm.alertBJTK = false
             }
 
           }
-          console.log('报警信息++——+——+——+——+——+', vm.alarmList)
+//          console.log('报警信息++——+——+——+——+——+', vm.alarmList)
         }
+
+        /* 人员分布返回数据-14 */
+        if(JSON.parse(event.data).Header.MsgType === 14){
+          var personnel_distribution_rec = JSON.parse(JSON.parse(event.data).Body)
+          console.log('人员分布-返回数据-14',personnel_distribution_rec)
+          var chartsParms = []
+          vm.chartsDatasName.length = 0
+          for(let i=0; i<personnel_distribution_rec.length; i++){
+            chartsParms[i] = {
+              name:personnel_distribution_rec[i].AreaName,
+              value:personnel_distribution_rec[i].CriminalCnt.GeneralManagement + personnel_distribution_rec[i].CriminalCnt.Investigate + personnel_distribution_rec[i].CriminalCnt.LooseManagement + personnel_distribution_rec[i].CriminalCnt.StrictManagement
+            }
+            if(vm.chartsDatasName.length !== personnel_distribution_rec.length){
+              vm.chartsDatasName.push(personnel_distribution_rec[i].AreaName)
+            }
+          }
+//          console.log('chartsParms',vm.chartsDatasName)
+          vm.chartsDatas = chartsParms
+        }
+
+        /* 流动人员 && 外监进入人员返回数据 */
+        if(JSON.parse(event.data).Header.MsgType === 24){
+          var  flowPerson_outPrison_rec = JSON.parse(JSON.parse(event.data).Body)
+          console.log('流动人员 && 外监进入人员-返回数据-24',flowPerson_outPrison_rec)
+
+          // 1、外出人数（监内）
+          vm.FlnkIDList_1.length = 0
+          for (let i = 0; i<flowPerson_outPrison_rec[0].People.length; i++){
+            vm.FlnkIDList_1.push(flowPerson_outPrison_rec[0].People[i].CriminalID)
+          }
+
+          // 2、非法流动
+          vm.FlnkIDList_2.length = 0
+          for (let i = 0; i<flowPerson_outPrison_rec[1].People.length; i++){
+            if(vm.FlnkIDList_2.length !== flowPerson_outPrison_rec[1].People.length){
+              vm.FlnkIDList_2.push(flowPerson_outPrison_rec[1].People[i].CriminalID)
+            }
+          }
+
+          // 3、外监进入人员
+          vm.FlnkIDList_3.length = 0
+          for (let i = 0; i<flowPerson_outPrison_rec[2].People.length; i++){
+            if(vm.FlnkIDList_3.length !== flowPerson_outPrison_rec[2].People.length){
+              vm.FlnkIDList_3.push(flowPerson_outPrison_rec[2].People[i].CriminalID)
+            }
+          }
+          console.log('----------------------',vm.FlnkIDList_3[0])
+
+          // 4、在监人数（非在线）
+          vm.FlnkIDList_4.length = 0
+          for (let i = 0; i<flowPerson_outPrison_rec[3].People.length; i++){
+            vm.FlnkIDList_4.push(flowPerson_outPrison_rec[3].People[i].CriminalID)
+          }
+        }
+        /* 调用ajax全量数据 */
+
+        vm.homeData()
       }
+
+      /* 关闭状态 */
+      this.ws.onclose = function(){
+        // 关闭 websocket
+        alert("连接已关闭...");
+      };
+      /* Coding By YanM */
+
+      /* Coding By Qianjf */
+
       /* Coding By Qianjf */
 
     }

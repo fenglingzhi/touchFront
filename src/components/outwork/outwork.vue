@@ -168,7 +168,7 @@
       },1000)
 
 //      vm.ws.onmessage=function(event){
-        if(JSON.parse(SocketAllData).Header.MsgType === 25){
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 25){
           var  flowPerson_outPrison_rec = JSON.parse(JSON.parse(SocketAllData).Body)
           if(flowPerson_outPrison_rec!=""||flowPerson_outPrison_rec!=null){
             vm.inPages=Math.ceil(vm.inCriminalList.length/48)==0?1:Math.ceil(vm.inCriminalList.length/48)
