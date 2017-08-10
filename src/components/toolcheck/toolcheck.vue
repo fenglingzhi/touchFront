@@ -308,7 +308,7 @@
       /* Coding By YanM */
       /* Coding By Qianjf */
       var vm = this
-      localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
+//      localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
 //      获取第一页记录数据
       $.ajax({
         type: "get",

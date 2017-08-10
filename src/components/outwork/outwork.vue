@@ -66,6 +66,9 @@
 <script>
   export default {
     name: 'navheader',
+    props:[
+      'SocketAllData'
+    ],
     data () {
       return {
         isShow1: true,
@@ -141,7 +144,7 @@
 
       },
       sub:function () {
-        console.log("=======================================",this.areaCriminalList)
+        console.log("=======================================", localStorage.getItem('OrgID'))
 
       }
     },
@@ -154,7 +157,7 @@
           MsgType:25
         },
         Body: JSON.stringify({
-          OrgID : vm.getLocalStorage('OrgID'),
+          OrgID : localStorage.getItem('OrgID'),
           MoveType : vm.MoveType
         })
       }
@@ -164,9 +167,9 @@
         }
       },1000)
 
-      vm.ws.onmessage=function(event){
-        if(JSON.parse(event.data).Header.MsgType === 25){
-          var  flowPerson_outPrison_rec = JSON.parse(JSON.parse(event.data).Body)
+//      vm.ws.onmessage=function(event){
+        if(JSON.parse(SocketAllData).Header.MsgType === 25){
+          var  flowPerson_outPrison_rec = JSON.parse(JSON.parse(SocketAllData).Body)
           if(flowPerson_outPrison_rec!=""||flowPerson_outPrison_rec!=null){
             vm.inPages=Math.ceil(vm.inCriminalList.length/48)==0?1:Math.ceil(vm.inCriminalList.length/48)
             for(var i=0;i<flowPerson_outPrison_rec.length;i++){
@@ -187,7 +190,7 @@
         }
         vm.outPages=Math.ceil(vm.outCriminalList.length/48)==0?1:Math.ceil(vm.outCriminalList.length/48)
 
-      }
+//      }
 //      获取当前监区罪犯集合
       $.ajax({
         type: "get",
@@ -205,7 +208,7 @@
             }
             vm.areaCriminalList=result
             vm.inCriminalList=result
-            vm.inPages=Math.ceil(inCriminalList.length/48)==0?1:Math.ceil(inCriminalList.length/48)
+            vm.inPages=Math.ceil(result.length/48)==0?1:Math.ceil(result.length/48)
           }
         },
         error: function (err) {

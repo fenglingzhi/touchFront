@@ -4,7 +4,7 @@
     <navheader
       @getPosition="onClickPosition()"
       :message="prisonSelectText"
-      ></navheader>
+    ></navheader>
     <router-view
       @hasCheaked="onHasCheaked"
       :criminalList="criminalList"
@@ -12,6 +12,7 @@
       :FlnkIDList2="FlnkIDList_22"
       :FlnkIDList3="FlnkIDList_33"
       :FlnkIDList4="FlnkIDList_44"
+      :SocketAllData="SocketAllData"
     ></router-view>
     <menufooter></menufooter>
     <!--用户登录 star-->
@@ -49,7 +50,7 @@
         <div class="bodyHead"><div class="title">监区选择</div><div @click="close('alertJQXZ')" class="close">X</div></div>
         <div class="bodyCon">
           <el-row>
-            <el-col :span="5" v-for="(item,index) in prisonSelect" :key="1">
+            <el-col :span="6" v-for="(item,index) in prisonSelect" :key="1">
               <div style="width:10px;"></div>
               <div class="areas" @click="selectArea(index)" :class="{ 'jqxz_active': alertJQXZactive === index}">{{item.AreaName}}</div>
             </el-col>
@@ -70,7 +71,7 @@
       <div class="alertBody " style="margin: -222px -400px;width: 800px;height: 444px;">
         <div class="bodyHead"><div class="title">报警信息</div><div v-on:click="close('alertBJXX')" class="close">X</div></div>
         <div class="bodyCon" style="height: 312px;">
-          <div class="lists" v-show="true">
+          <div class="lists" v-show="false">
             <el-row>
 
               <div class="tipName">报警事件名称</div>
@@ -94,37 +95,38 @@
               <el-col :span="8" style="height: 10px"></el-col>
             </el-row>
           </div>
-          <div class="details" v-show="false" >
-            <el-row>
-              <el-col :span="6" style="height:1px;">
+          <div class="details" v-show="true" >
+            <el-row style="    height: 265px;">
+              <el-col :span="4" style="height:1px;">
               </el-col>
-              <el-col :span="12" >
-                <div class="tipName">报警事件名称</div>
+              <el-col :span="14" v-for="(alarm,index) in alarmList.slice(alarmA-1,alarmB)" >
+                <div class="tipName">{{alarm.Description}}</div>
                 <div style="height:18px;"></div>
                 <el-row>
                   <el-col :span="10" >
                     <div>
-                      <img src="/static/img/crimal_1_03.5a235b3.jpg" alt="">
+                      <img :src="alarm.Photo" width="136" height="183" alt="">
                     </div>
                   </el-col>
                   <el-col :span="14" >
-                    <p>姓名：李栓怪</p>
-                    <p>罪犯编号：123456</p>
-                    <p>报警区域：厕所</p>
-                    <p>报警时间：2017-12-11</p>
+                    <div v-show="false" id="alarmRecordID">{{alarm.AlarmRecordID}}</div>
+                    <p>姓名：{{alarm.ObjectName}}</p>
+                    <p>罪犯编号：{{alarm.criminalID}}</p>
+                    <p>报警区域：{{alarm.AreaName}}</p>
+                    <p>报警时间：{{alarm.EventTime}}</p>
                   </el-col>
                 </el-row>
               </el-col>
-              <el-col :span="6" style="height:1px;" >
+              <el-col :span="4" style="height:1px;" >
               </el-col>
             </el-row>
             <el-row >
               <el-col :span="8" style="height: 10px"></el-col>
               <el-col :span="8" >
                 <div class="pages">
-                  <span class="pageControl"><img src="./assets/q1.png" alt=""/></span>
-                  <span class="pagesText">11/30</span>
-                  <span class="pageControl"><img src="./assets/q2.png" alt=""/></span>
+                  <span class="pageControl"><img src="./assets/q1.png" v-on:click="alarmBack()" alt=""/></span>
+                  <span class="pagesText">{{alarmNowPage}}/{{alarmPages}}</span>
+                  <span class="pageControl"><img src="./assets/q2.png" v-on:click="alarmGo()" alt=""/></span>
                 </div>
               </el-col>
               <el-col :span="8" style="height: 10px"></el-col>
@@ -133,7 +135,7 @@
         </div>
         <div class="partsFoot">
           <div style="margin: 20px 2px;float: right">
-            <div class="sure">处理</div>
+            <div class="sure" v-on:click="alarmHandle()">处理</div>
           </div>
         </div>
       </div>
@@ -232,8 +234,8 @@
       <div class="alarmImg">
         <img class="alarmIco" src='./assets/a1.png' alt="">
       </div>
-      <div class="alarmNum" >{{alarmList.length}}</div>
-      <div class="alarmText" >第一监狱 越狱报警</div>
+      <div class="alarmNum" >{{alarmList.length>999?"999+":alarmList.length}}</div>
+      <div class="alarmText" >{{alarmText}}</div>
 
     </div>
     <!--报警弹框 end-->
@@ -275,15 +277,23 @@
         criminalCalledIsLastPage:false,//已点罪犯是否是最后一页
         criminalCount:0,//已点罪犯总页码
         criminalPage:0,//已点罪犯当前页
-        alarmList:[{name:"jk"},{name:"wdaad"}],//报警集合
+        alarmList:[],//报警集合
+        alarmText:"",//报警描述
+        alarmPages:1,//留监总页数
+        alarmNowPage:1,//留监当前页
+        alarmListAll:0,//留监总数
+        AlarmRecordID:"",
+        alarmA:1,
+        alarmB:1,
+        SocketAllData:'',
         /* mj e*/
         alertYHDL: false,
         alertJQXZ: false,
         alertBJXX: false,
         alertSSLD: false,
         alertYDMD: false,
-        alertBJTK: true,
-        criminalList:[]                 //罪犯基础信息集合
+        alertBJTK: false,
+        criminalList:[]                   //罪犯基础信息集合
 
       }
     },
@@ -299,7 +309,7 @@
 
     },
     created : function() {
-      var vm = this
+      let vm = this
       /* Coding By YanM */
 
       /* 人员分布-14 */
@@ -334,23 +344,12 @@
       };
       /* 接收返回信息 */
       vm.ws.onmessage=function(event){
+
         /* 人员分布返回数据-14 */
         if(JSON.parse(event.data).Header.MsgType === 14){
           var personnel_distribution_rec = JSON.parse(JSON.parse(event.data).Body)
           console.log('人员分布-返回数据-14',personnel_distribution_rec)
-
         }
-
-        /* Coding By Qianjf */
-        /* 报警信息 */
-//          if(JSON.parse(event.data).Header.MsgType === 2){
-//            var alarmNews = JSON.parse(JSON.parse(event.data).Body)
-//            if(alarmNews.OrgID==localStorage.getItem("OrgID")){
-//             vm.alarmList.clone(alarmNews)
-//            }
-//            console.log('报警信息++——+——+——+——+——+',vm.alarmList)
-//          }
-        /* Coding By Qianjf */
 
         /* 流动人员 && 外监进入人员返回数据 */
         if(JSON.parse(event.data).Header.MsgType === 24){
@@ -377,10 +376,11 @@
             vm.FlnkIDList_4.push(flowPerson_outPrison_rec[3].People[i].CriminalID)
           }
           /* 调用ajax全量数据 */
-          vm.allDataInit()
+
         }
 
       }
+      console.log('------------',vm.SocketAllData)
       /* 关闭状态 */
       this.ws.onclose = function(){
         // 关闭 websocket
@@ -407,7 +407,7 @@
           contentType: "application/json; charset=utf-8",
           dataType: "jsonp",
           jsonp: "callback",
-          async: true,
+          async: false,
           url: SHANLEI + 'HomeIndex/GetBindJQ',
           success: function (result) {
             vm.prisonSelect=result
@@ -429,7 +429,40 @@
       /* Coding By YanM */
 
       /* Coding By Qianjf */
+      alarmHandle:function () {
+        var alarmRecordID = $("#alarmRecordID").html()
+        for (var i=0;i<this.alarmList.length;i++){
+          if(this.alarmList[i]["AlarmRecordID"]==alarmRecordID){
+            this.alarmList.splice(i,1);
+            this.alarmPages=this.alarmList.length
+            if( this.alarmPages> this.alarmNowPage|| this.alarmPages==this.alarmNowPage){
+            }else {
+              this.alarmNowPage=this.alarmPages
+            }
+          }
+        }
 
+
+      },
+      alarmGo:function () {
+        if(this.alarmNowPage<this.alarmPages){
+          this.alarmNowPage=this.alarmNowPage+1
+          this.alarmA=this.alarmA+1
+          this.alarmB=this.alarmB+1
+        }else {
+          alert("已经最后一页了")
+        }
+      },
+      alarmBack:function () {
+        if(this.alarmNowPage==1){
+          alert("已经是第一页了")
+        }else {
+          this.alarmNowPage=this.alarmNowPage-1
+          this.alarmA=this.alarmA-1
+          this.alarmB=this.alarmB-1
+        }
+
+      },
       makePageDataGo:function () {
         var data=[{"name":"1"},{"name":"2"},{"name":"3"},{"name":"4"},{"name":"5"},{"name":"6"},{"name":"7"},{"name":"8"},{"name":"9"}]
         var lastData=[];
@@ -442,7 +475,6 @@
         }
         console.log(lastData)
       },
-
       /* 已点人员名单翻页 */
       getCriminalGo:function () {
         var vm = this
@@ -633,7 +665,7 @@
           contentType: "application/json; charset=utf-8",
           dataType: "jsonp",
           jsonp: "callback",
-          async: true,
+          async: false,
           data: {OrgID: localStorage.getItem('OrgID')},
           url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalList' + "?callback=?",
           success: function (result) {
@@ -735,14 +767,38 @@
     },
     mounted () {
       let vm = this
+      vm.allDataInit()
       window.aaa = this
       /* Coding By YanM */
       this.initPrison()
 //      this.allDataInit()
       /* Coding By YanM */
       /* Coding By Qianjf */
+//          报警信息
+      vm.ws.onmessage=function(event) {
+      vm.SocketAllData = event.data
+      console.log('=================',vm.SocketAllData)
+        if (JSON.parse(vm.SocketAllData).Header.MsgType === 2) {
+          var alarmNews = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          if (alarmNews[0].OrgID == localStorage.getItem("OrgID")) {
+            vm.alarmText = alarmNews[0].Description
+            var criminalData = alarmNews[0]
+            criminalData.criminalID = vm.criminalList[0][alarmNews[0].ObjectID].CriminalID
+            criminalData.Photo = vm.criminalList[0][alarmNews[0].ObjectID].Photo
+            vm.alarmList.unshift(criminalData)
+            vm.alarmPages = vm.alarmList.length
+            if (vm.alarmList.length != 0) {
+              vm.alertBJTK = true
+            } else {
+              vm.alertBJTK = false
+            }
 
+          }
+          console.log('报警信息++——+——+——+——+——+', vm.alarmList)
+        }
+      }
       /* Coding By Qianjf */
+
     }
   }
 </script>
@@ -877,6 +933,10 @@
     font-size: 22px;
     color: rgba(0, 0, 255, 0.72);
     font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+    text-overflow: ellipsis;
   }
   .alertBJXX .pages{
     width: 273px;
