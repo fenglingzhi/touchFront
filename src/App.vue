@@ -777,7 +777,6 @@
 //          报警信息
       vm.ws.onmessage=function(event) {
       vm.SocketAllData = event.data
-      console.log('=================',vm.SocketAllData)
         if (JSON.parse(vm.SocketAllData).Header.MsgType === 2) {
           var alarmNews = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           if (alarmNews[0].OrgID == localStorage.getItem("OrgID")) {
