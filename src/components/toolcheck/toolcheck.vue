@@ -16,14 +16,15 @@
         <div class="tab1" v-show="isShow1">
           <div class="partsBody" style="height:392px;">
             <div class="bodyHead">
-              <div class="title">柜内工具</div>
+              <div class="title">柜内工具未点120件</div>
               <div class="titleDescribe">（柜内工具总数：200个，<span style="color: #1443cd">已点工具{{toolCalledCount}}个</span>）</div>
             </div>
             <div class="bodyCon">
-              <el-col :span="2" v-for="criminal in inCriminals" :key="1">
-                <div class="criminal" >
-                  <img :src="criminal.headimg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">{{ criminal.name }}</span>
+
+              <el-col :span="2"  v-for="(tool,index) in inTool.slice(inA-1,inB)" :key="1">
+                <div  :class="['criminal', {choosed: tool.ischoose}]" v-on:click="chooseIn(index)" >
+                  <img :src="tool.Photo" width="98%" height="85" alt=""/>
+                  <span class="criminalName">{{ tool.ToolName }}</span>
                 </div>
               </el-col>
 
@@ -32,9 +33,9 @@
               <el-col :span="8" style="height: 10px"></el-col>
               <el-col :span="8" >
                 <div class="pages">
-                  <span class="pageControl"><img src="../../assets/q1.png" alt=""/></span>
-                  <span class="pagesText">11/30</span>
-                  <span class="pageControl"><img src="../../assets/q2.png" alt=""/></span>
+                  <span class="pageControl"><img src="../../assets/q1.png" v-on:click="inBack()" alt=""/></span>
+                  <span class="pagesText">{{inNowPage}}/{{inPages}}</span>
+                  <span class="pageControl"><img src="../../assets/q2.png" v-on:click="inGo()" alt=""/></span>
                 </div>
               </el-col>
               <el-col :span="8" style="height: 10px"></el-col>
@@ -42,13 +43,14 @@
           </div>
           <div class="partsBody" style="height:260px;">
             <div class="bodyHead">
-              <div class="title">柜外工具</div>
+              <div class="title">柜外工具未点10件</div>
             </div>
             <div class="bodyCon" style="height: 135px;">
-              <el-col :span="2" v-for="criminal in outCriminals" :key="1">
-                <div class="criminal" >
-                  <img :src="criminal.headimg" width="98%" height="85" alt=""/>
-                  <span class="criminalName">{{ criminal.name }}</span>
+
+              <el-col :span="2"  v-for="(tool,index) in outTool.slice(outA-1,outB)" :key="1">
+                <div  :class="['criminal', {choosed: tool.ischoose}]" v-on:click="chooseOut(index)" >
+                  <img :src="tool.Photo" width="98%" height="85" alt=""/>
+                  <span class="criminalName">{{ tool.ToolName }}</span>
                 </div>
               </el-col>
 
@@ -57,9 +59,9 @@
               <el-col :span="8" style="height: 10px"></el-col>
               <el-col :span="8" >
                 <div class="pages">
-                  <span class="pageControl"><img src="../../assets/q1.png" alt=""/></span>
-                  <span class="pagesText">11/30</span>
-                  <span class="pageControl"><img src="../../assets/q2.png" alt=""/></span>
+                  <span class="pageControl"><img src="../../assets/q1.png" v-on:click="outBack()" alt=""/></span>
+                  <span class="pagesText">{{outNowPage}}/{{outPages}}</span>
+                  <span class="pageControl"><img src="../../assets/q2.png" v-on:click="outGo()" alt=""/></span>
                 </div>
               </el-col>
               <el-col :span="8" style="height: 10px"></el-col>
@@ -128,6 +130,10 @@
 
   export default {
     name: 'navheader',
+    props:[
+      'SocketAllData','criminalList','toolList'
+
+    ],
     beforeCreate () {
       /* Coding By YanM */
 
@@ -140,34 +146,10 @@
     },
     data () {
       return {
-        // 柜内工具
-        inCriminals: [
-          {name: '12321', headimg: '/static/img/tol.png'},
-          {name: '123', headimg: '/static/img/tol.png'},
-          {name: '44', headimg: '/static/img/tol.png'},
-          {name: '6', headimg: '/static/img/tol.png'},
-          {name: '7532', headimg: '/static/img/tol.png'},
-          {name: '24556', headimg: '/static/img/tol.png'},
-          {name: '66676', headimg: '/static/img/tol.png'},
-          {name: '7788', headimg: '/static/img/tol.png'},
-          {name: '9999', headimg: '/static/img/tol.png'},
-          {name: '23445', headimg: '/static/img/tol.png'},
-          {name: '123344', headimg: '/static/img/tol.png'},
-          {name: '123344', headimg: '/static/img/tol.png'},
-          {name: '123344', headimg: '/static/img/tol.png'},
-          {name: '123344', headimg: '/static/img/tol.png'},
-          {name: '123344', headimg: '/static/img/tol.png'},
-          {name: '5555666', headimg: '/static/img/tol.png'}
-        ],
+
         // 柜外工具
 
         outCriminals: [
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'}
 
         ],
         isShow1: true,
@@ -178,7 +160,24 @@
         recordPage:0,
         recordIsLastPage:false,
         recordCount:0,
-        toolCalledCount:0//已点工具总数
+        toolCalledCount:0,//已点工具总数
+
+
+        inTool: [],// 柜内工具
+        inPages:1,//柜内未点总页数
+        inNowPage:1,//柜内未点当前页
+        inListAll:0,//柜内未点总数
+        inChoose:[],//柜内选中人员
+        inA:1,
+        inB:24,
+
+        outTool: [],// 柜外工具
+        outPages:1,//柜外未点总页数
+        outNowPage:1,//柜外未点当前页
+        outListAll:0,//柜外未点总数
+        outChoose:[],//柜外选中人员
+        outA:1,
+        outB:12,
       }
     },
     methods: {
@@ -198,7 +197,6 @@
       getRecordGo:function () {
         var vm = this
         if(!vm.recordIsLastPage){
-          localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
           vm.recordPage=vm.recordPage+1
           $.ajax({
             type: "get",
@@ -254,7 +252,7 @@
             alert("已经是第一页了")
         }else {
           vm.recordPage=vm.recordPage-1
-          localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
+//          localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
           $.ajax({
             type: "get",
             contentType: "application/json; charset=utf-8",
@@ -300,6 +298,49 @@
         }
 
 
+      },
+      inGo:function () {
+        if(this.inNowPage<this.inPages){
+          this.inNowPage=this.inNowPage+1
+          this.inA=this.inA+24
+          this.inB=this.inB+24
+        }else {
+          alert("已经最后一页了")
+        }
+      },
+      inBack:function () {
+        if(this.inNowPage==1){
+          alert("已经是第一页了")
+        }else {
+          this.inNowPage=this.inNowPage-1
+          this.inA=this.inA-24
+          this.inB=this.inB-24
+        }
+      },
+      chooseIn:function (index){
+        var ToolID =this.inTool[index+this.inA-1]["ToolID"]
+        if(this.inChoose.indexOf(ToolID)==-1){
+          this.inTool[index+this.outA-1].ischoose=true
+          this.inChoose.push(ToolID)
+        }else {
+          this.inTool[index+this.outA-1].ischoose=false
+          this.inChoose.splice(this.inChoose.indexOf(ToolID),1)
+        }
+//        alert(this.inChoose)
+      }
+      ,
+      chooseOut:function (index){
+        var ToolID =this.outTool[index+this.outA-1]["ToolID"]
+        if(this.outChoose.indexOf(ToolID)==-1){
+          this.outTool[index+this.outA-1].ischoose=true
+          this.outChoose.push(ToolID)
+        }else {
+          this.outTool[index+this.outA-1].ischoose=false
+          this.outChoose.splice(this.outChoose.indexOf(ToolID),1)
+        }
+
+
+//        alert(this.outChoose)
       }
     },
     mounted () {
@@ -308,6 +349,69 @@
       /* Coding By YanM */
       /* Coding By Qianjf */
       var vm = this
+      var send = {
+        Header: {
+          MsgID:"201501260000000032",
+          MsgType:32
+        },
+        Body: JSON.stringify({
+          OrgID : localStorage.getItem('OrgID'),
+        })
+      }
+      setInterval(function () {
+       console.log( "111111111111111111111111111111111111111111111111111111111111",vm.toolList)
+        //发送数据
+        if(vm.ws.readyState == WebSocket.OPEN){
+          vm.ws.send(JSON.stringify(send))
+        }
+//        接收数据
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 32){
+          var  receiveData = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          if(receiveData!=""||receiveData!=null){
+            var notCallTool;//未点工具
+            var hasNotCall=[] //柜内未点1
+            var outHasNotCall=[] //柜外未点0
+            for (var i=0;i<receiveData.length;i++){
+              if(receiveData[i].Status=="2502"){
+                 if(vm.toolList[0][receiveData[i]["ToolID"]]["IsInsideTool"]==1){
+                    var hasNotCall_B=receiveData[i]
+                    hasNotCall_B["Photo"]=vm.toolList[0][receiveData[i]["ToolID"]]["Photo"]
+                    hasNotCall_B["ToolName"]=vm.toolList[0][receiveData[i]["ToolID"]]["ToolName"]
+                    hasNotCall_B["ToolIDName"]=vm.toolList[0][receiveData[i]["ToolID"]]["ToolID"]
+                   for (var m=0;m<vm.inChoose.length;m++){
+                       if(vm.inChoose[m]==hasNotCall_B["ToolID"]){
+                         hasNotCall_B["ischoose"]=true
+                     }
+                   }
+                    hasNotCall.push(hasNotCall_B)
+                    vm.inTool=hasNotCall
+                    vm.inPages=Math.ceil(vm.inTool.length/24)==0?1:Math.ceil(vm.inTool.length/24)
+                  }else if(vm.toolList[0][receiveData[i]["ToolID"]]["IsInsideTool"]==0) {
+                    var outHasNotCall_B=receiveData[i]
+                    outHasNotCall_B["Photo"]=vm.toolList[0][receiveData[i]["ToolID"]]["Photo"]
+                    outHasNotCall_B["ToolName"]=vm.toolList[0][receiveData[i]["ToolID"]]["ToolName"]
+                    outHasNotCall_B["ToolIDName"]=vm.toolList[0][receiveData[i]["ToolID"]]["ToolID"]
+                   outHasNotCall_B["ischoose"]=false
+                   for (var m=0;m<vm.outChoose.length;m++){
+                     if(vm.outChoose[m]==outHasNotCall_B["ToolID"]){
+                       outHasNotCall_B["ischoose"]=true
+                     }
+                   }
+                    outHasNotCall.push(outHasNotCall_B)
+                    vm.outTool=outHasNotCall
+                    vm.outPages=Math.ceil(vm.outTool.length/12)==0?1:Math.ceil(vm.outTool.length/12)
+                  }
+            }
+
+           }
+
+          }
+
+
+
+        }
+      },1000)
+
 //      localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
 //      获取第一页记录数据
       $.ajax({
@@ -391,7 +495,7 @@
             XHR = null;  //回收资源
           }
         });
-      },1000)
+      },500)
 
       /* Coding By Qianjf */
 
@@ -516,6 +620,9 @@
     font-size: 20px;
     width: 856px;
     text-align: left;
+  }
+  .li2_parts .choosed{
+    background: red !important;
   }
   .tab2 .bodyCon{
     height: 600px;

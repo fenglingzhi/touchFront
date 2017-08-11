@@ -5,7 +5,7 @@
     <el-col :span="22">
       <div class="li1_parts">
         <div class="tabHead">
-          <div :class="['tab', { tabing: isB1}]" v-on:click="toggle1()">出工</div>
+          <div :class="['tab', { tabing: isB1}]" v-on:click="toggle1()">出工{{SocketAllData}}</div>
           <div :class="['tab', { tabing: isB2}]" v-on:click="toggle2()">留监</div>
         </div>
         <div class="partsBody" v-show="isShow1">
@@ -168,8 +168,8 @@
       },1000)
 
 //      vm.ws.onmessage=function(event){
-        if(JSON.parse(SocketAllData).Header.MsgType === 25){
-          var  flowPerson_outPrison_rec = JSON.parse(JSON.parse(SocketAllData).Body)
+        if(JSON.parse(this.SocketAllData).Header.MsgType === 25){
+          var  flowPerson_outPrison_rec = JSON.parse(JSON.parse(this.SocketAllData).Body)
           if(flowPerson_outPrison_rec!=""||flowPerson_outPrison_rec!=null){
             vm.inPages=Math.ceil(vm.inCriminalList.length/48)==0?1:Math.ceil(vm.inCriminalList.length/48)
             for(var i=0;i<flowPerson_outPrison_rec.length;i++){
@@ -189,8 +189,8 @@
 
         }
         vm.outPages=Math.ceil(vm.outCriminalList.length/48)==0?1:Math.ceil(vm.outCriminalList.length/48)
-
 //      }
+
 //      获取当前监区罪犯集合
       $.ajax({
         type: "get",
@@ -219,7 +219,6 @@
         }
       });
 
-      console.log("******************************************************",this.areaCriminalList)
 
     }
   }

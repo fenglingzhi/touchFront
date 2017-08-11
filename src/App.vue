@@ -8,11 +8,13 @@
     <router-view
       @hasCheaked="onHasCheaked"
       :criminalList="criminalList"
+      :toolList="toolList"
       :FlnkIDList1="FlnkIDList_11"
       :FlnkIDList2="FlnkIDList_22"
       :FlnkIDList3="FlnkIDList_33"
       :FlnkIDList4="FlnkIDList_44"
       :SocketAllData="SocketAllData"
+
     ></router-view>
     <menufooter></menufooter>
     <!--用户登录 star-->
@@ -273,6 +275,7 @@
         FlnkIDList_44: ['123123123'],
         /* Coding By YanM */
         /* mj B*/
+        toolList:[],// 工具基础信息集合
         GetCriminalCalledList:[],//已点罪犯
         criminalCalledIsLastPage:false,//已点罪犯是否是最后一页
         criminalCount:0,//已点罪犯总页码
@@ -380,7 +383,6 @@
         }
 
       }
-      console.log('------------',vm.SocketAllData)
       /* 关闭状态 */
       this.ws.onclose = function(){
         // 关闭 websocket
@@ -660,6 +662,7 @@
       /* 所有罪犯基础全量数据 */
       allDataInit:function () {
         var vm = this
+//        罪犯基础信息
         $.ajax({
           type: "get",
           contentType: "application/json; charset=utf-8",
@@ -760,6 +763,38 @@
             XHR = null;  //回收资源
           }
         });
+//        工具基础信息
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          data: {OrgID: localStorage.getItem('OrgID')},
+          url: 'http://10.58.1.145:88/api/ToolCnt/GetToolList' + "?callback=?",
+          success: function (result) {
+
+            //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
+            var toolList_hash = new Array();
+            // 重构罪犯信息哈希数据
+            for(var i=0;i<result.length;i++){
+              toolList_hash[result[i].FlnkID] = {
+                FlnkID:result[i].FlnkID,
+                ToolID:result[i].ToolID,
+                ToolType:result[i].ToolType,
+                ToolName:result[i].ToolName,
+                IsInsideTool:result[i].IsInsideTool,
+                Photo:result[i].Photo
+              };
+            }
+            vm.toolList.push(toolList_hash)
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        });
+
+
       }
     },
     befroeMounted () {
@@ -777,23 +812,30 @@
 //          报警信息
       vm.ws.onmessage=function(event) {
       vm.SocketAllData = event.data
+//        console.log('', event.data)
+
         if (JSON.parse(vm.SocketAllData).Header.MsgType === 2) {
           var alarmNews = JSON.parse(JSON.parse(vm.SocketAllData).Body)
-          if (alarmNews[0].OrgID == localStorage.getItem("OrgID")) {
-            vm.alarmText = alarmNews[0].Description
-            var criminalData = alarmNews[0]
-            criminalData.criminalID = vm.criminalList[0][alarmNews[0].ObjectID].CriminalID
-            criminalData.Photo = vm.criminalList[0][alarmNews[0].ObjectID].Photo
-            vm.alarmList.unshift(criminalData)
-            vm.alarmPages = vm.alarmList.length
+//          监区过滤
+//          if (alarmNews.OrgID == localStorage.getItem("OrgID")) {
+            var criminalData = alarmNews
+//          console.log('---------------------------------------', alarmNews.ObjectID)
+
+          criminalData.criminalID = vm.criminalList[0][alarmNews.ObjectID]["CriminalID"]
+          criminalData.Photo = vm.criminalList[0][alarmNews.ObjectID]["Photo"]
+          vm.alarmText = criminalData.Description
+
+          vm.alarmList.unshift(criminalData)
+
+          vm.alarmPages = vm.alarmList.length
             if (vm.alarmList.length != 0) {
               vm.alertBJTK = true
             } else {
               vm.alertBJTK = false
             }
 
-          }
-          console.log('报警信息++——+——+——+——+——+', vm.alarmList)
+//          }
+//          console.log('报警信息++——+——+——+——+——+', vm.alarmList)
         }
       }
       /* Coding By Qianjf */
