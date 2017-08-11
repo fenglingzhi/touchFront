@@ -4,14 +4,13 @@
       <el-col :span="6">
         <div class="prison_situation">
           <h4 class="home_title">监区概况</h4>
-
           <div class="content">
             <el-col :span="3" style="height: 10px;"></el-col>
             <el-col :span="21">
-              <p>监区人数：{{prison_situations[0].prison_num}}人</p>
-              <p>在监人数：{{prison_situations[0].in_prison_num}}人</p>
-              <p>外出人数（监内）：{{prison_situations[0].out_prison_num_in}}人</p>
-              <p>外出人数（监外）：{{prison_situations[0].out_prison_num_out}}人</p>
+              <p>监区人数：{{crimalCount_outCrimalCount.Total}}人</p>
+              <p>在监人数：{{FlnkIDList4.length}}人</p>
+              <p>外出人数（监内）：{{FlnkIDList1.length}}人</p>
+              <p>外出人数（监外）：{{crimalCount_outCrimalCount.OutCount}}人</p>
               <p>非法流动人数：{{FlnkIDList2.length}}人</p>
             </el-col>
           </div>
@@ -27,13 +26,13 @@
         <div class="floating_personnel">
           <h4 class="home_title">流动人员
             <span class="float">（非法流动{{FlnkIDList2.length}}人，</span>
-            <span class="out">本监外出{{float_personnel[0].out}}人）</span>
+            <span class="out">本监外出{{FlnkIDList1.length}}人）</span>
           </h4>
           <el-row class="float_person_wrap">
-            <el-col :span="8" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)":key='1'>
+            <el-col :span="8" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)" :key='1'>
               <div class="float_person_card outperson" :class="item.prisonstatus">
                 <el-col :span="10" class="photo">
-                  <img :src="item.Photo" alt="" width="100%" height="100%">
+                  <img alt="" width="100%" height="100%">
                 </el-col>
                 <el-col :span="12" class="crimal_content">
                   <p>姓名：{{item.CriminalName}}</p>
@@ -60,17 +59,20 @@
           </el-row>
         </div>
         <div class="outside_persion_personnel">
-          <h4 class="home_title">外监进入人员</h4>
+          <h4 class="home_title">外监进入人员
+            <span class="float">（外监进入{{FlnkIDList3.length}}人）</span>
+          </h4>
           <el-row class="outside_person_wrap">
-            <el-col :span="6" v-for="item in outside_persion_personnels" :key="2">
-              <div class="outside_person_card" :class="item.prisonstatus">
+            <!--{{FlnkIDList3}}-->
+              <el-col :span="6" v-for="(item,index) in FlnkIDList3.slice(outside_persion_personnelsA-1,outside_persion_personnelsB)" :key="2">
+              <div class="outside_person_card outperson" :class="item.prisonstatus">
                 <el-col :span="6" class="photo">
-                  <img :src="item.imgurl" alt="" width="100%" height="100%">
+                  <img alt="" width="100%" height="100%">
                 </el-col>
                 <el-col :span="16" class="crimal_content">
-                  <p>姓名：{{item.name}}</p>
-                  <p>罪犯编号：{{item.crimalNum}}</p>
-                  <p>所属监区：{{item.area}}</p>
+                  <p>姓名：{{item.CriminalName}}</p>
+                  <p>罪犯编号：{{item.CriminalID}}</p>
+                  <!--<p>所属监区：{{item.area}}</p>-->
                 </el-col>
               </div>
             </el-col>
@@ -79,9 +81,9 @@
             <el-col :span="8" style="height: 10px"></el-col>
             <el-col :span="8" >
               <div class="pages">
-                <span class="pageControl"><img src="../assets/q1.png" alt=""/></span>
-                <span class="pagesText">11/30</span>
-                <span class="pageControl"><img src="../assets/q2.png" alt=""/></span>
+                <span class="pageControl" @click="outside_persion_personnelsBack"><img src="../assets/q1.png" alt=""/></span>
+                <span class="pagesText">{{outside_persion_personnelsNowPage}}/{{outside_persion_personnelsAllPages}}</span>
+                <span class="pageControl" @click="outside_persion_personnelsGo"><img src="../assets/q2.png" alt=""/></span>
               </div>
             </el-col>
             <el-col :span="8" style="height: 10px"></el-col>
@@ -97,169 +99,43 @@
 export default {
   name: 'home',
   props:[
-    'FlnkIDList2'
+    'FlnkIDList1',
+    'FlnkIDList2',
+    'FlnkIDList3',
+    'FlnkIDList4',
+    'chartsDatas',
+    'chartsDatasName',
+    'crimalCount_outCrimalCount'
   ],
   data () {
     return {
-      // 监区概况
-      prison_situations: [
-        {prison_num: 200, in_prison_num: 100, out_prison_num_in: 123, out_prison_num_out: 234, float_num: 345}
-      ],
-      float_personnel: [
-        {float: 12, out: 13}
-      ],
-      float_person_cards: [
-        {
-          imgurl: '/static/img/crimal_1_03.5a235b3.jpg',
-          name: '王小明',
-          crimalNum: '00123',
-          area: '某区域',
-          destination: '无',
-          withplace: '无',
-          outtime: '15:44:00',
-          outreasons: '无',
-          prisonstatus: 'illegal'
-        },
-        {
-          imgurl: '/static/img/crimal_1_03.5a235b3.jpg',
-          name: '王小明',
-          crimalNum: '00123',
-          area: '某区域',
-          destination: '无',
-          withplace: '无',
-          outtime: '15:44:00',
-          outreasons: '无',
-          prisonstatus: 'illegal'
-        },
-        {
-          imgurl: '/static/img/crimal_1_03.5a235b3.jpg',
-          name: '王小明',
-          crimalNum: '00123',
-          area: '某区域',
-          destination: '无',
-          withplace: '无',
-          outtime: '15:44:00',
-          outreasons: '无',
-          prisonstatus: 'illegal'
-        },
-        {
-          imgurl: '/static/img/crimal_1_03.5a235b3.jpg',
-          name: '王小明',
-          crimalNum: '00123',
-          area: '某区域',
-          destination: '无',
-          withplace: '无',
-          outtime: '15:44:00',
-          outreasons: '无',
-          prisonstatus: 'outperson'
-        },
-        {
-          imgurl: '/static/img/crimal_1_03.5a235b3.jpg',
-          name: '王小明',
-          crimalNum: '00123',
-          area: '某区域',
-          destination: '无',
-          withplace: '无',
-          outtime: '15:44:00',
-          outreasons: '无',
-          prisonstatus: 'outperson'
-        },
-        {
-          imgurl: '/static/img/crimal_1_03.5a235b3.jpg',
-          name: '王小明',
-          crimalNum: '00123',
-          area: '某区域',
-          destination: '无',
-          withplace: '无',
-          outtime: '15:44:00',
-          outreasons: '无',
-          prisonstatus: 'outperson'
-        }
-      ],
-      outside_persion_personnels: [
-        {
-          imgurl: '/static/img/crimal_1_03.5a235b3.jpg',
-          name: '王小明',
-          crimalNum: '00123',
-          area: '某区域',
-          destination: '无',
-          withplace: '无',
-          outtime: '15:44:00',
-          outreasons: '无',
-          prisonstatus: 'illegal'
-        },
-        {
-          imgurl: '/static/img/crimal_1_03.5a235b3.jpg',
-          name: '王小明',
-          crimalNum: '00123',
-          area: '某区域',
-          destination: '无',
-          withplace: '无',
-          outtime: '15:44:00',
-          outreasons: '无',
-          prisonstatus: 'illegal'
-        },
-        {
-          imgurl: '/static/img/crimal_1_03.5a235b3.jpg',
-          name: '王小明',
-          crimalNum: '00123',
-          area: '某区域',
-          destination: '无',
-          withplace: '无',
-          outtime: '15:44:00',
-          outreasons: '无',
-          prisonstatus: 'illegal'
-        },
-        {
-          imgurl: '/static/img/crimal_1_03.5a235b3.jpg',
-          name: '王小明',
-          crimalNum: '00123',
-          area: '某区域',
-          destination: '无',
-          withplace: '无',
-          outtime: '15:44:00',
-          outreasons: '无',
-          prisonstatus: 'outperson'
-        }
-      ],
-      chartsData:[
-        {
-          value: 3661,
-          name: '条目一'
-        }, {
-          value: 5713,
-          name: '条目二'
-        }, {
-          value: 9938,
-          name: '条目三'
-        }, {
-          value: 17623,
-          name: '条目四'
-        }
-      ],
-
-      float_personnelList:this.FlnkIDList2,//外出地点
-      float_personnelAllPages:1,//外出地点总页数
-      float_personnelNowPage:1,//外出地点当前页
-      float_personnelListAll:0,//外出地点总数
+      float_personnelAllPages:'1',//非法流动总页数
+      float_personnelNowPage:1,//非法流动当前页
+      float_personnelListAll:0,//非法流动总数
       float_personnelA:1,
       float_personnelB:6,
+
+      outside_persion_personnelsAllPages:'1',//外监来犯总页数
+      outside_persion_personnelsNowPage:1,//外监来犯当前页
+      outside_persion_personnelsListAll:0,//外监来犯总数
+      outside_persion_personnelsA:1,
+      outside_persion_personnelsB:4,
+
+      chartsChange:[],
     }
   },
   methods:{
     /* 人员分布图表 */
     charts:function () {
+      let vm = this
       let myCharts = echarts.init(document.getElementById('myChart'))
-      let chartsDataName = []
-      for(let i=0; i<this.chartsData.length; i++){
-          chartsDataName.push(this.chartsData[i].name)
-      }
+      vm.chartsChange = vm.chartsDatas;
       let option = {
         backgroundColor: 'transparent',
         legend: {
           orient: 'horizontal',
           top: '0%',
-          data: chartsDataName
+          data: vm.chartsDatasName
         },
         series: [{
           type: 'pie',
@@ -288,7 +164,7 @@ export default {
               length2: 20
             }
           },
-          data: this.chartsData
+          data: vm.chartsDatas
         }]
       };
       myCharts.setOption(option)
@@ -311,16 +187,41 @@ export default {
         this.float_personnelB=this.float_personnelB-6
       }
 
+    },
+    outside_persion_personnelsGo:function () {
+      if(this.outside_persion_personnelsNowPage<this.outside_persion_personnelsAllPages){
+        this.outside_persion_personnelsNowPage=this.outside_persion_personnelsNowPage+1
+        this.outside_persion_personnelsA=this.outside_persion_personnelsA+4
+        this.outside_persion_personnelsB=this.outside_persion_personnelsB+4
+      }else {
+        alert("已经最后一页了")
+      }
+    },
+    outside_persion_personnelsBack:function () {
+      if(this.outside_persion_personnelsNowPage === 1){
+        alert("已经是第一页了")
+      }else {
+        this.outside_persion_personnelsNowPage=this.outside_persion_personnelsNowPage-1
+        this.outside_persion_personnelsA=this.outside_persion_personnelsA-4
+        this.outside_persion_personnelsB=this.outside_persion_personnelsB-4
+      }
+
     }
 
   },
   mounted(){
     var vm = this
-    this.charts()
-    console.log('home',this.FlnkIDList2)
-    vm.float_personnelListAll=vm.float_personnelList.length
-    vm.float_personnelAllPages=Math.ceil(vm.float_personnelList.length/6)===0?1:Math.ceil(vm.float_personnelList.length/6)
-    console.log('alllllllllllll',vm.float_personnelAllPages)
+    setInterval(function () {
+      if(vm.chartsChange !== vm.chartsDatas){
+        vm.charts()
+      }
+      vm.float_personnelListAll=vm.FlnkIDList2.length
+      vm.float_personnelAllPages=Math.ceil(vm.FlnkIDList2.length/6)===0?1:Math.ceil(vm.FlnkIDList2.length/6)
+      vm.outside_persion_personnelsListAll=vm.FlnkIDList3.length
+      vm.outside_persion_personnelsAllPages=Math.ceil(vm.FlnkIDList3.length/4)===0?1:Math.ceil(vm.FlnkIDList3.length/4)
+    },400)
+
+
   }
 }
 </script>
