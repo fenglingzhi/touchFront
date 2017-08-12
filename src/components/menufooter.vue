@@ -3,7 +3,7 @@
     <el-row class="menu_title_wrap">
       <!--<el-col :span="1" class="menu_title"></el-col>-->
       <el-col :span="4" class="menu_title" v-for="item in menuList" :key="1">
-        <div v-on:click="gopage(item.path)">{{item.name}}</div>
+        <div @click="gopage(item.path)">{{item.name}}</div>
       </el-col>
       <!--<el-col :span="1" class="menu_title"></el-col>-->
     </el-row>
@@ -13,6 +13,7 @@
 <script>
 export default {
   name: 'menufooter',
+  props:['YHDL'],
   data () {
     return {
       menuList: [
@@ -23,14 +24,18 @@ export default {
         {name: '外出登记', path: '/outregister'},
 //        {name: '定位展示', path: '/position'},
         {name: '互监组管理', path: '/mutualsupervision'}
-      ]
+      ],
     }
   },
   methods: {
     gopage: function (path) {
+      var vm = this
       // 路由跳转
       this.$router.push({ path: path })
-    }
+      if(path === '/outwork' || path === '/outregister'){
+        vm.$emit('openLogin',true)
+      }
+    },
   }
 }
 </script>
