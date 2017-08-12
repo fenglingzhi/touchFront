@@ -4,6 +4,9 @@
     <navheader
       @getPosition="onClickPosition()"
       :message="prisonSelectText"
+      :plan="plan"
+      :planStartTime="planStartTime"
+      :planEndTime="planEndTime"
     ></navheader>
     <router-view
       @hasCheaked="onHasCheaked"
@@ -37,7 +40,8 @@
 
 
     ></router-view>
-    <menufooter></menufooter>
+    <menufooter
+      @openLogin="loginOpen"></menufooter>
     <!--用户登录 star-->
     <div class="alertTip alertYHDL" v-show="alertYHDL">
       <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 408px;">
@@ -60,7 +64,7 @@
         </div>
         <div class="partsFoot">
           <div style="margin: 20px 2px;float: right">
-            <div class="sure">确定</div>
+            <div class="sure" @click="logonSbumit">确定</div>
           </div>
         </div>
       </div>
@@ -335,10 +339,13 @@
         chartsDatasName:[],               //人员分布图表-表名
         crimalCount_outCrimalCount:{},    //监区人数 && 外出人数（监外）
         policeList:[],                    //警员基础信息集合
-        policeLogin:{
+        policeLogin:{                     //警员登陆信息
           account:'',
           password:''
         },
+        plan:'',                          //计划任务
+        planStartTime:'',                 //计划任务开始时间
+        planEndTime:'',                   //计划任务结束时间
         /* Coding By YanM */
         /* mj B*/
         receiveDataMsgType25:{},//进出ws工数据
@@ -374,7 +381,7 @@
         alertYHDL: false,                 //用户登录
         alertJQXZ: false,                 //监区选择
         alertBJXX: false,                 //报警信息
-        alertSSLD: false,                 //实时流动
+        alertSSLD: true,                 //实时流动
         alertYDMD: false,                 //已点名单
         alertBJTK: false,                 //报警弹框
         criminalList:[]                   //罪犯基础信息集合
@@ -405,6 +412,8 @@
             vm.prisonSelect=result
             vm.prisonSelectText = vm.prisonSelect[0].AreaName
             vm.setLocalStorage('OrgID',vm.prisonSelect[0].OrgID)
+            vm.setLocalStorage('DoorID',vm.prisonSelect[0].Door)
+            vm.setLocalStorage('AreaID',vm.prisonSelect[0].AreaID)
           },
           error: function (err) {
             console.log(err)
@@ -415,7 +424,6 @@
       /* 提交选择监区 */
       prisonAreaSbumit: function () {
         this.alertJQXZ=false
-        this.alertYHDL=true
         this.prisonSelectText = this.getLocalStorage('prisonSelectText')
       },
 
@@ -452,6 +460,38 @@
 
         /* 在监人数（非在线）-4 筛选后数据用于VUE渲染 */
         vm.FlnkIDList_44=vm.FlnkIDList_4
+      },
+
+      /* 登录信息提交 */
+      logonSbumit: function () {
+        var vm = this
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          data:{
+            UserID:vm.policeLogin.account,
+            UserPwd:vm.policeLogin.password
+          },
+          url: SHANLEI + 'HomeIndex/CheckUser',
+          success: function (result) {
+              console.log(result)
+            if(result != null){
+              vm.alertYHDL = false
+              console.log(result)
+              localStorage.setItem('placemanID',result[0].FlnkID)
+            }else{
+              alert('用户或密码错误')
+            }
+          }
+        })
+      },
+
+      /* 登录弹窗显示 */
+      loginOpen:function (msg) {
+        this.alertYHDL = msg
       },
 
       /* Coding By YanM */
@@ -785,7 +825,7 @@
         }
       },
 
-      /*  */
+      /* 选择监区弹窗打开 */
       onClickPosition: function () {
         this.alertJQXZ=true
       },
@@ -992,6 +1032,7 @@
     mounted () {
       let vm = this
       window.aaa = this
+
       /* Coding By YanM */
       this.initPrison()
       /* 人员分布-14 */
@@ -1163,6 +1204,14 @@
         if(JSON.parse(event.data).Header.MsgType == 4){
           var  plan_task = JSON.parse(JSON.parse(event.data).Body)
           console.log('计划任务-返回数据-4',plan_task)
+          vm.plan = plan_task.PlanTypeName
+          vm.planStartTime = plan_task.StartTime
+          vm.planEndTime = plan_task.EndTime
+          if(vm.plan === '工具清点计划'){
+            this.$router.push({ path: '/toolcheck' })
+          } else if(vm.plan === '人员清点计划'){
+            this.$router.push({ path: '/crimalcheck' })
+          }
         }
 
         /* 调用ajax全量数据 */

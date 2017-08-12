@@ -18,7 +18,7 @@
           <span>{{localYear}}</span>
         </p>
         <p>
-          <span class="nav-plan">正在计划点名中</span><span class="nav-plan-time">计划清点：16:35-16:45</span>
+          <span class="nav-plan">{{ plan }}</span><span class="nav-plan-time">计划清点：{{ planStartTime }} - {{planEndTime}}</span>
         </p>
       </el-col>
       <el-col :span="2">
@@ -35,7 +35,10 @@
 
     name: 'navheader',
     props:{
-      message:String
+      message:String,
+      plan:'',
+      planStartTime:'',
+      planEndTime:''
     },
     data () {
       return {
