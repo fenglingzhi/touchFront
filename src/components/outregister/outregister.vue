@@ -145,6 +145,9 @@
 <script>
   export default {
     name: 'navheader',
+    props:[
+      'SocketAllData','criminalList'
+    ],
     data () {
       return {
         inCriminals: [
@@ -176,13 +179,13 @@
         areaListAll:0,//外出地点总数
         areaA:1,
         areaB:30,
-
         reasonList:[],// 外出事由
         reasonNowPage:1,// 外出事由当前页码
         reasonPages:1,// 外出事由总页码
         reasonListAll:0,
         reasonA:1,
-        reasonB:12
+        reasonB:12,
+        isSuccess:true
       }
     },
     methods: {
@@ -236,6 +239,35 @@
           this.reasonB=this.reasonB-12
         }
 
+      },
+      firstWs:function () {
+        var vm=this
+        var send1 = {
+          Header: {
+            MsgID:"201501260000000035",
+            MsgType:20
+          },
+          Body: JSON.stringify({
+            OrgID : localStorage.getItem('OrgID'),
+            DoorID : localStorage.getItem('DoorID'),
+            AreaID : localStorage.getItem('AreaID'),
+            RegType:2603
+          })
+        }
+        //发送数据
+        if(vm.ws.readyState == WebSocket.OPEN){
+          vm.ws.send(JSON.stringify(send1))
+        }
+        setInterval(function () {
+          if(JSON.parse(vm.SocketAllData).Header.MsgType === 20) {
+            var receiveData = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+            if(receiveData["RET"]==1){
+              vm.isSuccess=false
+            }else {
+              vm.isSuccess=true
+            }
+          }
+        },500)
       }
     },
     mounted () {
@@ -244,6 +276,41 @@
       /* Coding By YanM */
       /* Coding By Qianjf */
       var vm = this
+//      发送人员流动状态  2603临时外出
+      setInterval(function () {
+          if(vm.isSuccess){
+            vm.firstWs()
+          }
+      },1000)
+//      获取外出登记的人员明细
+      if(!vm.isSuccess){
+        var send2 = {
+          Header: {
+            MsgID:"201501260000000035",
+            MsgType:22
+          },
+          Body: JSON.stringify({
+            OrgID : localStorage.getItem('OrgID'),
+            DoorID : localStorage.getItem('DoorID'),
+          })
+        }
+        //发送数据
+        if(vm.ws.readyState == WebSocket.OPEN){
+          vm.ws.send(JSON.stringify(send2))
+        }
+        setInterval(function () {
+          if(JSON.parse(vm.SocketAllData).Header.MsgType === 22) {
+            var receiveData = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+            if(receiveData["RET"]==1){
+              vm.isSuccess=false
+            }else {
+              vm.isSuccess=true
+            }
+          }
+        },500)
+
+      }
+
 //      获取外出地点
       $.ajax({
         type: "get",

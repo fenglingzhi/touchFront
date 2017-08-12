@@ -12,11 +12,11 @@
           <div class="partsBody" style="height:392px;">
             <div class="bodyHead">
               <div class="title">监内未点人员{{inCriminals.length}}人</div>
-              <div class="titleDescribe">（本监区总人数：{{orgCriminalCount}}人，<span @click="$emit('hasCheaked')" style="color: #1443cd">已点人数{{hascelled}}人</span>）</div>
+              <div class="titleDescribe">（本监区总人数：{{orgCriminalCount}}人，<span @click="$emit('hasCheakedTool')" style="color: #1443cd">已点人数{{hascelled}}人</span>）</div>
             </div>
             <div class="bodyCon">
               <el-col :span="2"  v-for="(criminal,index) in inCriminals.slice(inA-1,inB)" :key="1">
-                <div  :class="['criminal', {choosed: criminal.ischoose}]" v-on:click="chooseIn(index)" >
+                <div  :class="['criminal', {choosedcriminal: criminal.ischoose}]" v-on:click="chooseIn(index)" >
                   <img :src="criminal.Photo" width="98%" height="85" alt=""/>
                   <span class="criminalName">{{ criminal.CriminalName }}</span>
                 </div>
@@ -41,7 +41,7 @@
             </div>
             <div class="bodyCon" style="height: 135px;">
               <el-col :span="2"  v-for="(criminal,index) in outCriminals.slice(outA-1,outB)" :key="1">
-                <div  :class="['criminal', {choosed: criminal.ischoose}]" v-on:click="chooseOut(index)" >
+                <div  :class="['criminal', {choosedcriminal: criminal.ischoose}]" v-on:click="chooseOut(index)" >
                   <img :src="criminal.Photo" width="98%" height="85" alt=""/>
                   <span class="criminalName">{{ criminal.CriminalName}}</span>
                 </div>
@@ -62,7 +62,7 @@
           </div>
           <div class="partsFoot">
             <div style="margin: 13px 2px;float: right">
-              <div class="sure">手动确定</div>
+              <div class="sure" v-on:click="submitCriminal()">手动确定</div>
               <div class="sure">手动结束</div>
             </div>
           </div>
@@ -200,9 +200,16 @@
       },
       chooseIn:function (index){
         var PersonID=this.inCriminals[index+this.inA-1]["PersonID"]
-        this.inCriminals[index+this.inA-1].ischoose=true
-        this.inChoose.push(PersonID)
+//        this.inCriminals[index+this.inA-1].ischoose=true
+//        this.inChoose.push(PersonID)
 //        alert(this.inChoose)
+        if(this.inChoose.indexOf(PersonID)==-1){
+          this.inChoose.push(PersonID)
+          this.inCriminals[index+this.inA-1].ischoose=true
+        }else {
+          this.inCriminals[index+this.inA-1].ischoose=false
+          this.inChoose.splice(this.inChoose.indexOf(PersonID),1)
+        }
       }
       ,
 
@@ -226,9 +233,16 @@
       },
       chooseOut:function (index){
         var PersonID=this.outCriminals[index+this.outA-1]["PersonID"]
-        this.outCriminals[index+this.outA-1].ischoose=true
-        this.outChoose.push(PersonID)
+//        this.outCriminals[index+this.outA-1].ischoose=true
+//        this.outChoose.push(PersonID)
 //        alert(this.outChoose)
+        if(this.outChoose.indexOf(PersonID)==-1){
+          this.outChoose.push(PersonID)
+          this.outCriminals[index+this.outA-1].ischoose=true
+        }else {
+          this.outCriminals[index+this.outA-1].ischoose=false
+          this.outChoose.splice(this.outChoose.indexOf(PersonID),1)
+        }
       }
       ,
       getRecordGo:function () {
@@ -336,6 +350,40 @@
             }
           });
         }
+      },
+      submitCriminal:function () {
+        var vm=this
+        var subCriminals=this.outChoose.concat(this.inChoose);
+        var send = {
+          Header: {
+            MsgID:"201501260000000034",
+            MsgType:30
+          },
+          Body: JSON.stringify({
+            OrgID : localStorage.getItem('OrgID'),
+            Type:2,
+            ObjectID:subCriminals
+          })
+        }
+        if(subCriminals==[]||subCriminals==''){
+            alert("还没选人")
+        }else {
+          //发送数据
+          if(vm.ws.readyState == WebSocket.OPEN){
+            vm.ws.send(JSON.stringify(send))
+          }
+          setInterval(function () {
+            if(JSON.parse(vm.SocketAllData).Header.MsgType === 30) {
+              var receiveData = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+              alert(receiveData["RET"])
+              if(receiveData["RET"]==0){
+                alert("处理失败")
+              }else {
+                alert("处理成功")
+              }
+            }
+          },100)
+        }
       }
     },
     mounted () {
@@ -400,7 +448,7 @@
           }
         }
 
-      },500)
+      },1000)
 
 //      localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
 //      获取第一页记录数据
@@ -493,7 +541,7 @@
   }
 </script>
 
-<style>
+<style >
 
   .li2_parts {
     height: 740px;
@@ -611,8 +659,11 @@
   .tab2 .bodyCon{
     height: 600px;
   }
-  .li2_parts .choosed{
-    background: red ;
+ .choosedcriminal{
+    background: red !important ;
+  }
+  .li2_parts tr{
+    height:27px;
   }
 
   .navheader{
