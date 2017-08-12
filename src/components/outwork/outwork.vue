@@ -5,7 +5,7 @@
     <el-col :span="22">
       <div class="li1_parts">
         <div class="tabHead">
-          <div :class="['tab', { tabing: isB1}]" v-on:click="toggle1()">出工{{SocketAllData}}</div>
+          <div :class="['tab', { tabing: isB1}]" v-on:click="toggle1()">出工</div>
           <div :class="['tab', { tabing: isB2}]" v-on:click="toggle2()">留监</div>
         </div>
         <div class="partsBody" v-show="isShow1">

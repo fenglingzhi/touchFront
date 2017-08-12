@@ -381,7 +381,7 @@
         alertYHDL: false,                 //用户登录
         alertJQXZ: false,                 //监区选择
         alertBJXX: false,                 //报警信息
-        alertSSLD: true,                 //实时流动
+        alertSSLD: false,                 //实时流动
         alertYDMD: false,                 //已点名单
         alertBJTK: false,                 //报警弹框
         criminalList:[]                   //罪犯基础信息集合
@@ -502,7 +502,7 @@
         for (var i=0;i<this.alarmList.length;i++){
           if(this.alarmList[i]["AlarmRecordID"]==alarmRecordID){
             this.alarmList.splice(i,1);
-            
+
             this.alarmPages=this.alarmList.length
             if( this.alarmPages> this.alarmNowPage|| this.alarmPages==this.alarmNowPage){
             }else {
