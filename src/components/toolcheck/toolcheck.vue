@@ -17,12 +17,12 @@
           <div class="partsBody" style="height:392px;">
             <div class="bodyHead">
               <div class="title">柜内工具未点120件</div>
-              <div class="titleDescribe">（柜内工具总数：200个，<span style="color: #1443cd">已点工具{{toolCalledCount}}个</span>）</div>
+              <div class="titleDescribe">（柜内工具总数：200个，<span style="color: #1443cd"  @click="$emit('hasCheakedTool')" >已点工具{{toolCalledCount}}个</span>）</div>
             </div>
             <div class="bodyCon">
 
               <el-col :span="2"  v-for="(tool,index) in inTool.slice(inA-1,inB)" :key="1">
-                <div  :class="['criminal', {choosed: tool.ischoose}]" v-on:click="chooseIn(index)" >
+                <div  :class="['criminal', {chosed: tool.ischoose}]" v-on:click="chooseIn(index)" >
                   <img :src="tool.Photo" width="98%" height="85" alt=""/>
                   <span class="criminalName">{{ tool.ToolName }}</span>
                 </div>
@@ -48,7 +48,7 @@
             <div class="bodyCon" style="height: 135px;">
 
               <el-col :span="2"  v-for="(tool,index) in outTool.slice(outA-1,outB)" :key="1">
-                <div  :class="['criminal', {choosed: tool.ischoose}]" v-on:click="chooseOut(index)" >
+                <div  :class="['criminal', {chosed: tool.ischoose}]" v-on:click="chooseOut(index)" >
                   <img :src="tool.Photo" width="98%" height="85" alt=""/>
                   <span class="criminalName">{{ tool.ToolName }}</span>
                 </div>
@@ -69,7 +69,7 @@
           </div>
           <div class="partsFoot">
             <div style="margin: 13px 2px;float: right">
-              <div class="sure">手动确定</div>
+              <div class="sure" v-on:click="submitTool()">手动确定</div>
               <div class="sure">手动结束</div>
             </div>
           </div>
@@ -132,7 +132,6 @@
     name: 'navheader',
     props:[
       'SocketAllData','criminalList','toolList'
-
     ],
     beforeCreate () {
       /* Coding By YanM */
@@ -178,6 +177,7 @@
         outChoose:[],//柜外选中人员
         outA:1,
         outB:12,
+        a:1
       }
     },
     methods: {
@@ -320,13 +320,12 @@
       chooseIn:function (index){
         var ToolID =this.inTool[index+this.inA-1]["ToolID"]
         if(this.inChoose.indexOf(ToolID)==-1){
-          this.inTool[index+this.outA-1].ischoose=true
           this.inChoose.push(ToolID)
+          this.inTool[index+this.outA-1].ischoose=true
         }else {
           this.inTool[index+this.outA-1].ischoose=false
           this.inChoose.splice(this.inChoose.indexOf(ToolID),1)
         }
-//        alert(this.inChoose)
       }
       ,
       chooseOut:function (index){
@@ -338,12 +337,38 @@
           this.outTool[index+this.outA-1].ischoose=false
           this.outChoose.splice(this.outChoose.indexOf(ToolID),1)
         }
+      },
+      submitTool:function () {
 
-
-//        alert(this.outChoose)
+        var vm=this
+        var subTools=this.outChoose.concat(this.inChoose);
+        var send = {
+          Header: {
+            MsgID:"201501260000000034",
+            MsgType:30
+          },
+          Body: JSON.stringify({
+            OrgID : localStorage.getItem('OrgID'),
+            Type:1,
+            ObjectID:subTools
+          })
+        }
+        //发送数据
+        if(vm.ws.readyState == WebSocket.OPEN){
+          vm.ws.send(JSON.stringify(send))
+        }
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 30) {
+          var receiveData = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          if(receiveData["RET"]==0){
+             alert("处理失败")
+          }else {
+              alert("处理成功")
+          }
+        }
       }
     },
     mounted () {
+
       /* Coding By YanM */
 
       /* Coding By YanM */
@@ -412,7 +437,6 @@
         }
       },1000)
 
-//      localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
 //      获取第一页记录数据
       $.ajax({
         type: "get",
@@ -621,14 +645,16 @@
     width: 856px;
     text-align: left;
   }
-  .li2_parts .choosed{
+  .li2_parts .chosed{
     background: red !important;
   }
   .tab2 .bodyCon{
     height: 600px;
   }
 
-
+  .li2_parts tr{
+    height:27px;
+  }
   .navheader{
     height: 122px;
     color: #fff;

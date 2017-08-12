@@ -67,7 +67,7 @@
   export default {
     name: 'navheader',
     props:[
-      'SocketAllData'
+      'SocketAllData','receiveDataMsgType25'
     ],
     data () {
       return {
@@ -144,7 +144,6 @@
 
       },
       sub:function () {
-        console.log("=======================================", localStorage.getItem('OrgID'))
 
       }
     },
@@ -165,18 +164,17 @@
         if(vm.ws.readyState == WebSocket.OPEN){
           vm.ws.send(JSON.stringify(personnel_distribution))
         }
-      },1000)
 
 //      vm.ws.onmessage=function(event){
-        if(JSON.parse(this.SocketAllData).Header.MsgType === 25){
-          var  flowPerson_outPrison_rec = JSON.parse(JSON.parse(this.SocketAllData).Body)
-          if(flowPerson_outPrison_rec!=""||flowPerson_outPrison_rec!=null){
+//        if(JSON.parse(vm.SocketAllData).Header.MsgType === 25){
+//          var  flowPerson_outPrison_rec = JSON.parse(JSON.parse(this.SocketAllData).Body)
+          if(vm.receiveDataMsgType25!=""||vm.receiveDataMsgType25!=null){
             vm.inPages=Math.ceil(vm.inCriminalList.length/48)==0?1:Math.ceil(vm.inCriminalList.length/48)
-            for(var i=0;i<flowPerson_outPrison_rec.length;i++){
-             var getCriminalID = flowPerson_outPrison_rec[i]["CriminalID"]
+            for(var i=0;i<receiveDataMsgType25.length;i++){
+              var getCriminalID = receiveDataMsgType25[i]["CriminalID"]
               for(var j=0;j<vm.areaCriminalList.length;j++){
                 if(vm.areaCriminalList[j]["FlnkID"]==getCriminalID){
-                     vm.outCriminalList.push(vm.areaCriminalList[j])
+                  vm.outCriminalList.push(vm.areaCriminalList[j])
                 }
               }
               for(var k=0;k<vm.inCriminalList.length;k++){
@@ -186,10 +184,12 @@
               }
             }
           }
-
-        }
+//        }
         vm.outPages=Math.ceil(vm.outCriminalList.length/48)==0?1:Math.ceil(vm.outCriminalList.length/48)
 //      }
+
+      },1000)
+
 
 //      获取当前监区罪犯集合
       $.ajax({

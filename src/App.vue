@@ -7,6 +7,8 @@
     ></navheader>
     <router-view
       @hasCheaked="onHasCheaked"
+      @hasCheakedTool="onHasCheakedTool"
+
       :criminalList="criminalList"
       :toolList="toolList"
       :FlnkIDList1="FlnkIDList_11"
@@ -17,6 +19,9 @@
       :chartsDatas="chartsDatas"
       :chartsDatasName="chartsDatasName"
       :crimalCount_outCrimalCount="crimalCount_outCrimalCount"
+      :receiveDataMsgType25="receiveDataMsgType25"
+     
+
     ></router-view>
     <menufooter></menufooter>
     <!--用户登录 star-->
@@ -189,14 +194,11 @@
     </div>
     <!--实时流动 end-->
 
-    <!--已点名单 star-->
+    <!--已点名单 罪犯 star-->
     <div class="alertTip alertYDMD" v-show="alertYDMD">
       <div class="alertBody " style="margin: -330px -550px;width: 1100px;height: 660px;">
         <div class="bodyHead"><div class="title">已点名单</div><div v-on:click="close('alertYDMD')" class="close">X</div></div>
         <div class="bodyCon" style="height: 514px;" >
-
-
-
           <table  border="1" width="100%">
             <tr>
               <th>罪犯姓名</th>
@@ -231,6 +233,48 @@
       </div>
     </div>
     <!--已点名单 end-->
+
+
+    <!--已点工具 star-->
+    <div class="alertTip alertYDGJ" v-show="alertYDGJ">
+      <div class="alertBody " style="margin: -330px -550px;width: 1100px;height: 660px;">
+        <div class="bodyHead"><div class="title">已点工具</div><div v-on:click="close('alertYDGJ')" class="close">X</div></div>
+        <div class="bodyCon" style="height: 514px;" >
+          <table  border="1" width="100%">
+            <tr>
+              <th>工具类别</th>
+              <th>工具名称</th>
+              <th>监区名称</th>
+              <th>清点时间</th>
+              <th>清点状态</th>
+
+            </tr>
+            <tr v-for="toolCalled in GetToolCalledList" :key="1">
+              <td>{{toolCalled.ToolTypeName}}</td>
+              <td>{{toolCalled.ToolName}}</td>
+              <td>{{toolCalled.OrgName}}</td>
+              <td>{{(toolCalled.ToolTypeName==""||toolCalled.CountTime==null)?"":toolCalled.CountTime.replace("T"," ")}}</td>
+              <td>{{toolCalled.StatusName}}</td>
+            </tr>
+          </table>
+
+
+        </div>
+        <el-row >
+          <el-col :span="8" style="height: 10px"></el-col>
+          <el-col :span="8" >
+            <div class="pages">
+              <span class="pageControl"><img src="./assets/q1.png" v-on:click="getToolback()" alt=""/></span>
+              <span class="pagesText" style="font-size: 28px">{{toolPage+1}}/{{Math.ceil(toolCount/18)==0?1:Math.ceil(toolCount/18)}}</span>
+              <span class="pageControl"><img src="./assets/q2.png" v-on:click="getToolGo()" alt=""/></span>
+            </div>
+          </el-col>
+          <el-col :span="8" style="height: 10px"></el-col>
+        </el-row>
+      </div>
+    </div>
+    <!--已点工具 end-->
+
 
 
     <!--报警弹框 star-->
@@ -280,11 +324,16 @@
         crimalCount_outCrimalCount:{},    //监区人数 && 外出人数（监外）
         /* Coding By YanM */
         /* mj B*/
+        receiveDataMsgType25:{},//进出ws工数据
         toolList:[],// 工具基础信息集合
         GetCriminalCalledList:[],//已点罪犯
         criminalCalledIsLastPage:false,//已点罪犯是否是最后一页
         criminalCount:0,//已点罪犯总页码
         criminalPage:0,//已点罪犯当前页
+        GetToolCalledList:[],//已点罪犯
+        toolCalledIsLastPage:false,//已点工具是否是最后一页
+        toolCount:0,//已点工具总页码
+        toolPage:0,//已点工具当前页
         alarmList:[],//报警集合
         alarmText:"",//报警描述
         alarmPages:1,//留监总页数
@@ -301,6 +350,7 @@
         alertSSLD: false,
         alertYDMD: false,
         alertBJTK: false,
+        alertYDGJ:false,
         criminalList:[]                   //罪犯基础信息集合
 
       }
@@ -570,6 +620,162 @@
           });
         }
       },
+
+      /* 已点工具名单翻页 */
+      getToolback:function () {
+        var vm = this
+        if(vm.toolPage==0){
+          alert("已经是第一页了")
+        }else {
+          vm.toolPage=vm.toolPage-1
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.toolPage,"PageSize":18},
+            url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCalledList' + "?callback=?",
+            success: function (result) {
+              if(result.length!=18){
+                vm.toolCalledIsLastPage=true
+              }else {
+                vm.toolCalledIsLastPage=false
+              }
+              vm.GetToolCalledList=result
+            },
+            error: function (err) {
+              alert("请求异常")
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
+          });
+          //      获取总条数
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            data:{"OrgID":localStorage.getItem("OrgID")},
+            url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCalledCount' + "?callback=?",
+            success: function (result) {
+              vm.toolCount=result
+            },
+            error: function (err) {
+              alert("请求异常")
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
+          });
+        }
+      },
+      getToolGo:function () {
+        var vm = this
+        if(!vm.toolCalledIsLastPage){
+          vm.toolPage=vm.toolPage+1
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.toolPage,"PageSize":18},
+            url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCalledList' + "?callback=?",
+            success: function (result) {
+              if(result.length!=18){
+                vm.toolCalledIsLastPage=true
+              }else {
+                vm.toolCalledIsLastPage=false
+              }
+              vm.GetToolCalledList=result
+            },
+            error: function (err) {
+              alert("请求异常")
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
+          });
+
+          //      获取总条数
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            data:{"OrgID":localStorage.getItem("OrgID")},
+            url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+            success: function (result) {
+              vm.criminalCount=result
+            },
+            error: function (err) {
+              alert("请求异常")
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
+          });
+        }else {
+          alert("已经到了最后一页了")
+        }
+
+
+      },
+
+
+      onHasCheakedTool: function () {
+        this.alertYDGJ=true
+//      罪犯清点，已点名单
+        var vm = this
+//      获取第一页记录数据
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":18},
+          url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCalledList' + "?callback=?",
+          success: function (result) {
+            if(result.length!=18){
+              vm.toolCalledIsLastPage=true
+            }else {
+              vm.toolCalledIsLastPage=false
+            }
+            vm.GetCriminalCalledList=result
+          },
+          error: function (err) {
+            alert("请求异常")
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        });
+//      获取总条数
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          data:{"OrgID":localStorage.getItem("OrgID")},
+          url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCalledCount' + "?callback=?",
+          success: function (result) {
+            vm.toolCount=result
+          },
+          error: function (err) {
+            alert("请求异常")
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        });
+      },
+
       /* Coding By Qianjf */
 
       /* 弹窗关闭 */
@@ -585,6 +791,8 @@
         }else  if (chose=="alertYDMD"){
           this.alertYDMD=false
           this.criminalPage=0
+        }else if(chose=="alertYDGJ"){
+            this.alertYDGJ=false
         }
       },
 
@@ -789,15 +997,22 @@
       vm.allDataInit()
       vm.ws.onmessage=function(event) {
         vm.SocketAllData = event.data
+        /*过滤进出工数据*/
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 25){
+          var  receiveDataMsgType25 = JSON.parse(JSON.parse(this.SocketAllData).Body)
+          vm.receiveDataMsgType25=receiveDataMsgType25
+        }
+
         /* 报警信息 */
         if (JSON.parse(event.data).Header.MsgType == 2) {
-//            alert(1)
           var alarmNews = JSON.parse(JSON.parse(event.data).Body)
-          if (alarmNews.OrgID === localStorage.getItem("OrgID")) {
-            vm.alarmText = alarmNews[0].Description
-            var criminalData = alarmNews[0]
-            criminalData.criminalID = vm.criminalList[0][alarmNews[0].ObjectID].CriminalID
-            criminalData.Photo = vm.criminalList[0][alarmNews[0].ObjectID].Photo
+//          区域过滤测试后解开
+//          if (alarmNews.OrgID === localStorage.getItem("OrgID")) {
+          vm.alarmText = alarmNews.Description
+
+          var criminalData = alarmNews
+            criminalData.criminalID = vm.criminalList[0][alarmNews.ObjectID].CriminalID
+            criminalData.Photo = vm.criminalList[0][alarmNews.ObjectID].Photo
             vm.alarmList.unshift(criminalData)
             vm.alarmPages = vm.alarmList.length
             if (vm.alarmList.length !== 0) {
@@ -805,7 +1020,7 @@
             } else {
               vm.alertBJTK = false
             }
-          }
+//          }
 //          console.log('报警信息++——+——+——+——+——+', vm.alarmList)
         }
 
