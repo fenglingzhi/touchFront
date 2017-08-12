@@ -131,7 +131,7 @@
   export default {
     name: 'navheader',
     props:[
-      'SocketAllData','criminalList','toolList'
+      'SocketAllData','criminalList','toolList','receiveDataMsgType30','receiveDataMsgType32'
     ],
     beforeCreate () {
       /* Coding By YanM */
@@ -357,14 +357,14 @@
         if(vm.ws.readyState == WebSocket.OPEN){
           vm.ws.send(JSON.stringify(send))
         }
-        if(JSON.parse(vm.SocketAllData).Header.MsgType === 30) {
-          var receiveData = JSON.parse(JSON.parse(vm.SocketAllData).Body)
-          if(receiveData["RET"]==0){
+
+         setTimeout(function () {
+           if(vm.receiveDataMsgType30["RET"]==0){
              alert("处理失败")
-          }else {
-              alert("处理成功")
-          }
-        }
+           }else {
+             alert("处理成功")
+           }
+         },1000)
       }
     },
     mounted () {
@@ -384,16 +384,13 @@
         })
       }
       setInterval(function () {
-       console.log( "111111111111111111111111111111111111111111111111111111111111",vm.toolList)
         //发送数据
         if(vm.ws.readyState == WebSocket.OPEN){
           vm.ws.send(JSON.stringify(send))
         }
 //        接收数据
-        if(JSON.parse(vm.SocketAllData).Header.MsgType === 32){
-          var  receiveData = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+        var receiveData=vm.receiveDataMsgType32
           if(receiveData!=""||receiveData!=null){
-            var notCallTool;//未点工具
             var hasNotCall=[] //柜内未点1
             var outHasNotCall=[] //柜外未点0
             for (var i=0;i<receiveData.length;i++){
@@ -427,14 +424,8 @@
                     vm.outPages=Math.ceil(vm.outTool.length/12)==0?1:Math.ceil(vm.outTool.length/12)
                   }
             }
-
            }
-
           }
-
-
-
-        }
       },1000)
 
 //      获取第一页记录数据

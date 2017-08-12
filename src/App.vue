@@ -20,6 +20,20 @@
       :chartsDatasName="chartsDatasName"
       :crimalCount_outCrimalCount="crimalCount_outCrimalCount"
       :receiveDataMsgType25="receiveDataMsgType25"
+      :receiveDataMsgType30="receiveDataMsgType30"
+      :receiveDataMsgType32="receiveDataMsgType32"
+      :receiveDataMsgType31="receiveDataMsgType31"
+      :receiveDataMsgType20="receiveDataMsgType20"
+      :receiveDataMsgType22="receiveDataMsgType22"
+      :receiveDataMsgType27="receiveDataMsgType27"
+      :receiveDataMsgType26="receiveDataMsgType26"
+      :policeList="policeList"
+      :receiveDataMsgType23="receiveDataMsgType23"
+
+
+
+
+
 
 
     ></router-view>
@@ -81,7 +95,6 @@
         <div class="bodyCon" style="height: 312px;">
           <div class="lists" v-show="false">
             <el-row>
-
               <div class="tipName">报警事件名称</div>
               <el-row>
                 <el-col :span="4"  >
@@ -329,6 +342,16 @@
         /* Coding By YanM */
         /* mj B*/
         receiveDataMsgType25:{},//进出ws工数据
+        receiveDataMsgType30:{},//工具清点提交后返回数
+        receiveDataMsgType32:{},//工具清点数据
+        receiveDataMsgType31:{},//人员点点数据
+        receiveDataMsgType20:{},//外出登记初次发送
+        receiveDataMsgType22:{},//外出罪犯信息
+        receiveDataMsgType23:{},//外出登记提交
+        receiveDataMsgType26:{},//外出登记取消
+
+
+
         toolList:[],// 工具基础信息集合
         GetCriminalCalledList:[],//已点罪犯
         criminalCalledIsLastPage:false,//已点罪犯是否是最后一页
@@ -439,6 +462,7 @@
         for (var i=0;i<this.alarmList.length;i++){
           if(this.alarmList[i]["AlarmRecordID"]==alarmRecordID){
             this.alarmList.splice(i,1);
+            
             this.alarmPages=this.alarmList.length
             if( this.alarmPages> this.alarmNowPage|| this.alarmPages==this.alarmNowPage){
             }else {
@@ -1020,6 +1044,46 @@
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 25){
           var  receiveDataMsgType25 = JSON.parse(JSON.parse(this.SocketAllData).Body)
           vm.receiveDataMsgType25=receiveDataMsgType25
+        }
+        /*工具清点提交返回结果*/
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 30) {
+          var receiveDataMsgType30 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          vm.receiveDataMsgType30=receiveDataMsgType30
+        }
+        /*工具清点*/
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 32) {
+          var receiveDataMsgType32 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          vm.receiveDataMsgType32=receiveDataMsgType32
+        }
+        /*人员清点*/
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 31) {
+          var receiveDataMsgType31 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          vm.receiveDataMsgType31=receiveDataMsgType31
+        }
+        /*外出登记初次发送*/
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 20) {
+          var receiveDataMsgType20 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          vm.receiveDataMsgType20=receiveDataMsgType20
+        }
+        /*外出罪犯信息*/
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 22) {
+          var receiveDataMsgType22 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          vm.receiveDataMsgType22=receiveDataMsgType22
+        }
+        /*陪同民警信息*/
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 27) {
+          var receiveDataMsgType27 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          vm.receiveDataMsgType27=receiveDataMsgType27
+        }
+        /*外出登记提交*/
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 23) {
+          var receiveDataMsgType23 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          vm.receiveDataMsgType23=receiveDataMsgType23
+        }
+        /*外出登记取消*/
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 26) {
+          var receiveDataMsgType26 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          vm.receiveDataMsgType26=receiveDataMsgType26
         }
 
         /* 报警信息 */

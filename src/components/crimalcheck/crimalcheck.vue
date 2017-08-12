@@ -122,7 +122,7 @@
   export default {
     name: 'navheader',
     props:[
-      'SocketAllData','criminalList'
+      'SocketAllData','criminalList','receiveDataMsgType31','receiveDataMsgType30'
 
     ],
     beforeCreate () {
@@ -372,17 +372,17 @@
           if(vm.ws.readyState == WebSocket.OPEN){
             vm.ws.send(JSON.stringify(send))
           }
-          setInterval(function () {
-            if(JSON.parse(vm.SocketAllData).Header.MsgType === 30) {
-              var receiveData = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          /*接收数据*/
+          setTimeout(function () {
+              var receiveData = vm.receiveDataMsgType30
               alert(receiveData["RET"])
               if(receiveData["RET"]==0){
                 alert("处理失败")
               }else {
                 alert("处理成功")
               }
-            }
-          },100)
+
+          },1000)
         }
       }
     },
@@ -407,8 +407,7 @@
           vm.ws.send(JSON.stringify(send))
         }
         //接收数据
-        if(JSON.parse(vm.SocketAllData).Header.MsgType === 31){
-          var  receiveData = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          var  receiveData = vm.receiveDataMsgType31
           if(receiveData!=""||receiveData!=null){
             var hasNotCall=[] //监内未点2402
             var outHasNotCall=[] //外出未点2403
@@ -446,7 +445,7 @@
               }
             }
           }
-        }
+
 
       },1000)
 
