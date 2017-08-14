@@ -63,7 +63,7 @@
           <div class="partsFoot">
             <div style="margin: 13px 2px;float: right">
               <div class="sure" v-on:click="submitCriminal()">手动确定</div>
-              <div class="sure">手动结束</div>
+              <div class="sure" v-on:click="cancel()">手动结束</div>
             </div>
           </div>
         </div>
@@ -122,7 +122,7 @@
   export default {
     name: 'navheader',
     props:[
-      'SocketAllData','criminalList','receiveDataMsgType31','receiveDataMsgType30'
+      'SocketAllData','criminalList','receiveDataMsgType31','receiveDataMsgType30','receiveDataMsgType33'
 
     ],
     beforeCreate () {
@@ -373,18 +373,49 @@
             vm.ws.send(JSON.stringify(send))
           }
           /*接收数据*/
-          setTimeout(function () {
+         var setcr1=setTimeout(function () {
               var receiveData = vm.receiveDataMsgType30
               alert(receiveData["RET"])
               if(receiveData["RET"]==0){
                 alert("处理失败")
+                clearInterval(setcr1)
+
               }else {
                 alert("处理成功")
+                clearInterval(setcr1)
               }
 
           },1000)
         }
+      },
+      cancel:function () {
+        var send = {
+          Header: {
+            MsgID:"201501260000000034",
+            MsgType:33
+          },
+          Body: JSON.stringify({
+            OrgID : localStorage.getItem('OrgID'),
+            CountType:2
+          })
+        }
+        //发送数据
+        if(vm.ws.readyState == WebSocket.OPEN){
+          vm.ws.send(JSON.stringify(send))
+        }
+
+        var settool2= setTimeout(function () {
+          if(vm.receiveDataMsgType33["RET"]==0){
+            alert("处理失败")
+            clearInterval(settool2)
+
+          }else {
+            alert("处理成功")
+            clearInterval(settool2)
+          }
+        },500)
       }
+
     },
     mounted () {
       /* Coding By YanM */

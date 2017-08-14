@@ -22,6 +22,7 @@
       :chartsDatas="chartsDatas"
       :chartsDatasName="chartsDatasName"
       :crimalCount_outCrimalCount="crimalCount_outCrimalCount"
+      :policeList="policeList"
       :receiveDataMsgType25="receiveDataMsgType25"
       :receiveDataMsgType30="receiveDataMsgType30"
       :receiveDataMsgType32="receiveDataMsgType32"
@@ -30,8 +31,12 @@
       :receiveDataMsgType22="receiveDataMsgType22"
       :receiveDataMsgType27="receiveDataMsgType27"
       :receiveDataMsgType26="receiveDataMsgType26"
-      :policeList="policeList"
       :receiveDataMsgType23="receiveDataMsgType23"
+      :receiveDataMsgType35="receiveDataMsgType35"
+      :receiveDataMsgType8="receiveDataMsgType8"
+      :receiveDataMsgType33="receiveDataMsgType33"
+
+
 
 
 
@@ -97,7 +102,7 @@
       <div class="alertBody " style="margin: -222px -400px;width: 800px;height: 444px;">
         <div class="bodyHead"><div class="title">报警信息</div><div v-on:click="close('alertBJXX')" class="close">X</div></div>
         <div class="bodyCon" style="height: 312px;">
-          <div class="lists" v-show="false">
+          <div class="lists" v-show="isGrup">
             <el-row>
               <div class="tipName">报警事件名称</div>
               <el-row>
@@ -120,7 +125,7 @@
               <el-col :span="8" style="height: 10px"></el-col>
             </el-row>
           </div>
-          <div class="details" v-show="true" >
+          <div class="details" v-show="isPerson" >
             <el-row style="    height: 265px;">
               <el-col :span="4" style="height:1px;">
               </el-col>
@@ -356,6 +361,10 @@
         receiveDataMsgType22:{},//外出罪犯信息
         receiveDataMsgType23:{},//外出登记提交
         receiveDataMsgType26:{},//外出登记取消
+        receiveDataMsgType8:{},//互监组管理刷卡
+        receiveDataMsgType33:{},//手动结束清点
+
+
 
 
 
@@ -384,6 +393,10 @@
         alertSSLD: false,                 //实时流动
         alertYDMD: false,                 //已点名单
         alertBJTK: false,                 //报警弹框
+        alertYDGJ:false,                  //已点工具
+        isPerson:true,
+        isGrup:false,
+
         criminalList:[]                   //罪犯基础信息集合
       }
     },
@@ -498,19 +511,51 @@
 
       /* Coding By Qianjf */
       alarmHandle:function () {
+          var vm = this
         var alarmRecordID = $("#alarmRecordID").html()
         for (var i=0;i<this.alarmList.length;i++){
           if(this.alarmList[i]["AlarmRecordID"]==alarmRecordID){
-            this.alarmList.splice(i,1);
+          var placemanID = localStorage.getItem("placemanID")
 
-            this.alarmPages=this.alarmList.length
-            if( this.alarmPages> this.alarmNowPage|| this.alarmPages==this.alarmNowPage){
-            }else {
-              this.alarmNowPage=this.alarmPages
-            }
+            $.ajax({
+              type: "get",
+              contentType: "application/json; charset=utf-8",
+              dataType: "jsonp",
+              jsonp: "callback",
+              async: false,
+              data:{
+                  "EventID":alarmRecordID,
+                  "PoliceID":placemanID,
+                  "PoliceName":vm.policeList[placemanID]["PoliceName"],
+                  "PoliceRole":vm.policeList[placemanID]["role"]
+              },
+              url: 'http://10.58.1.145:88/api/Event/AlarmHandle' + "?callback=?",
+              success: function (result) {
+
+                if(result==0){
+                    alert("处理失败")
+                }else {
+                  /*页面删除效果*/
+                  this.alarmList.splice(i,1);
+                  this.alarmPages=this.alarmList.length
+                  if( this.alarmPages> this.alarmNowPage|| this.alarmPages==this.alarmNowPage){
+                  }else {
+                    this.alarmNowPage=this.alarmPages
+                  }
+                }
+
+              },
+              error: function (err) {
+                alert("请求异常")
+              },
+              complete: function (XHR, TS) {
+                XHR = null;  //回收资源
+              }
+            });
+
+
           }
         }
-
 
       },
       alarmGo:function () {
@@ -518,9 +563,22 @@
           this.alarmNowPage=this.alarmNowPage+1
           this.alarmA=this.alarmA+1
           this.alarmB=this.alarmB+1
+          if(this.alarmList[this.alarmA-1]["EventCode"]=1003){
+            this.isGrup=true;
+            this.isPerson=false
+           var AlarmRecordID = this.alarmList[this.alarmA-1]["AlarmRecordID"]
+
+
+
+          }else {
+            this.isGrup=false;
+            this.isPerson=true
+          }
+
         }else {
           alert("已经最后一页了")
         }
+
       },
       alarmBack:function () {
         if(this.alarmNowPage==1){
@@ -1093,6 +1151,7 @@
         }
         /*工具清点*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 32) {
+            console.log("11111111111111111111111111111111",vm.SocketAllData)
           var receiveDataMsgType32 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType32=receiveDataMsgType32
         }
@@ -1126,11 +1185,27 @@
           var receiveDataMsgType26 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType26=receiveDataMsgType26
         }
+        /*互监组管理刷卡*/
+        if(JSON.parse(vm.SocketAllData).Header.MsgType == 8) {
+          var receiveDataMsgType8 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          vm.receiveDataMsgType8=receiveDataMsgType8
+        }
 
+        /*互监组管理提交*/
+        if(JSON.parse(vm.SocketAllData).Header.MsgType == 35) {
+          var receiveDataMsgType35 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          vm.receiveDataMsgType35=receiveDataMsgType35
+        }
+        /*手动结束人员、工具清点*/
+        if(JSON.parse(vm.SocketAllData).Header.MsgType == 33) {
+          var receiveDataMsgType33 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          vm.receiveDataMsgType33=receiveDataMsgType33
+        }
         /* 报警信息 */
         if (JSON.parse(event.data).Header.MsgType == 2) {
           var alarmNews = JSON.parse(JSON.parse(event.data).Body)
 //          区域过滤测试后解开
+console.log("ppppppppppppppppppppppppppppppppppppppppp",alarmNews)
 //          if (alarmNews.OrgID === localStorage.getItem("OrgID")) {
           vm.alarmText = alarmNews.Description
 
