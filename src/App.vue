@@ -7,11 +7,11 @@
       :plan="plan"
       :planStartTime="planStartTime"
       :planEndTime="planEndTime"
+      @aaa="closeWeb()"
     ></navheader>
     <router-view
       @hasCheaked="onHasCheaked"
       @hasCheakedTool="onHasCheakedTool"
-
       :criminalList="criminalList"
       :toolList="toolList"
       :FlnkIDList1="FlnkIDList_11"
@@ -23,15 +23,13 @@
       :chartsDatasName="chartsDatasName"
       :crimalCount_outCrimalCount="crimalCount_outCrimalCount"
       :receiveDataMsgType25="receiveDataMsgType25"
-
-
     ></router-view>
     <menufooter
       @openLogin="loginOpen"></menufooter>
     <!--用户登录 star-->
     <div class="alertTip alertYHDL" v-show="alertYHDL">
       <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 408px;">
-        <div class="bodyHead"><div class="title">用户登录</div><div  v-on:click="close('alertYHDL')" class="close">X</div></div>
+        <div class="bodyHead"><div class="title">用户登录</div><div  v-on:click="loginclose('alertYHDL')" class="close">X</div></div>
         <div class="bodyCon">
           <el-row class="menu_title_wrap">
             <el-col :span="6" >
@@ -156,41 +154,36 @@
 
     <!--实时流动 star-->
     <div class="alertTip alertSSLD" v-show="alertSSLD">
-      <div class="alertBody " style=" margin: -290px -440px;width: 880px;height: 580px;">
+      <div class="alertBody " style=" margin: -290px -440px;width: 880px;height: 600px;">
         <div class="bodyHead"><div class="title">实时流动</div><div v-on:click="close('alertSSLD')" class="close">X</div></div>
-        <div class="bodyCon" style="height: 466px;">
+        <div class="bodyCon" style="height: 490px;">
           <el-row>
             <el-col :span="12" >
-
-              <el-col :span="7" >
+              <el-col :span="7" v-for="item in nowfloatPerson.slice(1,10)" :key="1">
                 <div class="moveCrimal">
                   <div><img src="./assets/crimal_1_03.jpg" width="70%" height="100" alt=""></div>
-                  <span>张家辉 <br> 13:23出门</span>
+                  <span>{{item.ObjectName}} <br> {{item.EventTime}}<br>{{item.EventName}}</span>
                 </div>
               </el-col>
-
             </el-col>
             <el-col :span="12">
               <el-col :span="7" style="height: 10px">
-
               </el-col>
               <el-col :span="10" >
                 <div class="moveCrimal">
                   <div style="height:50px;"></div>
                   <div><img src="./assets/crimal_1_03.jpg" width="100%" height="250" alt=""></div>
-                  <span style="font-size: 20px;font-weight: 800">张家辉 <br> 13:23出门 <br> 11人次</span>
+                  <span style="font-size: 20px;font-weight: 800">{{nowfloatPersonFirst.ObjectName}} <br> {{nowfloatPersonFirst.EventTime}}<br>{{nowfloatPersonFirst.EventName}} </span>
                 </div>
               </el-col>
               <el-col :span="7" style="height: 10px" >
-
               </el-col>
             </el-col>
-
           </el-row>
         </div>
         <div class="partsFoot" style="height: 70px">
           <div style="margin: 20px 2px;float: right">
-            <div class="sure">确定</div>
+            <div class="sure">{{ nowfloatTime }}秒后关闭</div>
           </div>
         </div>
       </div>
@@ -333,6 +326,11 @@
         plan:'',                          //计划任务
         planStartTime:'',                 //计划任务开始时间
         planEndTime:'',                   //计划任务结束时间
+        nowfloatTime:0,                   //实时流动倒计时
+        nowfloatPerson:[],                //实时流动人员
+        nowfloatPersonFirst:[],
+        nowfloatPersonA:1,
+        nowfloatPersonB:9,
         /* Coding By YanM */
         /* mj B*/
         receiveDataMsgType25:{},//进出ws工数据
@@ -358,9 +356,10 @@
         alertYHDL: false,                 //用户登录
         alertJQXZ: false,                 //监区选择
         alertBJXX: false,                 //报警信息
-        alertSSLD: true,                 //实时流动
+        alertSSLD: false,                 //实时流动
         alertYDMD: false,                 //已点名单
         alertBJTK: false,                 //报警弹框
+        alertYDGJ:false,                  //已点工具
         criminalList:[]                   //罪犯基础信息集合
       }
     },
@@ -469,6 +468,35 @@
       /* 登录弹窗显示 */
       loginOpen:function (msg) {
         this.alertYHDL = msg
+      },
+
+      /* 实时流动倒计时 */
+      nowFloating:function () {
+        let vm = this
+        vm.alertSSLD = true
+        vm.nowfloatTime = 9;
+        let interval = window.setInterval(function() {
+          if ((vm.nowfloatTime--) <= 0) {
+            vm.alertSSLD = false;
+            window.clearInterval(interval);
+          }
+        },1000);
+      },
+
+      /* 登录关闭按钮 */
+      loginclose:function () {
+        this.$router.push({ path: '/' })
+        this.alertYHDL=false
+      },
+
+      closeWeb:function () {
+        let vm = this
+        vm.ws.close()
+      },
+
+      /* websocketInit */
+      websocketInit:function () {
+
       },
 
       /* Coding By YanM */
@@ -899,7 +927,7 @@
                 Status:result[i].Status,
                 HostID:result[i].HostID,
                 IsDelete:result[i].IsDelete,
-                UpdateTime:result[i].UpdateTime,
+                UpdateTime:result[i].UpdateTime
               };
             }
             //所有罪犯信息缓存(传进vue的数据用于渲染页面)
@@ -993,13 +1021,13 @@
                 UpdateTime:result[i].UpdateTime,
                 role:result[i].role,
                 RFID:result[i].RFID,
-                IC:result[i].IC,
+                IC:result[i].IC
               };
             }
             vm.policeList.push(police_hash)
             console.log('警员基础数据',police_hash)
           },
-          complete: function (XHR, TS) {
+          complete: function (XHR) {
             XHR = null;  //回收资源
           }
         });
@@ -1008,7 +1036,6 @@
     mounted () {
       let vm = this
       window.aaa = this
-
       /* Coding By YanM */
       this.initPrison()
       /* 人员分布-14 */
@@ -1042,9 +1069,11 @@
           OrgID : vm.getLocalStorage('OrgID'),
         })
       }
+
+
       /* 打开websocket */
       vm.ws.onopen = function(){
-        alert('开启');
+//        alert('开启');
         setInterval(function () {
           /* 保持心跳-参数-01 */
           vm.ws.send(JSON.stringify(keep_heart))
@@ -1054,7 +1083,9 @@
           vm.ws.send(JSON.stringify(personnel_distribution))
         },5000)
       };
+
       vm.allDataInit()
+
       vm.ws.onmessage=function(event) {
         vm.SocketAllData = event.data
         /*过滤进出工数据*/
@@ -1064,7 +1095,7 @@
         }
 
         /* 报警信息 */
-        if (JSON.parse(event.data).Header.MsgType == 2) {
+        if (JSON.parse(event.data).Header.MsgType === 2) {
           var alarmNews = JSON.parse(JSON.parse(event.data).Body)
 //          区域过滤测试后解开
 //          if (alarmNews.OrgID === localStorage.getItem("OrgID")) {
@@ -1085,7 +1116,7 @@
         }
 
         /* 人员分布返回数据-14 */
-        if(JSON.parse(event.data).Header.MsgType == 14){
+        if(JSON.parse(event.data).Header.MsgType === 14){
           var personnel_distribution_rec = JSON.parse(JSON.parse(event.data).Body)
 //          console.log('人员分布-返回数据-14',personnel_distribution_rec)
           var chartsParms = []
@@ -1104,7 +1135,7 @@
         }
 
         /* 流动人员 && 外监进入人员-返回数据-24 */
-        if(JSON.parse(event.data).Header.MsgType == 24){
+        if(JSON.parse(event.data).Header.MsgType === 24){
           var  flowPerson_outPrison_rec = JSON.parse(JSON.parse(event.data).Body)
 
           // 1、外出人数（监内）
@@ -1136,18 +1167,30 @@
           }
         }
 
-        /* 计划任务-返回数据-7 */
-        if(JSON.parse(event.data).Header.MsgType == 4){
+        /* 计划任务-返回数据-4 */
+        if(JSON.parse(event.data).Header.MsgType === 4){
           var  plan_task = JSON.parse(JSON.parse(event.data).Body)
           console.log('计划任务-返回数据-4',plan_task)
           vm.plan = plan_task.PlanTypeName
           vm.planStartTime = plan_task.StartTime
           vm.planEndTime = plan_task.EndTime
-          if(vm.plan === '工具清点计划'){
-            this.$router.push({ path: '/toolcheck' })
-          } else if(vm.plan === '人员清点计划'){
-            this.$router.push({ path: '/crimalcheck' })
+//          if(vm.plan === '工具清点计划'){
+//            vm.$router.push({ path: '/toolcheck' })
+//          } else if(vm.plan === '人员清点计划'){
+//            vm.$router.push({ path: '/crimalcheck' })
+//          }
+        }
+
+        /* 实时流动-返回数据-3 */
+        if(JSON.parse(event.data).Header.MsgType === 3){
+          var  now_floating = JSON.parse(JSON.parse(event.data).Body)
+//          console.log('实时流动-返回数据-3',now_floating)
+          if(vm.alertSSLD === true){
+//            vm.nowFloating()
+            vm.nowfloatPerson.unshift(now_floating)
+            vm.nowfloatPersonFirst = vm.nowfloatPerson[0]
           }
+
         }
 
         /* 调用ajax全量数据 */
@@ -1155,10 +1198,17 @@
       }
 
       /* 关闭状态 */
-      this.ws.onclose = function(){
+      vm.ws.onclose = function(){
         // 关闭 websocket
-        alert("连接已关闭...");
+//        alert("连接已关闭...");
+        window.location.reload()
       };
+
+      /* 错误信息 */
+      vm.ws.onerror = function(evt) {
+          console.log("WebSocketError!",evt)
+      }
+
       /* Coding By YanM */
 
       /* Coding By Qianjf */
@@ -1331,6 +1381,7 @@
   }
   .alertSSLD span{
     color: black;
+    font-size: 12px;
   }
   /*已点名单*/
   .alertYDMD .pages{

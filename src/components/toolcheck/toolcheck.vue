@@ -384,7 +384,7 @@
         })
       }
       setInterval(function () {
-       console.log( "111111111111111111111111111111111111111111111111111111111111",vm.toolList)
+//       console.log( "111111111111111111111111111111111111111111111111111111111111",vm.toolList)
         //发送数据
         if(vm.ws.readyState == WebSocket.OPEN){
           vm.ws.send(JSON.stringify(send))
