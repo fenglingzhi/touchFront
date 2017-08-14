@@ -76,10 +76,10 @@
                       刷卡区域
                     </div>
                     <div class="deailBody" style="height:269px;">
-                      <el-col :span="8" v-for="criminal in inCriminals" :key="1">
-                        <div class="criminal" >
-                          <img :src="criminal.headimg" width="98%" height="100" alt=""/>
-                          <span class="criminalName">{{ criminal.name }}</span>
+                      <el-col :span="8" v-for="(person,index) in cardPerson.slice(0,1112)" :key="1">
+                        <div class="criminal" v-on:click="cancle(index)" >
+                          <img :src="person.Photo" width="98%" height="100" alt=""/>
+                          <span class="criminalName">{{person.CriminalName}}</span>
                         </div>
                       </el-col>
                     </div>
@@ -92,7 +92,7 @@
           </div>
           <div class="partsFoot">
             <div style="margin: 13px 2px;float: right">
-              <div class="sure">提交</div>
+              <div class="sure" v-on:click="submit()">提交</div>
               <div class="sure">取消</div>
             </div>
           </div>
@@ -108,31 +108,12 @@
 <script>
   export default {
     name: 'navheader',
+    props:[
+      'SocketAllData','criminalList','receiveDataMsgType8','receiveDataMsgType35'
+    ],
+
     data () {
       return {
-        inCriminals: [
-          {name: '12321', headimg: '/static/img/tol.png'},
-          {name: '123', headimg: '/static/img/tol.png'},
-          {name: '44', headimg: '/static/img/tol.png'},
-          {name: '6', headimg: '/static/img/tol.png'},
-          {name: '7532', headimg: '/static/img/tol.png'},
-          {name: '24556', headimg: '/static/img/tol.png'},
-          {name: '66676', headimg: '/static/img/tol.png'},
-          {name: '7788', headimg: '/static/img/tol.png'},
-          {name: '9999', headimg: '/static/img/tol.png'},
-          {name: '23445', headimg: '/static/img/tol.png'},
-          {name: '123344', headimg: '/static/img/tol.png'},
-          {name: '5555666', headimg: '/static/img/tol.png'}
-        ],// 外出人员明细
-        polices: [
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'}
-
-        ], // 陪同民警明细
         generalGroupList:[],//普通互监组
         generalGroupPages:1,//外出地点总页数
         generalGroupNowPage:1,//外出地点当前页
@@ -144,11 +125,13 @@
         provisionalGroupPages:1,// 临时互监组总页码
         provisionalGroupListAll:0,
         provisionalGroupA:1,
-        provisionalGroupB:12
+        provisionalGroupB:12,
+        cardPerson:[]//刷卡罪犯集合
 
       }
     },
     methods: {
+
       chooseGeneralGroup:function (dom) {
         for(var i=0;i< this.generalGroupList.length;i++){
           this.generalGroupList[i].ischoose=false
@@ -199,7 +182,103 @@
           this.provisionalGroupB=this.provisionalGroupB-12
         }
 
+      },
+      cancle:function (index) {
+        var r=confirm("确定要删除该人员？");
+        if (r==true)
+        {
+           this.cardPerson.splice(index,1)
+        }
+
+      },
+      submit:function () {
+        var vm=this
+        var send = {
+          Header: {
+            MsgID:"201501260000000034",
+            MsgType:35
+          },
+          Body: JSON.stringify({
+            Type:1,
+            CriminalIDs:vm.cardPerson
+          })
+        }
+        if(vm.cardPerson==[]||vm.cardPerson==''){
+          alert("还没选人")
+        }else {
+          //发送数据
+          if(vm.ws.readyState == WebSocket.OPEN){
+            vm.ws.send(JSON.stringify(send))
+          }
+          /*接收数据*/
+         var set1=setInterval(function () {
+            var receiveData = vm.receiveDataMsgType35
+            if(receiveData["RET"]==1){
+              clearInterval(set1)
+              alert(receiveData["Description"])
+            }else if(receiveData["RET"]==2){
+              clearInterval(set1)
+              var r=confirm(receiveData["Description"]);
+              if (r==true)
+              {
+                var send1 = {
+                  Header: {
+                    MsgID:"201501260000000034",
+                    MsgType:35
+                  },
+                  Body: JSON.stringify({
+                    Type:2,
+                    CriminalIDs:vm.cardPerson
+                  })
+                }
+                //发送数据
+                if(vm.ws.readyState == WebSocket.OPEN){
+                  vm.ws.send(JSON.stringify(send1))
+                }
+                var set2=setInterval(function () {
+                  if(receiveData["RET"]==1){
+                    clearInterval(set2)
+                    alert(receiveData["Description"])
+                  }
+                },1000)
+              }
+
+            }else if(receiveData["RET"]==3){
+              clearInterval(set1)
+             alert(receiveData["Description"])
+
+            }else if(receiveData["RET"]==4){
+              clearInterval(set1)
+              var r=confirm(receiveData["Description"]);
+              if (r==true)
+              {
+                var send3 = {
+                  Header: {
+                    MsgID:"201501260000000034",
+                    MsgType:35
+                  },
+                  Body: JSON.stringify({
+                    Type:3,
+                    CriminalIDs:vm.cardPerson
+                  })
+                }
+                //发送数据
+                if(vm.ws.readyState == WebSocket.OPEN){
+                  vm.ws.send(JSON.stringify(send3))
+                }
+                var set3=setInterval(function () {
+                  if(receiveData["RET"]==1){
+                    clearInterval(set3)
+                    alert(receiveData["Description"])
+                  }
+                },1000)
+              }
+            }
+
+          },1000)
+        }
       }
+
     },
     mounted () {
       /* Coding By YanM */
@@ -224,7 +303,6 @@
               result[i]["ischoose"]=false
             }
             vm.generalGroupList=result
-            console.log(vm.generalGroupList)
           }
 
         },
@@ -262,6 +340,30 @@
           XHR = null;  //回收资源
         }
       });
+
+      setInterval(function () {
+        /*刷卡信息*/
+        var receiveData = vm.receiveDataMsgType8
+
+          if(receiveData!=""||receiveData!=null){
+            if(receiveData[0]["PsType"]==2002){
+              console.log(receiveData,"aaaaaaaaaaaaaaaa",vm.criminalList[0])
+                    receiveData[0]["ischoose"]=false
+                    receiveData[0]["CriminalName"]=vm.criminalList[0][receiveData[0]["PersonID"]]["CriminalName"]
+                    receiveData[0]["Photo"]=vm.criminalList[0][receiveData[0]["PersonID"]]["Photo"]
+                    for( var i=0;i< vm.cardPerson.length;i++){
+                      if(vm.cardPerson[i]["PersonID"]==receiveData[0]["PersonID"]){
+                        vm.cardPerson.splice(i,1)
+                      }
+                    }
+                    vm.cardPerson.push(receiveData[0])
+
+
+            }
+          }
+
+
+      },500)
       /* Coding By Qianjf */
 
     }

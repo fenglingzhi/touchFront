@@ -5,7 +5,7 @@
     <el-col :span="22">
       <div class="li1_parts">
         <div class="tabHead">
-          <div :class="['tab', { tabing: isB1}]" v-on:click="toggle1()">出工{{SocketAllData}}</div>
+          <div :class="['tab', { tabing: isB1}]" v-on:click="toggle1()">出工</div>
           <div :class="['tab', { tabing: isB2}]" v-on:click="toggle2()">留监</div>
         </div>
         <div class="partsBody" v-show="isShow1">
@@ -165,13 +165,11 @@
           vm.ws.send(JSON.stringify(personnel_distribution))
         }
 
-//      vm.ws.onmessage=function(event){
-//        if(JSON.parse(vm.SocketAllData).Header.MsgType === 25){
-//          var  flowPerson_outPrison_rec = JSON.parse(JSON.parse(this.SocketAllData).Body)
-          if(vm.receiveDataMsgType25!=""||vm.receiveDataMsgType25!=null){
+          var  flowPerson_outPrison_rec = vm.receiveDataMsgType25
+          if(flowPerson_outPrison_rec!=""||flowPerson_outPrison_rec!=null){
             vm.inPages=Math.ceil(vm.inCriminalList.length/48)==0?1:Math.ceil(vm.inCriminalList.length/48)
-            for(var i=0;i<receiveDataMsgType25.length;i++){
-              var getCriminalID = receiveDataMsgType25[i]["CriminalID"]
+            for(var i=0;i<flowPerson_outPrison_rec.length;i++){
+              var getCriminalID = flowPerson_outPrison_rec[i]["CriminalID"]
               for(var j=0;j<vm.areaCriminalList.length;j++){
                 if(vm.areaCriminalList[j]["FlnkID"]==getCriminalID){
                   vm.outCriminalList.push(vm.areaCriminalList[j])
@@ -184,9 +182,9 @@
               }
             }
           }
-//        }
+
+
         vm.outPages=Math.ceil(vm.outCriminalList.length/48)==0?1:Math.ceil(vm.outCriminalList.length/48)
-//      }
 
       },1000)
 

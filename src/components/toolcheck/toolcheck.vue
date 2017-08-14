@@ -16,7 +16,7 @@
         <div class="tab1" v-show="isShow1">
           <div class="partsBody" style="height:392px;">
             <div class="bodyHead">
-              <div class="title">柜内工具未点120件</div>
+              <div class="title">柜内工具未点{{inTool.length}}件</div>
               <div class="titleDescribe">（柜内工具总数：200个，<span style="color: #1443cd"  @click="$emit('hasCheakedTool')" >已点工具{{toolCalledCount}}个</span>）</div>
             </div>
             <div class="bodyCon">
@@ -43,7 +43,7 @@
           </div>
           <div class="partsBody" style="height:260px;">
             <div class="bodyHead">
-              <div class="title">柜外工具未点10件</div>
+              <div class="title">柜外工具未点{{outTool.length}}件</div>
             </div>
             <div class="bodyCon" style="height: 135px;">
 
@@ -70,7 +70,7 @@
           <div class="partsFoot">
             <div style="margin: 13px 2px;float: right">
               <div class="sure" v-on:click="submitTool()">手动确定</div>
-              <div class="sure">手动结束</div>
+              <div class="sure" v-on:click="cancel()">手动结束</div>
             </div>
           </div>
         </div>
@@ -131,7 +131,7 @@
   export default {
     name: 'navheader',
     props:[
-      'SocketAllData','criminalList','toolList'
+      'SocketAllData','criminalList','toolList','receiveDataMsgType30','receiveDataMsgType32','receiveDataMsgType33'
     ],
     beforeCreate () {
       /* Coding By YanM */
@@ -247,12 +247,10 @@
       },
       getRecordback:function () {
         var vm = this
-        console.log(vm.recordPage)
         if(vm.recordPage==0){
             alert("已经是第一页了")
         }else {
           vm.recordPage=vm.recordPage-1
-//          localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
           $.ajax({
             type: "get",
             contentType: "application/json; charset=utf-8",
@@ -357,14 +355,45 @@
         if(vm.ws.readyState == WebSocket.OPEN){
           vm.ws.send(JSON.stringify(send))
         }
-        if(JSON.parse(vm.SocketAllData).Header.MsgType === 30) {
-          var receiveData = JSON.parse(JSON.parse(vm.SocketAllData).Body)
-          if(receiveData["RET"]==0){
+
+        var settool1= setTimeout(function () {
+           if(vm.receiveDataMsgType30["RET"]==0){
              alert("处理失败")
-          }else {
-              alert("处理成功")
-          }
+             clearInterval(settool1)
+
+           }else {
+             alert("处理成功")
+             clearInterval(settool1)
+
+           }
+         },500)
+      },
+      cancel:function () {
+        var send = {
+          Header: {
+            MsgID:"201501260000000034",
+            MsgType:33
+          },
+          Body: JSON.stringify({
+            OrgID : localStorage.getItem('OrgID'),
+            CountType:1
+          })
         }
+        //发送数据
+        if(vm.ws.readyState == WebSocket.OPEN){
+          vm.ws.send(JSON.stringify(send))
+        }
+
+        var settool2= setTimeout(function () {
+          if(vm.receiveDataMsgType33["RET"]==0){
+            alert("处理失败")
+            clearInterval(settool2)
+
+          }else {
+            alert("处理成功")
+            clearInterval(settool2)
+          }
+        },500)
       }
     },
     mounted () {
@@ -384,16 +413,14 @@
         })
       }
       setInterval(function () {
-//       console.log( "111111111111111111111111111111111111111111111111111111111111",vm.toolList)
         //发送数据
         if(vm.ws.readyState == WebSocket.OPEN){
           vm.ws.send(JSON.stringify(send))
         }
 //        接收数据
-        if(JSON.parse(vm.SocketAllData).Header.MsgType === 32){
-          var  receiveData = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+        var receiveData=vm.receiveDataMsgType32
+//        console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",receiveData)
           if(receiveData!=""||receiveData!=null){
-            var notCallTool;//未点工具
             var hasNotCall=[] //柜内未点1
             var outHasNotCall=[] //柜外未点0
             for (var i=0;i<receiveData.length;i++){
@@ -427,14 +454,8 @@
                     vm.outPages=Math.ceil(vm.outTool.length/12)==0?1:Math.ceil(vm.outTool.length/12)
                   }
             }
-
            }
-
           }
-
-
-
-        }
       },1000)
 
 //      获取第一页记录数据

@@ -76,10 +76,16 @@
                       外出人员
                     </div>
                     <div class="deailBody" style="height:269px;">
-                      <el-col :span="4" v-for="criminal in inCriminals" :key="1">
-                        <div class="criminal" >
-                          <img :src="criminal.headimg" width="98%" height="85" alt=""/>
-                          <span class="criminalName">{{ criminal.name }}</span>
+                      <!--<el-col :span="4" v-for="criminal in outCriminals" :key="1">-->
+                        <!--<div class="criminal" >-->
+                          <!--<img :src="criminal.headimg" width="98%" height="85" alt=""/>-->
+                          <!--<span class="criminalName">{{ criminal.name }}</span>-->
+                        <!--</div>-->
+                      <!--</el-col>-->
+                      <el-col :span="4"  v-for="(criminal,index) in outCriminals.slice(outCriminalsA-1,outCriminalsB)" :key="1">
+                        <div  class="criminal" v-on:click="chooseOut(index)" >
+                          <img :src="criminal.Photo" width="98%" height="85" alt=""/>
+                          <span class="criminalName">{{ criminal.CriminalName}}</span>
                         </div>
                       </el-col>
                     </div>
@@ -88,9 +94,9 @@
                     <el-col :span="3" style="height: 10px"></el-col>
                     <el-col :span="18" >
                       <div class="pages">
-                        <span class="pageControl"><img src="../../assets/q1.png" alt=""/></span>
-                        <span class="pagesText">11/30</span>
-                        <span class="pageControl"><img src="../../assets/q2.png" alt=""/></span>
+                        <span class="pageControl"><img src="../../assets/q1.png" v-on:click="outcriminalBack()" alt=""/></span>
+                        <span class="pagesText">{{outNowPage}}/{{outPages}}</span>
+                        <span class="pageControl"><img src="../../assets/q2.png" v-on:click="outcriminalGo()" alt=""/></span>
                       </div>
                     </el-col>
                     <el-col :span="3" style="height: 10px"></el-col>
@@ -101,10 +107,16 @@
                       陪同民警
                     </div>
                     <div class="deailBody" style="height:131px;">
-                      <el-col :span="4" v-for="police in polices" :key="1">
-                        <div class="criminal" >
-                          <img :src="police.headimg" width="98%" height="85" alt=""/>
-                          <span class="criminalName">{{ police.name }}</span>
+                      <!--<el-col :span="4" v-for="police in polices" :key="1">-->
+                        <!--<div class="criminal" >-->
+                          <!--<img :src="police.headimg" width="98%" height="85" alt=""/>-->
+                          <!--<span class="criminalName">{{ police.name }}</span>-->
+                        <!--</div>-->
+                      <!--</el-col>-->
+                      <el-col :span="4"  v-for="(police,index) in outPolices.slice(outPoliceA-1,outPoliceB)" :key="1">
+                        <div  class="criminal" v-on:click="chooseOut(index)" >
+                          <img :src="police.Photo" width="98%" height="85" alt=""/>
+                          <span class="criminalName">{{ police.PoliceName}}</span>
                         </div>
                       </el-col>
                     </div>
@@ -113,9 +125,9 @@
                     <el-col :span="3" style="height: 10px"></el-col>
                     <el-col :span="18" >
                       <div class="pages">
-                        <span class="pageControl"><img src="../../assets/q1.png" alt=""/></span>
-                        <span class="pagesText">11/30</span>
-                        <span class="pageControl"><img src="../../assets/q2.png" alt=""/></span>
+                        <span class="pageControl"><img src="../../assets/q1.png" v-on:click="outPoliceBack()" alt=""/></span>
+                        <span class="pagesText">{{outPoliceNowPage}}/{{outPolicePages}}</span>
+                        <span class="pageControl"><img src="../../assets/q2.png" v-on:click="outPoliceGo()" alt=""/></span>
                       </div>
                     </el-col>
                     <el-col :span="3" style="height: 10px"></el-col>
@@ -129,8 +141,8 @@
           </div>
           <div class="partsFoot">
             <div style="margin: 13px 2px;float: right">
-              <div class="sure">提交</div>
-              <div class="sure">取消</div>
+              <div class="sure" v-on:click="submitOutRegister()">提交</div>
+              <div class="sure" v-on:click="cancel()">取消</div>
             </div>
           </div>
         </div>
@@ -146,33 +158,11 @@
   export default {
     name: 'navheader',
     props:[
-      'SocketAllData','criminalList'
+      'SocketAllData','criminalList','receiveDataMsgType20','receiveDataMsgType22','receiveDataMsgType27','policeList','receiveDataMsgType23','receiveDataMsgType26'
     ],
     data () {
       return {
-        inCriminals: [
-          {name: '12321', headimg: '/static/img/tol.png'},
-          {name: '123', headimg: '/static/img/tol.png'},
-          {name: '44', headimg: '/static/img/tol.png'},
-          {name: '6', headimg: '/static/img/tol.png'},
-          {name: '7532', headimg: '/static/img/tol.png'},
-          {name: '24556', headimg: '/static/img/tol.png'},
-          {name: '66676', headimg: '/static/img/tol.png'},
-          {name: '7788', headimg: '/static/img/tol.png'},
-          {name: '9999', headimg: '/static/img/tol.png'},
-          {name: '23445', headimg: '/static/img/tol.png'},
-          {name: '123344', headimg: '/static/img/tol.png'},
-          {name: '5555666', headimg: '/static/img/tol.png'}
-        ],// 外出人员明细
-        polices: [
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'},
-          {name: '张学友', headimg: '/static/img/crimal_1_03.5a235b3.jpg'}
 
-        ], // 陪同民警明细
         areaNameList:[],//外出地点
         areaPages:0,//外出地点总页数
         areaNowPage:1,//外出地点当前页
@@ -185,7 +175,21 @@
         reasonListAll:0,
         reasonA:1,
         reasonB:12,
-        isSuccess:true
+        isSuccess:1,
+
+        outCriminals:[],//外出罪犯信息
+        outPolices:[],//外出陪同民警信息
+        outPages:1,//外出罪犯总页数
+        outNowPage:1,//外出罪犯当前页
+        outListAll:0,//外出罪犯总数
+        outCriminalsA:1,
+        outCriminalsB:12,
+        outPolicePages:1,//外出民警总页数
+        outPoliceNowPage:1,//外出民警当前页
+        outPoliceListAll:0,//外出民警总数
+        outPoliceA:1,
+        outPoliceB:6
+
       }
     },
     methods: {
@@ -219,8 +223,7 @@
           this.areaB=this.areaB-12
         }
 
-      }
-      ,
+      },
       ReasonGo:function () {
           if(this.reasonNowPage<this.reasonPages){
             this.reasonNowPage=this.reasonNowPage+1
@@ -239,6 +242,42 @@
           this.reasonB=this.reasonB-12
         }
 
+      },
+      outcriminalGo:function () {
+        if(this.outNowPage<this.outPages){
+          this.outNowPage=this.outNowPage+1
+          this.outCriminalsA=this.outCriminalsA+12
+          this.outCriminalsB=this.outCriminalsB+12
+        }else {
+          alert("已经最后一页了")
+        }
+      },
+      outcriminalBack:function () {
+        if(this.outNowPage==1){
+          alert("已经是第一页了")
+        }else {
+          this.outNowPage=this.outNowPage-1
+          this.outCriminalsA=this.outCriminalsA-12
+          this.outCriminalsB=this.outCriminalsB-12
+        }
+      },
+      outPoliceGo:function () {
+        if(this.outPoliceNowPage<this.outPolicePages){
+          this.outPoliceNowPage=this.outPoliceNowPage+1
+          this.outPoliceA=this.outPoliceA+6
+          this.outPoliceB=this.outPoliceB+6
+        }else {
+          alert("已经最后一页了")
+        }
+      },
+      outPoliceBack:function () {
+        if(this.outPoliceNowPage==1){
+          alert("已经是第一页了")
+        }else {
+          this.outPoliceNowPage=this.outPoliceNowPage-1
+          this.outPoliceA=this.outPoliceA-6
+          this.outPoliceB=this.outPoliceB-6
+        }
       },
       firstWs:function () {
         var vm=this
@@ -259,16 +298,98 @@
           vm.ws.send(JSON.stringify(send1))
         }
         setInterval(function () {
-          if(JSON.parse(vm.SocketAllData).Header.MsgType === 20) {
-            var receiveData = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+            var receiveData =vm.receiveDataMsgType20
             if(receiveData["RET"]==1){
-              vm.isSuccess=false
+              vm.isSuccess=1
             }else {
-              vm.isSuccess=true
+              vm.isSuccess=0
             }
+
+        },1000)
+      },
+      cancel:function () {
+        var vm=this
+        var send3 = {
+          Header: {
+            MsgID:"201501260000000035",
+            MsgType:26
+          },
+          Body: JSON.stringify({
+            OrgID : localStorage.getItem('OrgID'),
+            DoorID : localStorage.getItem('DoorID')
+          })
+        }
+        //发送数据
+        if(vm.ws.readyState == WebSocket.OPEN){
+          vm.ws.send(JSON.stringify(send3))
+        }
+        setInterval(function () {
+          var receiveData =vm.receiveDataMsgType26
+          if(receiveData["RET"]==1){
+            alert("取消成功")
+          }else {
+            alert("取消失败")
           }
-        },500)
+
+        },1000)
+      },
+
+      submitOutRegister:function () {
+        var vm=this
+        var Criminals=[];
+        var Polices=[];
+        var Areas=[];
+//      var Reason=[];
+        var Reason='';
+
+        for (var i=0;i<vm.outCriminals.length;i++){
+          Criminals.push(vm.outCriminals[i]["PersonID"])
+        }
+        for (var i=0;i<vm.outPolices.length;i++){
+          Polices.push(vm.outPolices[i]["PersonID"])
+        }
+        for (var i=0;i<vm.areaNameList.length;i++){
+            if(vm.areaNameList[i]["ischoose"]){
+              Areas.push(vm.areaNameList[i]["FlnkID"])
+            }
+        }
+        for (var i=0;i<vm.reasonList.length;i++){
+          if(vm.reasonList[i]["ischoose"]){
+//          Reason.push(vm.reasonList[i]["Description"])
+            Reason=vm.reasonList[i]["Description"]
+          }
+        }
+
+        var sendOutRegister = {
+          Header: {
+            MsgID:"201501260000000031",
+            MsgType:23
+          },
+          Body: JSON.stringify({
+            OrgID : localStorage.getItem('OrgID'),
+            DoorID : localStorage.getItem('DoorID'),
+            AreaID : localStorage.getItem('AreaID'),
+            Criminals:Criminals,
+            Polices:Polices,
+            Reason:Reason,
+            Areas:Areas
+
+          })
+        }
+        //发送数据
+        if(vm.ws.readyState == WebSocket.OPEN){
+          vm.ws.send(JSON.stringify(sendOutRegister))
+        }
+        setInterval(function () {
+          var receiveData =vm.receiveDataMsgType23
+          if(receiveData["RET"]==1){
+            alert("提交成功")
+          }else {
+            alert("提交失败")
+          }
+        },1000)
       }
+
     },
     mounted () {
       /* Coding By YanM */
@@ -278,38 +399,57 @@
       var vm = this
 //      发送人员流动状态  2603临时外出
       setInterval(function () {
-          if(vm.isSuccess){
+          if(vm.isSuccess==0){
             vm.firstWs()
           }
       },1000)
 //      获取外出登记的人员明细
-      if(!vm.isSuccess){
-        var send2 = {
-          Header: {
-            MsgID:"201501260000000035",
-            MsgType:22
-          },
-          Body: JSON.stringify({
-            OrgID : localStorage.getItem('OrgID'),
-            DoorID : localStorage.getItem('DoorID'),
-          })
-        }
-        //发送数据
-        if(vm.ws.readyState == WebSocket.OPEN){
-          vm.ws.send(JSON.stringify(send2))
-        }
-        setInterval(function () {
-          if(JSON.parse(vm.SocketAllData).Header.MsgType === 22) {
-            var receiveData = JSON.parse(JSON.parse(vm.SocketAllData).Body)
-            if(receiveData["RET"]==1){
-              vm.isSuccess=false
-            }else {
-              vm.isSuccess=true
+      setInterval(function () {
+        if(vm.isSuccess==1){
+          var send2 = {
+            Header: {
+              MsgID:"201501260000000035",
+              MsgType:22
+            },
+            Body: JSON.stringify({
+              OrgID : localStorage.getItem('OrgID'),
+              DoorID : localStorage.getItem('DoorID'),
+            })
+          }
+          //发送数据
+          if(vm.ws.readyState == WebSocket.OPEN){
+            vm.ws.send(JSON.stringify(send2))
+          }
+          /*外出登记罪犯信息*/
+          var receiveData = vm.receiveDataMsgType22
+          if(receiveData!=""||receiveData!=null){
+            var outCriminal=[] //外出罪犯
+            for (var i=0;i<receiveData.length;i++){
+                var Criminal=receiveData[i]
+                    Criminal["ischoose"]=false
+                    Criminal["CriminalName"]=vm.criminalList[0][Criminal["PersonID"]]["CriminalName"]
+                    Criminal["Photo"]=vm.criminalList[0][Criminal["PersonID"]]["Photo"]
+                    outCriminal.push(Criminal)
+                    vm.outCriminals=outCriminal
+                    vm.outPages=Math.ceil(vm.outCriminals.length/12)==0?1:Math.ceil(vm.outCriminals.length/12)
             }
           }
-        },500)
-
-      }
+          /*陪同民警信息*/
+          var receiveDataP = vm.receiveDataMsgType27
+          if(receiveDataP!=""||receiveDataP!=null){
+            var outPolice=[] //陪同民警
+            for (var i=0;i<receiveDataP.length;i++){
+              var Polices=receiveDataP[i]
+              Polices["ischoose"]=false
+              Polices["PoliceName"]=vm.policeList[0][Polices["PersonID"]]["PoliceName"]
+              Polices["Photo"]=vm.policeList[0][Polices["PersonID"]]["Photo"]
+              outPolice.push(Polices)
+              vm.outPolices=outPolice
+              vm.outPolicePages=Math.ceil(vm.outPolices.length/6)==0?1:Math.ceil(vm.outPolices.length/6)
+            }
+          }
+        }
+      },1000)
 
 //      获取外出地点
       $.ajax({
