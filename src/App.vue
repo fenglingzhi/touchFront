@@ -7,9 +7,10 @@
       :plan="plan"
       :planStartTime="planStartTime"
       :planEndTime="planEndTime"
+      :onlinestatus="onlinestatus"
       @aaa="closeWeb()"
     ></navheader>
-    <router-view
+    <router-view style="height: 100%"
       @hasCheaked="onHasCheaked"
       @hasCheakedTool="onHasCheakedTool"
       :criminalList="criminalList"
@@ -241,7 +242,6 @@
     </div>
     <!--已点名单 end-->
 
-
     <!--已点工具 star-->
     <div class="alertTip alertYDGJ" v-show="alertYDGJ">
       <div class="alertBody " style="margin: -330px -550px;width: 1100px;height: 660px;">
@@ -281,8 +281,6 @@
       </div>
     </div>
     <!--已点工具 end-->
-
-
 
     <!--报警弹框 star-->
     <div class="alertAlarm" v-show="alertBJTK"  v-on:click="alertAlarm()">
@@ -339,9 +337,10 @@
         planEndTime:'',                   //计划任务结束时间
         nowfloatTime:0,                   //实时流动倒计时
         nowfloatPerson:[],                //实时流动人员
-        nowfloatPersonFirst:[],
+        nowfloatPersonFirst:[],           //实时流动人员大头像
         nowfloatPersonA:1,
         nowfloatPersonB:9,
+        onlinestatus:true,
         /* Coding By YanM */
         /* mj B*/
         receiveDataMsgType25:{},//进出ws工数据
@@ -521,7 +520,7 @@
         vm.ws.close()
       },
 
-      /* websocketInit */
+      /* 初始化websocket */
       websocketInit:function () {
 
       },
@@ -529,6 +528,7 @@
       /* Coding By YanM */
 
       /* Coding By Qianjf */
+      /* 注释 */
       alarmHandle:function () {
           var vm = this
         var alarmRecordID = $("#alarmRecordID").html()
@@ -577,6 +577,8 @@
         }
 
       },
+
+      /* 注释 */
       alarmGo:function () {
         if(this.alarmNowPage<this.alarmPages){
           this.alarmNowPage=this.alarmNowPage+1
@@ -599,6 +601,8 @@
         }
 
       },
+
+      /* 注释 */
       alarmBack:function () {
         if(this.alarmNowPage==1){
           alert("已经是第一页了")
@@ -609,6 +613,8 @@
         }
 
       },
+
+      /* 注释 */
       makePageDataGo:function () {
         var data=[{"name":"1"},{"name":"2"},{"name":"3"},{"name":"4"},{"name":"5"},{"name":"6"},{"name":"7"},{"name":"8"},{"name":"9"}]
         var lastData=[];
@@ -621,6 +627,7 @@
         }
         console.log(lastData)
       },
+
       /* 已点人员名单翻页 */
       getCriminalGo:function () {
         var vm = this
@@ -676,6 +683,7 @@
 
       },
 
+      /* 注释 */
       getCriminalback:function () {
         var vm = this
         if(vm.criminalPage==0){
@@ -778,6 +786,8 @@
           });
         }
       },
+
+      /* 注释 */
       getToolGo:function () {
         var vm = this
         if(!vm.toolCalledIsLastPage){
@@ -832,7 +842,7 @@
 
       },
 
-
+      /* 注释 */
       onHasCheakedTool: function () {
         this.alertYDGJ=true
 //      罪犯清点，已点名单
@@ -1143,10 +1153,10 @@
         })
       }
 
-
       /* 打开websocket */
       vm.ws.onopen = function(){
 //        alert('开启');
+        vm.onlinestatus = true
         setInterval(function () {
           /* 保持心跳-参数-01 */
           vm.ws.send(JSON.stringify(keep_heart))
@@ -1173,7 +1183,6 @@
         }
         /*工具清点*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 32) {
-            console.log("11111111111111111111111111111111",vm.SocketAllData)
           var receiveDataMsgType32 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType32=receiveDataMsgType32
         }
@@ -1208,26 +1217,25 @@
           vm.receiveDataMsgType26=receiveDataMsgType26
         }
         /*互监组管理刷卡*/
-        if(JSON.parse(vm.SocketAllData).Header.MsgType == 8) {
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 8) {
           var receiveDataMsgType8 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType8=receiveDataMsgType8
         }
 
         /*互监组管理提交*/
-        if(JSON.parse(vm.SocketAllData).Header.MsgType == 35) {
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 35) {
           var receiveDataMsgType35 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType35=receiveDataMsgType35
         }
         /*手动结束人员、工具清点*/
-        if(JSON.parse(vm.SocketAllData).Header.MsgType == 33) {
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 33) {
           var receiveDataMsgType33 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType33=receiveDataMsgType33
         }
         /* 报警信息 */
         if (JSON.parse(event.data).Header.MsgType === 2) {
           var alarmNews = JSON.parse(JSON.parse(event.data).Body)
-//          区域过滤测试后解开
-console.log("ppppppppppppppppppppppppppppppppppppppppp",alarmNews)
+            /* 区域过滤测试后解开 */
 //          if (alarmNews.OrgID === localStorage.getItem("OrgID")) {
           vm.alarmText = alarmNews.Description
 
@@ -1242,7 +1250,6 @@ console.log("ppppppppppppppppppppppppppppppppppppppppp",alarmNews)
               vm.alertBJTK = false
             }
 //          }
-//          console.log('报警信息++——+——+——+——+——+', vm.alarmList)
         }
 
         /* 人员分布返回数据-14 */
@@ -1329,9 +1336,8 @@ console.log("ppppppppppppppppppppppppppppppppppppppppp",alarmNews)
 
       /* 关闭状态 */
       vm.ws.onclose = function(){
-        // 关闭 websocket
-//        alert("连接已关闭...");
-        window.location.reload()
+        vm.onlinestatus = false
+//        window.location.reload()
       };
 
       /* 错误信息 */

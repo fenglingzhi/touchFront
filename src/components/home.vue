@@ -228,6 +228,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
   .home{
+    /*height: 100%;*/
     height: 780px !important;
   }
   #myChart{

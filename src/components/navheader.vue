@@ -1,15 +1,15 @@
 <template>
   <el-row class="navheader" >
-    <el-col :span="8" class="logo" v-show="logoIsShow">
+    <el-col :span="8" class="logo" v-if="onlinestatus == true">
       <el-col :span="2"><img src="../assets/hui.png" alt=""></el-col>
       <el-col :span="22"><p style="width: 500px">区域定位管控系统</p></el-col>
     </el-col>
-    <el-col :span="8" class="logo logo-hui" v-show="!logoIsShow">
+    <el-col :span="8" class="logo logo-hui" v-else>
       <el-col :span="2"><img src="../assets/hu.png" alt=""></el-col>
       <el-col :span="22"><p  style="width: 500px">区域定位管控系统</p></el-col>
     </el-col>
-    <el-col :span="8" class="logo"></el-col>
-    <el-col :span="8" class="navoption">
+    <!--<el-col :span="8" class="logo"></el-col>-->
+    <el-col :span="10" class="navoption">
       <el-col :span="22">
         <p>
           <span @click="$emit('getPosition')" class="nowposition">当前位置：{{ message }}</span>
@@ -38,7 +38,8 @@
       message:String,
       plan:'',
       planStartTime:'',
-      planEndTime:''
+      planEndTime:'',
+      onlinestatus:true
     },
     data () {
       return {
@@ -117,6 +118,7 @@
   }
   .navoption{
     padding: 30px 30px 0 0;
+    float: right;
     p{
       text-align: left;
       font-size: 14px;
