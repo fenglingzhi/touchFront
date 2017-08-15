@@ -13,7 +13,7 @@
 <script>
 export default {
   name: 'menufooter',
-  props:['YHDL'],
+  props:['YHDL','canRouter'],
   data () {
     return {
       menuList: [
@@ -22,7 +22,7 @@ export default {
         {name: '人员清点', path: '/crimalcheck'},
         {name: '工具清点', path: '/toolcheck'},
         {name: '外出登记', path: '/outregister'},
-//        {name: '定位展示', path: '/position'},
+//      {name: '定位展示', path: '/position'},
         {name: '互监组管理', path: '/mutualsupervision'}
       ],
     }
@@ -31,9 +31,58 @@ export default {
     gopage: function (path) {
       var vm = this
       // 路由跳转
-      this.$router.push({ path: path })
-      if(path === '/outwork' || path === '/outregister'){
-        vm.$emit('openLogin',true)
+//      this.$router.push({ path: path })
+//      if(path === '/outwork' || path === '/outregister'){
+//        vm.$emit('openLogin',true)
+//      }
+//
+      if(path === '/outwork' ){
+
+        if(this.canRouter==0){
+            alert("请完成当前操作或者取消后再操作")
+        }else {
+          this.$router.push({ path: '/outwork' })
+          vm.$emit('openLogin',true)
+        }
+
+      }else if(path === '/outregister'){
+        if(this.canRouter==0){
+          alert("请完成当前操作或者取消后再操作")
+        }else {
+          this.$router.push({ path: '/outregister' })
+          vm.$emit('openLogin',true)
+        }
+
+
+      }else if(path === '/crimalcheck'){
+        if(this.canRouter==0){
+          alert("请完成当前操作或者取消后再操作")
+        }else {
+          this.$router.push({ path: '/crimalcheck' })
+        }
+
+
+      }else if(path === '/toolcheck'){
+        if(this.canRouter==0){
+          alert("请完成当前操作或者取消后再操作")
+        }else {
+          this.$router.push({ path: '/toolcheck' })
+        }
+
+      }else if(path === '/mutualsupervision'){
+        if(this.canRouter==0){
+          alert("请完成当前操作或者取消后再操作")
+        }else {
+          this.$router.push({ path: '/mutualsupervision' })
+        }
+
+      }else if(path === '/') {
+        if(this.canRouter==0){
+          alert("请完成当前操作或者取消后再操作")
+        }else {
+          this.$router.push({ path: '/' })
+        }
+
       }
     },
   }

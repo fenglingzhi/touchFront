@@ -13,6 +13,7 @@
     <router-view style="height: 100%"
       @hasCheaked="onHasCheaked"
       @hasCheakedTool="onHasCheakedTool"
+      @canRouterChange="canRouterChange"
       :criminalList="criminalList"
       :toolList="toolList"
       :FlnkIDList1="FlnkIDList_11"
@@ -36,9 +37,11 @@
       :receiveDataMsgType35="receiveDataMsgType35"
       :receiveDataMsgType8="receiveDataMsgType8"
       :receiveDataMsgType33="receiveDataMsgType33"
+      :canRouter="canRouter"
     ></router-view>
     <menufooter
-      @openLogin="loginOpen"></menufooter>
+      @openLogin="loginOpen"
+      :canRouter="canRouter"></menufooter>
     <!--用户登录 star-->
     <div class="alertTip alertYHDL" v-show="alertYHDL">
       <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 408px;">
@@ -142,18 +145,18 @@
               <el-col :span="4" style="height:1px;" >
               </el-col>
             </el-row>
-            <el-row >
-              <el-col :span="8" style="height: 10px"></el-col>
-              <el-col :span="8" >
-                <div class="pages">
-                  <span class="pageControl"><img src="./assets/q1.png" v-on:click="alarmBack()" alt=""/></span>
-                  <span class="pagesText">{{alarmNowPage}}/{{alarmPages}}</span>
-                  <span class="pageControl"><img src="./assets/q2.png" v-on:click="alarmGo()" alt=""/></span>
-                </div>
-              </el-col>
-              <el-col :span="8" style="height: 10px"></el-col>
-            </el-row>
           </div>
+          <el-row >
+            <el-col :span="8" style="height: 10px"></el-col>
+            <el-col :span="8" >
+              <div class="pages">
+                <span class="pageControl"><img src="./assets/q1.png" v-on:click="alarmBack()" alt=""/></span>
+                <span class="pagesText">{{alarmNowPage}}/{{alarmPages}}</span>
+                <span class="pageControl"><img src="./assets/q2.png" v-on:click="alarmGo()" alt=""/></span>
+              </div>
+            </el-col>
+            <el-col :span="8" style="height: 10px"></el-col>
+          </el-row>
         </div>
         <div class="partsFoot">
           <div style="margin: 20px 2px;float: right">
@@ -282,10 +285,15 @@
     </div>
     <!--已点工具 end-->
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> ab94e06ed162a1d6a7d7d480197c2c7901c87c2d
     <!--报警弹框 star-->
     <div class="alertAlarm" v-show="alertBJTK"  v-on:click="alertAlarm()">
       <div class="alarmImg">
         <img class="alarmIco" src='./assets/a1.png' alt="">
+
       </div>
       <div class="alarmNum" >{{alarmList.length>999?"999+":alarmList.length}}</div>
       <div class="alarmText" >{{alarmText}}</div>
@@ -375,6 +383,7 @@
         AlarmRecordID:"",
         alarmA:1,
         alarmB:1,
+        groupTeam:[],//互监组成员
         SocketAllData:{},
         /* mj e*/
         alertYHDL: false,                 //用户登录
@@ -386,6 +395,7 @@
         alertYDGJ:false,                  //已点工具
         isPerson:true,
         isGrup:false,
+        canRouter:1,                  //流动路由判
         criminalList:[]                   //罪犯基础信息集合
       }
     },
@@ -479,11 +489,11 @@
           },
           url: SHANLEI + 'HomeIndex/CheckUser',
           success: function (result) {
-              console.log(result)
             if(result != null){
               vm.alertYHDL = false
               console.log(result)
               localStorage.setItem('placemanID',result[0].FlnkID)
+              vm.canRouter=0
             }else{
               alert('用户或密码错误')
             }
@@ -528,7 +538,26 @@
       /* Coding By YanM */
 
       /* Coding By Qianjf */
-      /* 注释 */
+      /* 登录弹窗显示 */
+      canRouterChange:function () {
+        this.canRouter = 1
+      },
+      /*自适应各种屏幕*/
+      changeSize:function () {
+        var oldWidth = 1584;
+        var oldHeight =  1024;
+        var nowWidth = document.body.clientWidth;
+        var nowHeight =$(window).height();
+        var scaleWidth = oldWidth / nowWidth;
+        var scaleHeight = oldHeight / nowHeight;
+        $("#app").css("transform", "scale(" + (1 / scaleWidth) + "," + (1 / scaleHeight) + ")");
+        $("#app").css("-ms-transform-origin", "0 0");
+        $("#app").css("transform-origin", "0 0");
+        $("#app").css("-webkit-transform-origin", "0 0");
+        $("#app").css("-moz-transform-origin", "0 0");
+        $("#app").css("-o-transform-origin", "0 0");
+      },
+      /*报警处理*/
       alarmHandle:function () {
           var vm = this
         var alarmRecordID = $("#alarmRecordID").html()
@@ -577,9 +606,9 @@
         }
 
       },
-
-      /* 注释 */
+      /*报警翻页*/
       alarmGo:function () {
+          var vm = this
         if(this.alarmNowPage<this.alarmPages){
           this.alarmNowPage=this.alarmNowPage+1
           this.alarmA=this.alarmA+1
@@ -588,9 +617,25 @@
             this.isGrup=true;
             this.isPerson=false
            var AlarmRecordID = this.alarmList[this.alarmA-1]["AlarmRecordID"]
-
-
-
+            var ObjectID  = this.alarmList[this.alarmA-1]["ObjectID "]
+            $.ajax({
+              type: "get",
+              contentType: "application/json; charset=utf-8",
+              dataType: "jsonp",
+              jsonp: "callback",
+              async: false,
+              data:{"GroupID":ObjectID},
+              url: 'http://10.58.1.145:88/api/Group/GetCriminalListByGroup' + "?callback=?",
+              success: function (result) {
+                vm.groupTeam = result
+              },
+              error: function (err) {
+//          alert("请求异常")
+              },
+              complete: function (XHR, TS) {
+                XHR = null;  //回收资源
+              }
+            });
           }else {
             this.isGrup=false;
             this.isPerson=true
@@ -601,8 +646,7 @@
         }
 
       },
-
-      /* 注释 */
+      /*报警翻页*/
       alarmBack:function () {
         if(this.alarmNowPage==1){
           alert("已经是第一页了")
@@ -610,8 +654,35 @@
           this.alarmNowPage=this.alarmNowPage-1
           this.alarmA=this.alarmA-1
           this.alarmB=this.alarmB-1
+          if(this.alarmList[this.alarmA-1]["EventCode"]=1003){
+            this.isGrup=true;
+            this.isPerson=false
+            var AlarmRecordID = this.alarmList[this.alarmA-1]["AlarmRecordID"]
+            var ObjectID  = this.alarmList[this.alarmA-1]["ObjectID "]
+            $.ajax({
+              type: "get",
+              contentType: "application/json; charset=utf-8",
+              dataType: "jsonp",
+              jsonp: "callback",
+              async: false,
+              data:{"GroupID":ObjectID},
+              url: 'http://10.58.1.145:88/api/Group/GetCriminalListByGroup' + "?callback=?",
+              success: function (result) {
+                vm.groupTeam = result
+              },
+              error: function (err) {
+//          alert("请求异常")
+              },
+              complete: function (XHR, TS) {
+                XHR = null;  //回收资源
+              }
+            });
+          }else {
+            this.isGrup=true
+            this.isPerson=false
         }
 
+<<<<<<< HEAD
       },
 
       /* 注释 */
@@ -626,6 +697,9 @@
           lastData.push(dataNew)
         }
         console.log(lastData)
+=======
+       }
+>>>>>>> ab94e06ed162a1d6a7d7d480197c2c7901c87c2d
       },
 
       /* 已点人员名单翻页 */
@@ -682,8 +756,7 @@
 
 
       },
-
-      /* 注释 */
+      /* 已点人员名单翻页 */
       getCriminalback:function () {
         var vm = this
         if(vm.criminalPage==0){
@@ -734,7 +807,6 @@
           });
         }
       },
-
       /* 已点工具名单翻页 */
       getToolback:function () {
         var vm = this
@@ -786,8 +858,7 @@
           });
         }
       },
-
-      /* 注释 */
+      /* 已点工具名单翻页 */
       getToolGo:function () {
         var vm = this
         if(!vm.toolCalledIsLastPage){
@@ -841,8 +912,7 @@
 
 
       },
-
-      /* 注释 */
+      /* 已点工具展示及其数据加载 */
       onHasCheakedTool: function () {
         this.alertYDGJ=true
 //      罪犯清点，已点名单
@@ -891,7 +961,6 @@
           }
         });
       },
-
       /* Coding By Qianjf */
 
       /* 弹窗关闭 */
@@ -911,12 +980,11 @@
             this.alertYDGJ=false
         }
       },
-
       /* 选择监区弹窗打开 */
       onClickPosition: function () {
         this.alertJQXZ=true
       },
-
+      /* 已点罪犯展示及其数据加载 */
       onHasCheaked: function () {
         this.alertYDMD=true
 //      罪犯清点，已点名单
@@ -966,11 +1034,10 @@
           }
         });
       },
-
+     /*报警详情弹框*/
       alertAlarm:function () {
         this.alertBJXX=true
       },
-
       /* 所有基础全量数据 */
       allDataInit:function () {
         var vm = this
@@ -1118,6 +1185,7 @@
     },
     mounted () {
       let vm = this
+      vm.changeSize()
       window.aaa = this
       /* Coding By YanM */
       this.initPrison()
@@ -1237,13 +1305,15 @@
           var alarmNews = JSON.parse(JSON.parse(event.data).Body)
             /* 区域过滤测试后解开 */
 //          if (alarmNews.OrgID === localStorage.getItem("OrgID")) {
-          vm.alarmText = alarmNews.Description
+          console.log("ppppppppppppppppppppppppppppppppppppppppp",alarmNews)
 
           var criminalData = alarmNews
             criminalData.criminalID = vm.criminalList[0][alarmNews.ObjectID].CriminalID
             criminalData.Photo = vm.criminalList[0][alarmNews.ObjectID].Photo
             vm.alarmList.unshift(criminalData)
-            vm.alarmPages = vm.alarmList.length
+            vm.alarmText = alarmNews.Description
+
+          vm.alarmPages = vm.alarmList.length
             if (vm.alarmList.length !== 0) {
               vm.alertBJTK = true
             } else {
@@ -1311,11 +1381,11 @@
           vm.plan = plan_task.PlanTypeName
           vm.planStartTime = plan_task.StartTime
           vm.planEndTime = plan_task.EndTime
-//          if(vm.plan === '工具清点计划'){
-//            vm.$router.push({ path: '/toolcheck' })
-//          } else if(vm.plan === '人员清点计划'){
-//            vm.$router.push({ path: '/crimalcheck' })
-//          }
+          if(vm.plan === '工具清点计划'){
+            vm.$router.push({ path: '/toolcheck' })
+          } else if(vm.plan === '人员清点计划'){
+            vm.$router.push({ path: '/crimalcheck' })
+          }
         }
 
         /* 实时流动-返回数据-3 */
@@ -1323,7 +1393,7 @@
           var  now_floating = JSON.parse(JSON.parse(event.data).Body)
 //          console.log('实时流动-返回数据-3',now_floating)
           if(vm.alertSSLD === true){
-//            vm.nowFloating()
+            vm.nowFloating()
             vm.nowfloatPerson.unshift(now_floating)
             vm.nowfloatPersonFirst = vm.nowfloatPerson[0]
           }
@@ -1337,7 +1407,7 @@
       /* 关闭状态 */
       vm.ws.onclose = function(){
         vm.onlinestatus = false
-//        window.location.reload()
+        window.location.reload()
       };
 
       /* 错误信息 */
@@ -1360,16 +1430,21 @@
     margin: 0;
     padding: 0;
   }
+  html { overflow-x: hidden; overflow-y: hidden; }
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
-    width: 100%;
+    /*width: 100%;*/
     background: url('./assets/bg.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
+    width: 1584px;
+    height: 1024px;
+    overflow: hidden;
+
   }
   .alertTip {
     position: absolute;
@@ -1543,7 +1618,7 @@
   }
   /*报警弹框*/
   .alertAlarm{
-    width: 200px;
+    width: 230px;
     height: 80px;
     position: fixed;
     bottom: 80px;
@@ -1563,13 +1638,13 @@
     float: right;
     margin: 6px 6px;
     width: 120px;
-    height: 64px;
+    height: 47px;
     color: black;
     text-align: left;
-    font-size: 15px;
-    padding: 1px;
+    font-size: 16px;
     line-height: 23px;
     overflow: hidden;
+    padding: 10px;
   }
   .alarmNum{
     width: 30px;

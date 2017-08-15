@@ -158,7 +158,7 @@
   export default {
     name: 'navheader',
     props:[
-      'SocketAllData','criminalList','receiveDataMsgType20','receiveDataMsgType22','receiveDataMsgType27','policeList','receiveDataMsgType23','receiveDataMsgType26'
+      'SocketAllData','criminalList','receiveDataMsgType20','receiveDataMsgType22','receiveDataMsgType27','policeList','receiveDataMsgType23','receiveDataMsgType26','canRouter'
     ],
     data () {
       return {
@@ -175,7 +175,7 @@
         reasonListAll:0,
         reasonA:1,
         reasonB:12,
-        isSuccess:1,
+        isSuccess:0,
 
         outCriminals:[],//外出罪犯信息
         outPolices:[],//外出陪同民警信息
@@ -308,6 +308,7 @@
         },1000)
       },
       cancel:function () {
+
         var vm=this
         var send3 = {
           Header: {
@@ -323,11 +324,15 @@
         if(vm.ws.readyState == WebSocket.OPEN){
           vm.ws.send(JSON.stringify(send3))
         }
-        setInterval(function () {
+        vm.$emit('canRouterChange')
+        var settool4 = setInterval(function () {
           var receiveData =vm.receiveDataMsgType26
+          vm.canRouter=1
           if(receiveData["RET"]==1){
+            clearInterval(settool4)
             alert("取消成功")
           }else {
+            clearInterval(settool4)
             alert("取消失败")
           }
 
@@ -380,18 +385,23 @@
         if(vm.ws.readyState == WebSocket.OPEN){
           vm.ws.send(JSON.stringify(sendOutRegister))
         }
-        setInterval(function () {
+       var settool5 = setInterval(function () {
           var receiveData =vm.receiveDataMsgType23
           if(receiveData["RET"]==1){
+            vm.$emit('canRouterChange')
+            clearInterval(settool5)
             alert("提交成功")
           }else {
+            vm.$emit('canRouterChange')
+            clearInterval(settool5)
             alert("提交失败")
           }
-        },1000)
+        },500)
       }
 
     },
     mounted () {
+
       /* Coding By YanM */
 
       /* Coding By YanM */
