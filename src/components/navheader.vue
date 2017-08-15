@@ -22,7 +22,7 @@
         </p>
       </el-col>
       <el-col :span="2">
-        <a href="" class="nav-mobile"><img src="../assets/mobile.png" alt=""></a>
+        <a @click="$emit('aaa')" class="nav-mobile"><img src="../assets/mobile.png" alt=""></a>
       </el-col>
     </el-col>
   </el-row>
