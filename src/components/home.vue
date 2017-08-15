@@ -32,7 +32,7 @@
             <el-col :span="8" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)" :key='1'>
               <div class="float_person_card outperson" :class="item.prisonstatus">
                 <el-col :span="10" class="photo">
-                  <img :scr="item.Photo" alt="" width="100%" height="100%">
+                  <img :src="item.Photo" alt="" width="100%" height="100%">
                 </el-col>
                 <el-col :span="12" class="crimal_content">
                   <p>姓名：{{item.CriminalName}}</p>
@@ -66,7 +66,7 @@
               <el-col :span="6" v-for="(item,index) in FlnkIDList3.slice(outside_persion_personnelsA-1,outside_persion_personnelsB)" :key="2">
               <div class="outside_person_card outperson" :class="item.prisonstatus">
                 <el-col :span="6" class="photo">
-                  <img alt="" width="100%" height="100%">
+                  <img alt="" width="100%" height="100%" :src="item.Photo">
                 </el-col>
                 <el-col :span="16" class="crimal_content">
                   <p>姓名：{{item.CriminalName}}</p>

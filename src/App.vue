@@ -682,24 +682,7 @@
             this.isPerson=false
         }
 
-<<<<<<< HEAD
-      },
-
-      /* 注释 */
-      makePageDataGo:function () {
-        var data=[{"name":"1"},{"name":"2"},{"name":"3"},{"name":"4"},{"name":"5"},{"name":"6"},{"name":"7"},{"name":"8"},{"name":"9"}]
-        var lastData=[];
-        var baginPage=0;
-
-        for (var i=3;i<7;i++){
-          var dataNew=data[i]
-          dataNew["ischoose"]="0"
-          lastData.push(dataNew)
-        }
-        console.log(lastData)
-=======
        }
->>>>>>> ab94e06ed162a1d6a7d7d480197c2c7901c87c2d
       },
 
       /* 已点人员名单翻页 */
