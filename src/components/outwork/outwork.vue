@@ -164,7 +164,6 @@
         if(vm.ws.readyState == WebSocket.OPEN){
           vm.ws.send(JSON.stringify(personnel_distribution))
         }
-
           var  flowPerson_outPrison_rec = vm.receiveDataMsgType25
           if(flowPerson_outPrison_rec!=""||flowPerson_outPrison_rec!=null){
             vm.inPages=Math.ceil(vm.inCriminalList.length/48)==0?1:Math.ceil(vm.inCriminalList.length/48)

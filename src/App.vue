@@ -150,18 +150,18 @@
               <el-col :span="4" style="height:1px;" >
               </el-col>
             </el-row>
-            <el-row >
-              <el-col :span="8" style="height: 10px"></el-col>
-              <el-col :span="8" >
-                <div class="pages">
-                  <span class="pageControl"><img src="./assets/q1.png" v-on:click="alarmBack()" alt=""/></span>
-                  <span class="pagesText">{{alarmNowPage}}/{{alarmPages}}</span>
-                  <span class="pageControl"><img src="./assets/q2.png" v-on:click="alarmGo()" alt=""/></span>
-                </div>
-              </el-col>
-              <el-col :span="8" style="height: 10px"></el-col>
-            </el-row>
           </div>
+          <el-row >
+            <el-col :span="8" style="height: 10px"></el-col>
+            <el-col :span="8" >
+              <div class="pages">
+                <span class="pageControl"><img src="./assets/q1.png" v-on:click="alarmBack()" alt=""/></span>
+                <span class="pagesText">{{alarmNowPage}}/{{alarmPages}}</span>
+                <span class="pageControl"><img src="./assets/q2.png" v-on:click="alarmGo()" alt=""/></span>
+              </div>
+            </el-col>
+            <el-col :span="8" style="height: 10px"></el-col>
+          </el-row>
         </div>
         <div class="partsFoot">
           <div style="margin: 20px 2px;float: right">
@@ -385,6 +385,7 @@
         AlarmRecordID:"",
         alarmA:1,
         alarmB:1,
+        groupTeam:[],//互监组成员
         SocketAllData:{},
         /* mj e*/
         alertYHDL: false,                 //用户登录
@@ -559,6 +560,7 @@
 
       },
       alarmGo:function () {
+          var vm = this
         if(this.alarmNowPage<this.alarmPages){
           this.alarmNowPage=this.alarmNowPage+1
           this.alarmA=this.alarmA+1
@@ -567,9 +569,25 @@
             this.isGrup=true;
             this.isPerson=false
            var AlarmRecordID = this.alarmList[this.alarmA-1]["AlarmRecordID"]
-
-
-
+            var ObjectID  = this.alarmList[this.alarmA-1]["ObjectID "]
+            $.ajax({
+              type: "get",
+              contentType: "application/json; charset=utf-8",
+              dataType: "jsonp",
+              jsonp: "callback",
+              async: false,
+              data:{"GroupID":ObjectID},
+              url: 'http://10.58.1.145:88/api/Group/GetCriminalListByGroup' + "?callback=?",
+              success: function (result) {
+                vm.groupTeam = result
+              },
+              error: function (err) {
+//          alert("请求异常")
+              },
+              complete: function (XHR, TS) {
+                XHR = null;  //回收资源
+              }
+            });
           }else {
             this.isGrup=false;
             this.isPerson=true
@@ -587,21 +605,37 @@
           this.alarmNowPage=this.alarmNowPage-1
           this.alarmA=this.alarmA-1
           this.alarmB=this.alarmB-1
+          if(this.alarmList[this.alarmA-1]["EventCode"]=1003){
+            this.isGrup=true;
+            this.isPerson=false
+            var AlarmRecordID = this.alarmList[this.alarmA-1]["AlarmRecordID"]
+            var ObjectID  = this.alarmList[this.alarmA-1]["ObjectID "]
+            $.ajax({
+              type: "get",
+              contentType: "application/json; charset=utf-8",
+              dataType: "jsonp",
+              jsonp: "callback",
+              async: false,
+              data:{"GroupID":ObjectID},
+              url: 'http://10.58.1.145:88/api/Group/GetCriminalListByGroup' + "?callback=?",
+              success: function (result) {
+                vm.groupTeam = result
+              },
+              error: function (err) {
+//          alert("请求异常")
+              },
+              complete: function (XHR, TS) {
+                XHR = null;  //回收资源
+              }
+            });
+          }else {
+            this.isGrup=true
+            this.isPerson=false
         }
 
+       }
       },
-      makePageDataGo:function () {
-        var data=[{"name":"1"},{"name":"2"},{"name":"3"},{"name":"4"},{"name":"5"},{"name":"6"},{"name":"7"},{"name":"8"},{"name":"9"}]
-        var lastData=[];
-        var baginPage=0;
 
-        for (var i=3;i<7;i++){
-          var dataNew=data[i]
-          dataNew["ischoose"]="0"
-          lastData.push(dataNew)
-        }
-        console.log(lastData)
-      },
       /* 已点人员名单翻页 */
       getCriminalGo:function () {
         var vm = this
@@ -1151,7 +1185,6 @@
         }
         /*工具清点*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 32) {
-            console.log("11111111111111111111111111111111",vm.SocketAllData)
           var receiveDataMsgType32 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType32=receiveDataMsgType32
         }
@@ -1205,15 +1238,16 @@
         if (JSON.parse(event.data).Header.MsgType == 2) {
           var alarmNews = JSON.parse(JSON.parse(event.data).Body)
 //          区域过滤测试后解开
-console.log("ppppppppppppppppppppppppppppppppppppppppp",alarmNews)
 //          if (alarmNews.OrgID === localStorage.getItem("OrgID")) {
-          vm.alarmText = alarmNews.Description
+          console.log("ppppppppppppppppppppppppppppppppppppppppp",alarmNews)
 
           var criminalData = alarmNews
             criminalData.criminalID = vm.criminalList[0][alarmNews.ObjectID].CriminalID
             criminalData.Photo = vm.criminalList[0][alarmNews.ObjectID].Photo
             vm.alarmList.unshift(criminalData)
-            vm.alarmPages = vm.alarmList.length
+            vm.alarmText = alarmNews.Description
+
+          vm.alarmPages = vm.alarmList.length
             if (vm.alarmList.length !== 0) {
               vm.alertBJTK = true
             } else {

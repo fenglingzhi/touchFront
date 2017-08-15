@@ -175,7 +175,7 @@
         reasonListAll:0,
         reasonA:1,
         reasonB:12,
-        isSuccess:1,
+        isSuccess:0,
 
         outCriminals:[],//外出罪犯信息
         outPolices:[],//外出陪同民警信息

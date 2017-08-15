@@ -109,7 +109,7 @@
   export default {
     name: 'navheader',
     props:[
-      'SocketAllData','criminalList','receiveDataMsgType8','receiveDataMsgType35'
+      'SocketAllData','criminalList','receiveDataMsgType8','receiveDataMsgType35','receiveDataMsgType20'
     ],
 
     data () {
@@ -126,6 +126,7 @@
         provisionalGroupListAll:0,
         provisionalGroupA:1,
         provisionalGroupB:12,
+        isSuccess:0,
         cardPerson:[]//刷卡罪犯集合
 
       }
@@ -277,7 +278,35 @@
 
           },1000)
         }
-      }
+      },
+      firstWs:function () {
+        var vm=this
+        var send1 = {
+          Header: {
+            MsgID:"201501260000000035",
+            MsgType:20
+          },
+          Body: JSON.stringify({
+            OrgID : localStorage.getItem('OrgID'),
+            DoorID : localStorage.getItem('DoorID'),
+            AreaID : localStorage.getItem('AreaID'),
+            RegType:2604
+          })
+        }
+        //发送数据
+        if(vm.ws.readyState == WebSocket.OPEN){
+          vm.ws.send(JSON.stringify(send1))
+        }
+        setInterval(function () {
+          var receiveData =vm.receiveDataMsgType20
+          if(receiveData["RET"]==1){
+            vm.isSuccess=1
+          }else {
+            vm.isSuccess=0
+          }
+
+        },1000)
+      },
 
     },
     mounted () {
@@ -340,29 +369,34 @@
           XHR = null;  //回收资源
         }
       });
-
+//      发送人员流动状态  2603临时外出
       setInterval(function () {
-        /*刷卡信息*/
-        var receiveData = vm.receiveDataMsgType8
+        if(vm.isSuccess==0){
+          vm.firstWs()
+        }
+      },1000)
+      setInterval(function () {
+          if(vm.isSuccess==1){
+            /*刷卡信息*/
+            var receiveData = vm.receiveDataMsgType8
+            if(receiveData!=""||receiveData!=null){
+              if(receiveData[0]["PsType"]==2002){
+                console.log(receiveData,"aaaaaaaaaaaaaaaa",vm.criminalList[0])
+                receiveData[0]["ischoose"]=false
+                receiveData[0]["CriminalName"]=vm.criminalList[0][receiveData[0]["PersonID"]]["CriminalName"]
+                receiveData[0]["Photo"]=vm.criminalList[0][receiveData[0]["PersonID"]]["Photo"]
+                for( var i=0;i< vm.cardPerson.length;i++){
+                  if(vm.cardPerson[i]["PersonID"]==receiveData[0]["PersonID"]){
+                    vm.cardPerson.splice(i,1)
+                  }
+                }
+                vm.cardPerson.push(receiveData[0])
 
-          if(receiveData!=""||receiveData!=null){
-            if(receiveData[0]["PsType"]==2002){
-              console.log(receiveData,"aaaaaaaaaaaaaaaa",vm.criminalList[0])
-                    receiveData[0]["ischoose"]=false
-                    receiveData[0]["CriminalName"]=vm.criminalList[0][receiveData[0]["PersonID"]]["CriminalName"]
-                    receiveData[0]["Photo"]=vm.criminalList[0][receiveData[0]["PersonID"]]["Photo"]
-                    for( var i=0;i< vm.cardPerson.length;i++){
-                      if(vm.cardPerson[i]["PersonID"]==receiveData[0]["PersonID"]){
-                        vm.cardPerson.splice(i,1)
-                      }
-                    }
-                    vm.cardPerson.push(receiveData[0])
 
-
+              }
             }
+
           }
-
-
       },500)
       /* Coding By Qianjf */
 
