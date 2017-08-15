@@ -144,6 +144,8 @@
 
       },
       sub:function () {
+        var vm = this
+        vm.$emit('canRouterChange')
 
       }
     },
