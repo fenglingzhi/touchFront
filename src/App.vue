@@ -10,7 +10,7 @@
       :onlinestatus="onlinestatus"
       @aaa="closeWeb()"
     ></navheader>
-    <router-view style="height: 100%"
+    <router-view
       @hasCheaked="onHasCheaked"
       @hasCheakedTool="onHasCheakedTool"
       @canRouterChange="canRouterChange"
@@ -31,45 +31,20 @@
       :receiveDataMsgType31="receiveDataMsgType31"
       :receiveDataMsgType20="receiveDataMsgType20"
       :receiveDataMsgType22="receiveDataMsgType22"
-      :receiveDataMsgType27="receiveDataMsgType27"
       :receiveDataMsgType26="receiveDataMsgType26"
       :receiveDataMsgType23="receiveDataMsgType23"
-      :receiveDataMsgType35="receiveDataMsgType35"
       :receiveDataMsgType8="receiveDataMsgType8"
       :receiveDataMsgType33="receiveDataMsgType33"
       :canRouter="canRouter"
     ></router-view>
+  <!--  :receiveDataMsgType35="receiveDataMsgType35"
+    :receiveDataMsgType27="receiveDataMsgType27"
+-->
+
     <menufooter
       @openLogin="loginOpen"
       :canRouter="canRouter"></menufooter>
-    <!--用户登录 star-->
-    <div class="alertTip alertYHDL" v-show="alertYHDL">
-      <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 408px;">
-        <div class="bodyHead"><div class="title">用户登录</div><div  v-on:click="loginclose('alertYHDL')" class="close">X</div></div>
-        <div class="bodyCon">
-          <el-row class="menu_title_wrap">
-            <el-col :span="6" >
-              <div style="height: 57px"></div>
-              <p>登录名：</p>
-              <div style="height:12px"></div>
-              <p>密码：</p>
-            </el-col>
-            <el-col :span="12">
-              <span class="tipHead">请民警登录或刷卡确认</span>
-              <input type="text" placeholder="请输入" v-model="policeLogin.account">
-              <input type="password" placeholder="请输入" v-model="policeLogin.password">
-            </el-col>
-            <el-col :span="6" style="height: 10px"></el-col>
-          </el-row>
-        </div>
-        <div class="partsFoot">
-          <div style="margin: 20px 2px;float: right">
-            <div class="sure" @click="logonSbumit">确定</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!--用户登录 end-->
+
 
     <!--监区选择 star-->
     <div class="alertTip alertJQXZ" v-show="alertJQXZ">
@@ -97,66 +72,79 @@
       <div class="alertBody " style="margin: -222px -400px;width: 800px;height: 444px;">
         <div class="bodyHead"><div class="title">报警信息</div><div v-on:click="close('alertBJXX')" class="close">X</div></div>
         <div class="bodyCon" style="height: 312px;">
-          <div class="lists" v-show="isGrup">
-            <el-row>
-              <div class="tipName">报警事件名称</div>
-              <el-row>
-                <el-col :span="4"  >
-                  <div ><img width="100%"  src="./assets/crimal_1_03.jpg" alt=""></div>
-                  <span>张学友 <br> 123456</span>
-                </el-col>
-              </el-row>
+          <!--<div class="lists" v-show="isGrup">-->
+            <!--<el-row>-->
+              <!--<div class="tipName">报警事件名称</div>-->
+              <!--<el-row>-->
+                <!--<el-col :span="4"  >-->
+                  <!--<div ><img width="100%"  src="./assets/crimal_1_03.jpg" alt=""></div>-->
+                  <!--<span>张学友 <br> 123456</span>-->
+                <!--</el-col>-->
+              <!--</el-row>-->
 
-            </el-row>
-            <el-row >
-              <el-col :span="8" style="height: 10px"></el-col>
-              <el-col :span="8" >
-                <div class="pages">
-                  <span class="pageControl"><img src="./assets/q1.png" alt=""/></span>
-                  <span class="pagesText">11/30</span>
-                  <span class="pageControl"><img src="./assets/q2.png" alt=""/></span>
-                </div>
-              </el-col>
-              <el-col :span="8" style="height: 10px"></el-col>
-            </el-row>
-          </div>
-          <div class="details" v-show="isPerson" >
+            <!--</el-row>-->
+            <!--<el-row >-->
+              <!--<el-col :span="8" style="height: 10px"></el-col>-->
+              <!--<el-col :span="8" >-->
+                <!--<div class="pages">-->
+                  <!--<span class="pageControl"><img src="./assets/q1.png" alt=""/></span>-->
+                  <!--<span class="pagesText">11/30</span>-->
+                  <!--<span class="pageControl"><img src="./assets/q2.png" alt=""/></span>-->
+                <!--</div>-->
+              <!--</el-col>-->
+              <!--<el-col :span="8" style="height: 10px"></el-col>-->
+            <!--</el-row>-->
+          <!--</div>-->
+          <div class="details" >
             <el-row style="    height: 265px;">
               <el-col :span="4" style="height:1px;">
               </el-col>
               <el-col :span="14" v-for="(alarm,index) in alarmList.slice(alarmA-1,alarmB)" :key="1">
                 <div class="tipName">{{alarm.Description}}</div>
-                <div style="height:18px;"></div>
-                <el-row>
-                  <el-col :span="10" >
-                    <div>
-                      <img :src="alarm.Photo" width="136" height="183" alt="">
-                    </div>
-                  </el-col>
-                  <el-col :span="14" >
-                    <div v-show="false" id="alarmRecordID">{{alarm.AlarmRecordID}}</div>
-                    <p>姓名：{{alarm.ObjectName}}</p>
-                    <p>罪犯编号：{{alarm.criminalID}}</p>
-                    <p>报警区域：{{alarm.AreaName}}</p>
-                    <p>报警时间：{{alarm.EventTime}}</p>
-                  </el-col>
-                </el-row>
+                <div v-show="isGrup">
+                  <el-row>
+                    <el-col :span="4" v-for="group in groupTeam" >
+                      <div ><img width="100%"  :src="group.Photo" alt=""></div>
+                      <span>{{group.CriminalName}} <br> {{group.CriminalID}} </span>
+                    </el-col>
+                  </el-row>
+                </div>
+                <div v-show="false" id="alarmRecordID">{{alarm.AlarmRecordID}}</div>
+
+                <div  v-show="isPerson">
+                  <div style="height:18px;"></div>
+                  <el-row>
+                    <el-col :span="10" >
+                      <div>
+                        <img :src="alarm.Photo" width="136" height="183" alt="">
+                      </div>
+                    </el-col>
+                    <el-col :span="14" >
+                      <p>姓名：{{alarm.ObjectName}}</p>
+                      <p>罪犯编号：{{alarm.criminalID}}</p>
+                      <p>报警区域：{{alarm.AreaName}}</p>
+                      <p>报警时间：{{alarm.EventTime}}</p>
+                    </el-col>
+                  </el-row>
+                </div>
+
               </el-col>
               <el-col :span="4" style="height:1px;" >
               </el-col>
             </el-row>
+            <el-row >
+              <el-col :span="8" style="height: 10px"></el-col>
+              <el-col :span="8" >
+                <div class="pages">
+                  <span class="pageControl"><img src="./assets/q1.png" v-on:click="alarmBack()" alt=""/></span>
+                  <span class="pagesText">{{alarmNowPage}}/{{alarmPages}}</span>
+                  <span class="pageControl"><img src="./assets/q2.png" v-on:click="alarmGo()" alt=""/></span>
+                </div>
+              </el-col>
+              <el-col :span="8" style="height: 10px"></el-col>
+            </el-row>
           </div>
-          <el-row >
-            <el-col :span="8" style="height: 10px"></el-col>
-            <el-col :span="8" >
-              <div class="pages">
-                <span class="pageControl"><img src="./assets/q1.png" v-on:click="alarmBack()" alt=""/></span>
-                <span class="pagesText">{{alarmNowPage}}/{{alarmPages}}</span>
-                <span class="pageControl"><img src="./assets/q2.png" v-on:click="alarmGo()" alt=""/></span>
-              </div>
-            </el-col>
-            <el-col :span="8" style="height: 10px"></el-col>
-          </el-row>
+
         </div>
         <div class="partsFoot">
           <div style="margin: 20px 2px;float: right">
@@ -285,10 +273,7 @@
     </div>
     <!--已点工具 end-->
 
-<<<<<<< HEAD
-=======
 
->>>>>>> ab94e06ed162a1d6a7d7d480197c2c7901c87c2d
     <!--报警弹框 star-->
     <div class="alertAlarm" v-show="alertBJTK"  v-on:click="alertAlarm()">
       <div class="alarmImg">
@@ -300,13 +285,42 @@
 
     </div>
     <!--报警弹框 end-->
+    <!--用户登录 star-->
+    <div class="alertTip alertYHDL" v-show="alertYHDL">
+      <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 408px;">
+        <div class="bodyHead"><div class="title">用户登录</div><div  v-on:click="loginclose('alertYHDL')" class="close">X</div></div>
+        <div class="bodyCon">
+          <el-row class="menu_title_wrap">
+            <el-col :span="6" >
+              <div style="height: 57px"></div>
+              <p>登录名：</p>
+              <div style="height:12px"></div>
+              <p>密码：</p>
+            </el-col>
+            <el-col :span="12">
+              <span class="tipHead">请民警登录或刷卡确认</span>
+              <input type="text" placeholder="请输入" v-model="policeLogin.account">
+              <input type="password" placeholder="请输入" v-model="policeLogin.password">
+            </el-col>
+            <el-col :span="6" style="height: 10px"></el-col>
+          </el-row>
+        </div>
+        <div class="partsFoot">
+          <div style="margin: 20px 2px;float: right">
+            <div class="sure" @click="logonSbumit">确定</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--用户登录 end-->
+
   </div>
 </template>
 
 <script>
   import navheader from './components/navheader.vue'                  // 引入组件头部导航
   import menufooter from './components/menufooter.vue'                // 引入组件底部菜单
-  import { SHANLEI,IMG } from './config'
+  import { SHANLEI,IMG,ajaxUrl} from './config'
   import global from './plugins/vue.global.js'
 
   export default {
@@ -376,6 +390,7 @@
         toolCount:0,//已点工具总页码
         toolPage:0,//已点工具当前页
         alarmList:[],//报警集合
+        alarmListSearch:[],//用于报警集合的匹配
         alarmText:"",//报警描述
         alarmPages:1,//留监总页数
         alarmNowPage:1,//留监当前页
@@ -559,37 +574,46 @@
       },
       /*报警处理*/
       alarmHandle:function () {
-          var vm = this
+        var vm = this
         var alarmRecordID = $("#alarmRecordID").html()
-        for (var i=0;i<this.alarmList.length;i++){
+        for (var i=0;i<vm.alarmList.length;i++){
           if(this.alarmList[i]["AlarmRecordID"]==alarmRecordID){
-          var placemanID = localStorage.getItem("placemanID")
-
+            var placemanID = localStorage.getItem("placemanID")
+            console.log("ooooooooooooooooooooooooooooooooooooooooooo",vm.policeList,"ss",placemanID)
             $.ajax({
-              type: "get",
-              contentType: "application/json; charset=utf-8",
-              dataType: "jsonp",
-              jsonp: "callback",
-              async: false,
+              type:"get",
+              contentType:"application/json; charset=utf-8",
+              dataType:"jsonp",
+              jsonp:"callback",
+              async:false,
               data:{
                   "EventID":alarmRecordID,
                   "PoliceID":placemanID,
-                  "PoliceName":vm.policeList[placemanID]["PoliceName"],
-                  "PoliceRole":vm.policeList[placemanID]["role"]
+                  "PoliceName":vm.policeList[0][placemanID]["PoliceName"],
+                  "PoliceRole":vm.policeList[0][placemanID]["role"]
               },
-              url: 'http://10.58.1.145:88/api/Event/AlarmHandle' + "?callback=?",
+              url:'http://10.58.1.145:88/api/Event/AlarmHandle' + "?callback=?",
               success: function (result) {
-
                 if(result==0){
                     alert("处理失败")
                 }else {
                   /*页面删除效果*/
-                  this.alarmList.splice(i,1);
-                  this.alarmPages=this.alarmList.length
-                  if( this.alarmPages> this.alarmNowPage|| this.alarmPages==this.alarmNowPage){
-                  }else {
-                    this.alarmNowPage=this.alarmPages
+                  for(var j=0;j<vm.alarmList.length;j++){
+                      if(vm.alarmList[j]["AlarmRecordID"]==alarmRecordID){
+                        vm.alarmList.splice(j-1,1);
+                        vm.alarmPages=vm.alarmList.length
+                        if( vm.alarmPages> vm.alarmNowPage||vm.alarmPages==vm.alarmNowPage){
+                        }else {
+                          if(vm.alarmPages==0){
+                            vm.alarmPages=1
+                            vm.alertBJTK=false
+                          }
+                          vm.alarmNowPage=vm.alarmPages
+                        }
+                      }
                   }
+                  alert("处理成功")
+
                 }
 
               },
@@ -613,7 +637,7 @@
           this.alarmNowPage=this.alarmNowPage+1
           this.alarmA=this.alarmA+1
           this.alarmB=this.alarmB+1
-          if(this.alarmList[this.alarmA-1]["EventCode"]=1003){
+          if(this.alarmList[this.alarmA-1]["EventCode"]==1003){
             this.isGrup=true;
             this.isPerson=false
            var AlarmRecordID = this.alarmList[this.alarmA-1]["AlarmRecordID"]
@@ -637,8 +661,8 @@
               }
             });
           }else {
-            this.isGrup=false;
-            this.isPerson=true
+            vm.isGrup=false;
+            vm.isPerson=true
           }
 
         }else {
@@ -654,7 +678,7 @@
           this.alarmNowPage=this.alarmNowPage-1
           this.alarmA=this.alarmA-1
           this.alarmB=this.alarmB-1
-          if(this.alarmList[this.alarmA-1]["EventCode"]=1003){
+          if(this.alarmList[this.alarmA-1]["EventCode"]==1003){
             this.isGrup=true;
             this.isPerson=false
             var AlarmRecordID = this.alarmList[this.alarmA-1]["AlarmRecordID"]
@@ -678,8 +702,8 @@
               }
             });
           }else {
-            this.isGrup=true
-            this.isPerson=false
+            this.isGrup=false
+            this.isPerson=true
         }
 
        }
@@ -1020,6 +1044,7 @@
      /*报警详情弹框*/
       alertAlarm:function () {
         this.alertBJXX=true
+
       },
       /* 所有基础全量数据 */
       allDataInit:function () {
@@ -1253,10 +1278,10 @@
           vm.receiveDataMsgType22=receiveDataMsgType22
         }
         /*陪同民警信息*/
-        if(JSON.parse(vm.SocketAllData).Header.MsgType === 27) {
-          var receiveDataMsgType27 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
-          vm.receiveDataMsgType27=receiveDataMsgType27
-        }
+//        if(JSON.parse(vm.SocketAllData).Header.MsgType === 27) {
+//          var receiveDataMsgType27 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+//          vm.receiveDataMsgType27=receiveDataMsgType27
+//        }
         /*外出登记提交*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 23) {
           var receiveDataMsgType23 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
@@ -1273,11 +1298,11 @@
           vm.receiveDataMsgType8=receiveDataMsgType8
         }
 
-        /*互监组管理提交*/
-        if(JSON.parse(vm.SocketAllData).Header.MsgType === 35) {
-          var receiveDataMsgType35 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
-          vm.receiveDataMsgType35=receiveDataMsgType35
-        }
+//        /*互监组管理提交*/
+//        if(JSON.parse(vm.SocketAllData).Header.MsgType === 35) {
+//          var receiveDataMsgType35 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+//          vm.receiveDataMsgType35=receiveDataMsgType35
+//        }
         /*手动结束人员、工具清点*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 33) {
           var receiveDataMsgType33 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
@@ -1294,10 +1319,11 @@
             criminalData.criminalID = vm.criminalList[0][alarmNews.ObjectID].CriminalID
             criminalData.Photo = vm.criminalList[0][alarmNews.ObjectID].Photo
             vm.alarmList.unshift(criminalData)
+            vm.alarmListSearch.push(criminalData)
             vm.alarmText = alarmNews.Description
 
           vm.alarmPages = vm.alarmList.length
-            if (vm.alarmList.length !== 0) {
+            if (vm.alarmList.length != 0) {
               vm.alertBJTK = true
             } else {
               vm.alertBJTK = false
@@ -1409,6 +1435,10 @@
 </script>
 
 <style>
+  .home{
+    /*height: 100%;*/
+    height: 780px !important;
+  }
   body{
     margin: 0;
     padding: 0;

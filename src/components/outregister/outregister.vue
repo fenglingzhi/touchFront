@@ -76,12 +76,7 @@
                       外出人员
                     </div>
                     <div class="deailBody" style="height:269px;">
-                      <!--<el-col :span="4" v-for="criminal in outCriminals" :key="1">-->
-                        <!--<div class="criminal" >-->
-                          <!--<img :src="criminal.headimg" width="98%" height="85" alt=""/>-->
-                          <!--<span class="criminalName">{{ criminal.name }}</span>-->
-                        <!--</div>-->
-                      <!--</el-col>-->
+
                       <el-col :span="4"  v-for="(criminal,index) in outCriminals.slice(outCriminalsA-1,outCriminalsB)" :key="1">
                         <div  class="criminal" v-on:click="chooseOut(index)" >
                           <img :src="criminal.Photo" width="98%" height="85" alt=""/>
@@ -107,12 +102,6 @@
                       陪同民警
                     </div>
                     <div class="deailBody" style="height:131px;">
-                      <!--<el-col :span="4" v-for="police in polices" :key="1">-->
-                        <!--<div class="criminal" >-->
-                          <!--<img :src="police.headimg" width="98%" height="85" alt=""/>-->
-                          <!--<span class="criminalName">{{ police.name }}</span>-->
-                        <!--</div>-->
-                      <!--</el-col>-->
                       <el-col :span="4"  v-for="(police,index) in outPolices.slice(outPoliceA-1,outPoliceB)" :key="1">
                         <div  class="criminal" v-on:click="chooseOut(index)" >
                           <img :src="police.Photo" width="98%" height="85" alt=""/>
@@ -155,6 +144,8 @@
 </template>
 
 <script>
+  import { SHANLEI,IMG,ajaxUrl} from '../../config'
+
   export default {
     name: 'navheader',
     props:[
@@ -304,7 +295,6 @@
             }else {
               vm.isSuccess=0
             }
-
         },1000)
       },
       cancel:function () {
@@ -408,11 +398,11 @@
       /* Coding By Qianjf */
       var vm = this
 //      发送人员流动状态  2603临时外出
-      setInterval(function () {
-          if(vm.isSuccess==0){
-            vm.firstWs()
-          }
-      },1000)
+//      setInterval(function () {
+//          if(vm.isSuccess==0){
+//            vm.firstWs()
+//          }
+//      },1000)
 //      获取外出登记的人员明细
       setInterval(function () {
         if(vm.isSuccess==1){
