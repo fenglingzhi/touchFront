@@ -4,7 +4,10 @@
 
 <script>
 export default {
-  name: 'navheader'
+  name: 'navheader',
+  mounted(){
+
+  },
 }
 </script>
 

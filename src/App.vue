@@ -10,7 +10,7 @@
       :onlinestatus="onlinestatus"
       @aaa="closeWeb()"
     ></navheader>
-    <router-view style="height: 100%"
+    <router-view
       @hasCheaked="onHasCheaked"
       @hasCheakedTool="onHasCheakedTool"
       @canRouterChange="canRouterChange"
@@ -31,10 +31,8 @@
       :receiveDataMsgType31="receiveDataMsgType31"
       :receiveDataMsgType20="receiveDataMsgType20"
       :receiveDataMsgType22="receiveDataMsgType22"
-      :receiveDataMsgType27="receiveDataMsgType27"
       :receiveDataMsgType26="receiveDataMsgType26"
       :receiveDataMsgType23="receiveDataMsgType23"
-      :receiveDataMsgType35="receiveDataMsgType35"
       :receiveDataMsgType8="receiveDataMsgType8"
       :receiveDataMsgType33="receiveDataMsgType33"
       :canRouter="canRouter"
@@ -285,10 +283,6 @@
     </div>
     <!--已点工具 end-->
 
-<<<<<<< HEAD
-=======
-
->>>>>>> ab94e06ed162a1d6a7d7d480197c2c7901c87c2d
     <!--报警弹框 star-->
     <div class="alertAlarm" v-show="alertBJTK"  v-on:click="alertAlarm()">
       <div class="alarmImg">
@@ -1252,11 +1246,7 @@
           var receiveDataMsgType22 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType22=receiveDataMsgType22
         }
-        /*陪同民警信息*/
-        if(JSON.parse(vm.SocketAllData).Header.MsgType === 27) {
-          var receiveDataMsgType27 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
-          vm.receiveDataMsgType27=receiveDataMsgType27
-        }
+
         /*外出登记提交*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 23) {
           var receiveDataMsgType23 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
@@ -1273,11 +1263,6 @@
           vm.receiveDataMsgType8=receiveDataMsgType8
         }
 
-        /*互监组管理提交*/
-        if(JSON.parse(vm.SocketAllData).Header.MsgType === 35) {
-          var receiveDataMsgType35 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
-          vm.receiveDataMsgType35=receiveDataMsgType35
-        }
         /*手动结束人员、工具清点*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 33) {
           var receiveDataMsgType33 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
@@ -1383,6 +1368,16 @@
 
         }
 
+        /* 警员刷卡-返回数据-6 */
+        if(JSON.parse(event.data).Header.MsgType === 6){
+          alert('民警刷卡')
+          var  placeman_card = JSON.parse(JSON.parse(event.data).Body)
+          alertYHDL = false
+//          localStorage.setItem('placemanID',placeman_card)
+          console.log('警员刷卡-返回数据-6',placeman_card)
+
+        }
+
         /* 调用ajax全量数据 */
         vm.homeData()
       }
@@ -1390,13 +1385,17 @@
       /* 关闭状态 */
       vm.ws.onclose = function(){
         vm.onlinestatus = false
-        window.location.reload()
+        if(vm.onlinestatus == false){
+          setInterval(function () {
+            window.location.reload()
+          },1000)
+        }
       };
 
       /* 错误信息 */
-      vm.ws.onerror = function(evt) {
-          console.log("WebSocketError!",evt)
-      }
+//      vm.ws.onerror = function(evt) {
+//          console.log("WebSocketError!",evt)
+//      }
 
       /* Coding By YanM */
 
@@ -1409,6 +1408,9 @@
 </script>
 
 <style>
+  .home{
+    height: 780px !important;
+  }
   body{
     margin: 0;
     padding: 0;
