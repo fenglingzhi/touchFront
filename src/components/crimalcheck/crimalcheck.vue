@@ -40,7 +40,7 @@
               <div class="title">外出未点人员{{outCriminals.length}}人</div>
             </div>
             <div class="bodyCon" style="height: 135px;">
-              <el-col :span="2"  v-for="(criminal,index) in outCriminals.slice(outA-1,outB)" :key="1">
+              <el-col :span="2"  v-for="(criminal,index) in outCriminals.slice(outA-1,outB)" :key="2">
                 <div  :class="['criminal', {choosedcriminal: criminal.ischoose}]" v-on:click="chooseOut(index)" >
                   <img :src="criminal.Photo" width="98%" height="85" alt=""/>
                   <span class="criminalName">{{ criminal.CriminalName}}</span>
@@ -118,6 +118,7 @@
 </template>
 
 <script>
+  import { SHANLEI,IMG,ajaxUrl} from '../../config'
 
   export default {
     name: 'navheader',
@@ -369,23 +370,28 @@
             alert("还没选人")
         }else {
           //发送数据
-          if(vm.ws.readyState == WebSocket.OPEN){
-            vm.ws.send(JSON.stringify(send))
-          }
-          /*接收数据*/
-         var setcr1=setTimeout(function () {
-              var receiveData = vm.receiveDataMsgType30
-              alert(receiveData["RET"])
-              if(receiveData["RET"]==0){
-                alert("处理失败")
-                clearInterval(setcr1)
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            url: ajaxUrl,
+            data:JSON.stringify(send),
+            success: function (result) {
+                if(result.RET==1){
+                  alert("手动确定成功")
+                  vm.outCriminals=[]
+                  vm.inCriminals=[]
+                }else {
+                  alert("手动确定失败")
+                }
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
+          })
 
-              }else {
-                alert("处理成功")
-                clearInterval(setcr1)
-              }
-
-          },1000)
         }
       },
       cancel:function () {
@@ -400,20 +406,28 @@
           })
         }
         //发送数据
-        if(vm.ws.readyState == WebSocket.OPEN){
-          vm.ws.send(JSON.stringify(send))
-        }
-
-        var settool2= setTimeout(function () {
-          if(vm.receiveDataMsgType33["RET"]==0){
-            alert("处理失败")
-            clearInterval(settool2)
-
-          }else {
-            alert("处理成功")
-            clearInterval(settool2)
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          url: ajaxUrl,
+          data:JSON.stringify(send),
+          success: function (result) {
+            if(result.RET==1){
+              alert("手动结束成功")
+              vm.outCriminals=[]
+              vm.inCriminals=[]
+            }else {
+              alert("手动结束失败")
+            }
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
           }
-        },500)
+        })
+
       }
 
     },
@@ -448,37 +462,50 @@
                 notCall["ischoose"]=false
                 notCall["CriminalName"]=vm.criminalList[0][notCall["PersonID"]]["CriminalName"]
                 notCall["Photo"]=vm.criminalList[0][notCall["PersonID"]]["Photo"]
+                for (var m=0;m<vm.inChoose.length;m++){
+                  if(vm.inChoose[m]==notCall["PersonID"]){
+                    notCall["ischoose"]=true
+                  }
+                }
                 hasNotCall.push(notCall)
                 vm.inCriminals=hasNotCall
                 vm.inPages=Math.ceil(vm.inCriminals.length/24)==0?1:Math.ceil(vm.inCriminals.length/24)
               }else if(receiveData[i].Status=="2403"){
+
                 var outNotCall=receiveData[i]
                 outNotCall["ischoose"]=false
                 outNotCall["CriminalName"]=vm.criminalList[0][outNotCall["PersonID"]]["CriminalName"]
                 outNotCall["Photo"]=vm.criminalList[0][outNotCall["PersonID"]]["Photo"]
+                for (var n=0;n<vm.outChoose.length;n++){
+                  if(vm.outChoose[n]==outNotCall["PersonID"]){
+                    outNotCall["ischoose"]=true
+                  }
+                }
+
                 outHasNotCall.push(outNotCall)
                 vm.outCriminals=outHasNotCall
                 vm.outPages=Math.ceil(vm.outCriminals.length/12)==0?1:Math.ceil(vm.outCriminals.length/12)
               }
             }
-            for (var i=0;i<vm.inChoose.length;i++){
-                for (var j=0;j<vm.inCriminals.length;j++){
-                    if(vm.inChoose[i]==vm.inCriminals[j]["PersonID"]){
-                      vm.inCriminals[j]["ischoose"]=true
-                    }
-                }
-            }
-            for (var i=0;i<vm.outChoose.length;i++){
-              for (var j=0;j<vm.outCriminals.length;j++){
-                if(vm.outChoose[i]==vm.outCriminals[j]["PersonID"]){
-                  vm.outCriminals[j]["ischoose"]=true
-                }
-              }
-            }
+//            for (var i=0;i<vm.inChoose.length;i++){
+//                for (var j=0;j<vm.inCriminals.length;j++){
+//                    if(vm.inChoose[i]==vm.inCriminals[j]["PersonID"]){
+//                      vm.inCriminals[j]["ischoose"]=true
+//                    }
+//                }
+//            }
+//
+//            for (var i=0;i<vm.outChoose.length;i++){
+//              for (var j=0;j<vm.outCriminals.length;j++){
+//                if(vm.outChoose[i]==vm.outCriminals[j]["PersonID"]){
+//                  vm.outCriminals[j]["ischoose"]=true
+//                }
+//              }
+//            }
           }
 
 
-      },500)
+      },1000)
 
 //      localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
 //      获取第一页记录数据

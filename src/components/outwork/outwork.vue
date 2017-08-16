@@ -64,6 +64,8 @@
 </template>
 
 <script>
+  import { SHANLEI,IMG,ajaxUrl} from '../../config'
+
   export default {
     name: 'navheader',
     props:[
