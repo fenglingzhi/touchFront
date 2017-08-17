@@ -140,6 +140,7 @@
           this.generalGroupList[i].ischoose=false
         }
         this.generalGroupList[dom+this.generalGroupA-1].ischoose=!this.generalGroupList[dom+this.generalGroupA-1].ischoose
+        this.$router.push({ path: '/position' })
       },
       chooseProvisionalGroup:function (dom) {
         for(var i=0;i< this.provisionalGroupList.length;i++){
@@ -283,9 +284,12 @@
       },
       submit:function () {
         var vm=this
-        var cardPersonList=[]
+        var cardPersonList=""
+//        var cardPersonList=[]
         for (var i=0;i<vm.cardPerson.length;i++){
-          cardPersonList.push(vm.cardPerson[i]["PersonID"])
+//          cardPersonList.push(vm.cardPerson[i]["PersonID"])
+          cardPersonList=cardPersonList+vm.cardPerson[i]["PersonID"]
+
         }
         var send1 = {
           Header: {
@@ -293,7 +297,7 @@
             MsgType:35
           },
           Body: JSON.stringify({
-            Type:1,
+            CmdType:1,
             CriminalIDs:cardPersonList
           })
         }
@@ -321,7 +325,7 @@
                       MsgType:35
                     },
                     Body: JSON.stringify({
-                      Type:2,
+                      CmdType:2,
                       CriminalIDs:cardPersonList
                     })
                   }
@@ -360,7 +364,7 @@
                       MsgType:35
                     },
                     Body: JSON.stringify({
-                      Type:2,
+                      CmdType:2,
                       CriminalIDs:cardPersonList
                     })
                   }
@@ -391,7 +395,7 @@
                       MsgType:35
                     },
                     Body: JSON.stringify({
-                      Type:3,
+                      CmdType:3,
                       CriminalIDs:cardPersonList
                     })
                   }

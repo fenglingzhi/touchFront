@@ -136,18 +136,22 @@ export default {
           top: '0%',
           data: vm.chartsDatasName
         },
+        tooltip : {
+          trigger: 'item',
+          formatter: "{b} : {c}人 ({d}%)"
+        },
         series: [{
           type: 'pie',
           selectedMode: 'single',
           radius: ['45%', '78%'],
           hoverAnimation :false,
-          color: ['#98c93c', '#22b9d6', '#f9a61a', '#cf445b'],
+          color: ['#98c93c', '#22b9d6', '#f9a61a', '#cf445b','#AF89D6','#59ADF3'],
           label: {
             normal: {
-              position: 'inner',
+              position: 'outer',
               formatter: '{d}%',
               textStyle: {
-                color: '#fff',
+                color: '#333',
                 fontWeight: 'bold',
                 fontSize: 14
               }
@@ -156,11 +160,11 @@ export default {
           labelLine: {
             normal: {
               lineStyle: {
-                color: 'rgba(255, 255, 255, 0.3)'
+                color: '#333'
               },
-              smooth: 0.2,
-              length: 10,
-              length2: 20
+              smooth: 0.0,
+              length: 8,
+              length2: 16
             }
           },
           data: vm.chartsDatas
@@ -228,7 +232,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
   .home{
-    /*height: 100%;*/
     height: 780px !important;
   }
   #myChart{

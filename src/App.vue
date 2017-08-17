@@ -38,6 +38,7 @@
 
       :receiveDataMsgType33="receiveDataMsgType33"
       :canRouter="canRouter"
+      :mapList="mapList"
     ></router-view>
   <!--  :receiveDataMsgType35="receiveDataMsgType35"
 -->
@@ -73,29 +74,6 @@
       <div class="alertBody " style="margin: -222px -400px;width: 800px;height: 444px;">
         <div class="bodyHead"><div class="title">报警信息</div><div v-on:click="close('alertBJXX')" class="close">X</div></div>
         <div class="bodyCon" style="height: 312px;">
-          <!--<div class="lists" v-show="isGrup">-->
-            <!--<el-row>-->
-              <!--<div class="tipName">报警事件名称</div>-->
-              <!--<el-row>-->
-                <!--<el-col :span="4"  >-->
-                  <!--<div ><img width="100%"  src="./assets/crimal_1_03.jpg" alt=""></div>-->
-                  <!--<span>张学友 <br> 123456</span>-->
-                <!--</el-col>-->
-              <!--</el-row>-->
-
-            <!--</el-row>-->
-            <!--<el-row >-->
-              <!--<el-col :span="8" style="height: 10px"></el-col>-->
-              <!--<el-col :span="8" >-->
-                <!--<div class="pages">-->
-                  <!--<span class="pageControl"><img src="./assets/q1.png" alt=""/></span>-->
-                  <!--<span class="pagesText">11/30</span>-->
-                  <!--<span class="pageControl"><img src="./assets/q2.png" alt=""/></span>-->
-                <!--</div>-->
-              <!--</el-col>-->
-              <!--<el-col :span="8" style="height: 10px"></el-col>-->
-            <!--</el-row>-->
-          <!--</div>-->
           <div class="details" >
             <el-row style="    height: 265px;">
               <el-col :span="4" style="height:1px;">
@@ -206,7 +184,6 @@
               <th>监区名称</th>
               <th>区域名称</th>
               <th>点名状态</th>
-
             </tr>
             <tr v-for="GetCriminal in GetCriminalCalledList" :key="1">
               <td>{{GetCriminal.CriminalName}}</td>
@@ -216,8 +193,6 @@
               <td>{{GetCriminal.StatusName}}</td>
             </tr>
           </table>
-
-
         </div>
         <el-row >
           <el-col :span="8" style="height: 10px"></el-col>
@@ -246,7 +221,6 @@
               <th>监区名称</th>
               <th>清点时间</th>
               <th>清点状态</th>
-
             </tr>
             <tr v-for="toolCalled in GetToolCalledList" :key="1">
               <td>{{toolCalled.ToolTypeName}}</td>
@@ -256,8 +230,6 @@
               <td>{{toolCalled.StatusName}}</td>
             </tr>
           </table>
-
-
         </div>
         <el-row >
           <el-col :span="8" style="height: 10px"></el-col>
@@ -274,7 +246,6 @@
     </div>
     <!--已点工具 end-->
 
-
     <!--报警弹框 star-->
     <div class="alertAlarm" v-show="alertBJTK"  v-on:click="alertAlarm()">
       <div class="alarmImg">
@@ -286,6 +257,7 @@
 
     </div>
     <!--报警弹框 end-->
+
     <!--用户登录 star-->
     <div class="alertTip alertYHDL" v-show="alertYHDL">
       <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 408px;">
@@ -364,6 +336,7 @@
         nowfloatPersonA:1,
         nowfloatPersonB:9,
         onlinestatus:true,
+        mapList:[],                       //地图基础数据
         /* Coding By YanM */
         /* mj B*/
         receiveDataMsgType25:{},//进出ws工数据
@@ -547,11 +520,6 @@
       closeWeb:function () {
         let vm = this
         vm.ws.close()
-      },
-
-      /* 初始化websocket */
-      websocketInit:function () {
-
       },
 
       /* Coding By YanM */
@@ -1193,6 +1161,44 @@
             XHR = null;  //回收资源
           }
         });
+
+        /* 全部地图数据 */
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          url: SHANLEI + 'HomeIndex/GetMapList',
+          success: function (result) {
+            //所有警员信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
+            var map_hash = new Array();
+            // 重构警员信息哈希数据
+            for(var i=0;i<result.length;i++){
+              map_hash[result[i].FlnkID] = {
+                FlnkID:result[i].FlnkID,
+                MapCode:result[i].MapCode,
+                MapName:result[i].MapName,
+                MapUrl:result[i].MapUrl,
+                MapType:result[i].MapType,
+                Width:result[i].Width,
+                Height:result[i].Height,
+                Scale:result[i].Scale,
+                ParentID:result[i].ParentID,
+                OrderIndex:result[i].OrderIndex,
+                Pinyin:result[i].Pinyin,
+                IsDelete:result[i].IsDelete,
+                HostID:result[i].HostID,
+                UpdateTime:result[i].UpdateTime,
+              };
+            }
+            vm.mapList.push(map_hash)
+            console.log('地图基础数据',map_hash)
+          },
+          complete: function (XHR) {
+            XHR = null;  //回收资源
+          }
+        });
       }
     },
     mounted () {
@@ -1301,7 +1307,6 @@
           var receiveDataMsgType8 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType8=receiveDataMsgType8
         }
-
 //        /*互监组管理提交*/
 //        if(JSON.parse(vm.SocketAllData).Header.MsgType === 35) {
 //          var receiveDataMsgType35 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
@@ -1390,15 +1395,23 @@
         /* 计划任务-返回数据-4 */
         if(JSON.parse(event.data).Header.MsgType === 4){
           var  plan_task = JSON.parse(JSON.parse(event.data).Body)
-          console.log('计划任务-返回数据-4',plan_task)
+//          console.log('计划任务-返回数据-4',plan_task)
           vm.plan = plan_task.PlanTypeName
           vm.planStartTime = plan_task.StartTime
           vm.planEndTime = plan_task.EndTime
-//          if(vm.plan === '工具清点计划'){
-//            vm.$router.push({ path: '/toolcheck' })
-//          } else if(vm.plan === '人员清点计划'){
-//            vm.$router.push({ path: '/crimalcheck' })
-//          }
+          if(vm.plan == '工具清点计划'){
+            if(vm.canRouter === 1){
+              vm.$router.push({ path: '/toolcheck' })
+            } else {
+              alert('工具清点已经开始，请结束本次操作后开始工具清点')
+            }
+          } else if(vm.plan == '人员清点计划'){
+            if(vm.canRouter === 1){
+              vm.$router.push({ path: '/crimalcheck' })
+            } else {
+              alert('人员清点已经开始，请结束本次操作后开始人员清点')
+            }
+          }
         }
 
         /* 实时流动-返回数据-3 */
@@ -1413,6 +1426,15 @@
 
         }
 
+        /* 警员刷卡-返回数据-6 */
+        if(JSON.parse(event.data).Header.MsgType === 6){
+          var  placeman_card = JSON.parse(JSON.parse(event.data).Body)
+          vm.alertYHDL = false
+          localStorage.setItem('placemanID',placeman_card)
+          console.log('警员刷卡-返回数据-6',placeman_card)
+
+        }
+
         /* 调用ajax全量数据 */
         vm.homeData()
       }
@@ -1420,7 +1442,11 @@
       /* 关闭状态 */
       vm.ws.onclose = function(){
         vm.onlinestatus = false
-        window.location.reload()
+        if(vm.onlinestatus === false){
+          setInterval(function () {
+            window.location.reload()
+          },5000)
+        }
       };
 
       /* 错误信息 */
@@ -1440,7 +1466,6 @@
 
 <style>
   .home{
-    /*height: 100%;*/
     height: 780px !important;
   }
   body{

@@ -7,6 +7,7 @@ import toolcheck from '@/components/toolcheck/toolcheck'
 import outregister from '@/components/outregister/outregister'
 import position from '@/components/position/position'
 import mutualsupervision from '@/components/mutualsupervision/mutualsupervision'
+import cardbind from '@/components/cardbind/cardbind'
 
 Vue.use(Router)
 
@@ -53,6 +54,12 @@ export default new Router({
       path: '/mutualsupervision',
       name: 'mutualsupervision',
       component: mutualsupervision
+    },
+    {
+      // 卡绑定
+      path: '/cardbind',
+      name: 'cardbind',
+      component: cardbind
     }
   ]
 })
