@@ -78,7 +78,7 @@
                     <div class="deailBody" style="height:269px;">
 
                       <el-col :span="4"  v-for="(criminal,index) in outCriminals.slice(outCriminalsA-1,outCriminalsB)" :key="1">
-                        <div  class="criminal" v-on:click="chooseOut(index)" >
+                        <div  class="criminal" v-on:click="delPerson(index)" >
                           <img :src="criminal.Photo" width="98%" height="85" alt=""/>
                           <span class="criminalName">{{ criminal.CriminalName}}</span>
                         </div>
@@ -103,7 +103,7 @@
                     </div>
                     <div class="deailBody" style="height:131px;">
                       <el-col :span="4"  v-for="(police,index) in outPolices.slice(outPoliceA-1,outPoliceB)" :key="1">
-                        <div  class="criminal" v-on:click="chooseOut(index)" >
+                        <div  class="criminal"  >
                           <img :src="police.Photo" width="98%" height="85" alt=""/>
                           <span class="criminalName">{{ police.PoliceName}}</span>
                         </div>
@@ -285,17 +285,26 @@
           })
         }
         //发送数据
-        if(vm.ws.readyState == WebSocket.OPEN){
-          vm.ws.send(JSON.stringify(send1))
-        }
-        setInterval(function () {
-            var receiveData =vm.receiveDataMsgType20
-            if(receiveData["RET"]==1){
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          url: ajaxUrl,
+          data:JSON.stringify(send1),
+          success: function (result) {
+            if(result.RET==1){
               vm.isSuccess=1
             }else {
               vm.isSuccess=0
             }
-        },1000)
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        })
+
       },
       cancel:function () {
 
@@ -311,100 +320,178 @@
           })
         }
         //发送数据
-        if(vm.ws.readyState == WebSocket.OPEN){
-          vm.ws.send(JSON.stringify(send3))
-        }
-        vm.$emit('canRouterChange')
-        var settool4 = setInterval(function () {
-          var receiveData =vm.receiveDataMsgType26
-          vm.canRouter=1
-          if(receiveData["RET"]==1){
-            clearInterval(settool4)
-            alert("取消成功")
-          }else {
-            clearInterval(settool4)
-            alert("取消失败")
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          url: ajaxUrl,
+          data:JSON.stringify(send3),
+          success: function (result) {
+            if(result.RET==1){
+              alert("取消成功")
+              vm.$emit('canRouterChange')
+              vm.$router.push({ path: '/' })
+
+            }else {
+              alert("取消失败")
+              vm.$emit('canRouterChange')
+
+            }
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        })
+
+      },
+      delPerson:function (index) {
+          var vm = this
+        var r=confirm("确定要删除该人员？");
+        if (r==true)
+        {
+          this.cardPerson.splice(index+this.outCriminalsA-1,1)
+          var sendDelPerson = {
+            Header: {
+              MsgID:"201501260000000031",
+              MsgType:21
+            },
+            Body: JSON.stringify({
+              OrgID : localStorage.getItem('OrgID'),
+              DoorID : localStorage.getItem('DoorID'),
+              PeopleID :vm.outCriminals[index+vm.outCriminalsA-1]["CriminalID"]
+            })
           }
 
-        },1000)
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            url: ajaxUrl,
+            data:JSON.stringify(sendDelPerson),
+            success: function (result) {
+              if(result.RET==1){
+                  vm.outCriminals.splice(index+vm.outCriminalsA-1,1)
+              }else {
+                alert("删除失败")
+              }
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
+          })
+
+        }
+
       },
 
       submitOutRegister:function () {
         var vm=this
-        var Criminals=[];
-        var Polices=[];
-        var Areas=[];
+        var Criminals="";
+        var Polices="";
+        var Areas="";
 //      var Reason=[];
         var Reason='';
 
         for (var i=0;i<vm.outCriminals.length;i++){
-          Criminals.push(vm.outCriminals[i]["PersonID"])
+          Criminals=Criminals+vm.outCriminals[i]["CriminalID"]
         }
         for (var i=0;i<vm.outPolices.length;i++){
-          Polices.push(vm.outPolices[i]["PersonID"])
+//          Polices.push(vm.outPolices[i]["PersonID"])
+          Polices=Polices+vm.outPolices[i]["PersonID"]
+
         }
         for (var i=0;i<vm.areaNameList.length;i++){
             if(vm.areaNameList[i]["ischoose"]){
-              Areas.push(vm.areaNameList[i]["FlnkID"])
+              Areas=vm.areaNameList[i]["FlnkID"]
             }
         }
         for (var i=0;i<vm.reasonList.length;i++){
           if(vm.reasonList[i]["ischoose"]){
 //          Reason.push(vm.reasonList[i]["Description"])
-            Reason=vm.reasonList[i]["Description"]
+            Reason=vm.reasonList[i]["DictCodeName"]
           }
         }
+        if(Areas==""||Reason==""){
+            alert("外出事由和外出地点必须选择！")
+        }else {
 
-        var sendOutRegister = {
-          Header: {
-            MsgID:"201501260000000031",
-            MsgType:23
-          },
-          Body: JSON.stringify({
-            OrgID : localStorage.getItem('OrgID'),
-            DoorID : localStorage.getItem('DoorID'),
-            AreaID : localStorage.getItem('AreaID'),
-            Criminals:Criminals,
-            Polices:Polices,
-            Reason:Reason,
-            Areas:Areas
+          var sendOutRegister = {
+            Header: {
+              MsgID:"201501260000000031",
+              MsgType:23
+            },
+            Body: JSON.stringify({
+              OrgID : localStorage.getItem('OrgID'),
+              DoorID : localStorage.getItem('DoorID'),
+//            AreaID : localStorage.getItem('AreaID'),
+              Criminals:Criminals,
+              Polices:Polices,
+              Reason:Reason,
+              Areas:Areas
 
+            })
+          }
+          //发送数据
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            url: ajaxUrl,
+            data:JSON.stringify(sendOutRegister),
+            success: function (result) {
+              if(result.RET==1){
+                vm.$emit('canRouterChange')
+                alert("提交成功")
+                vm.$router.push({ path: '/' })
+              }else {
+                vm.$emit('canRouterChange')
+                alert("提交失败")
+              }
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
           })
         }
-        //发送数据
-        if(vm.ws.readyState == WebSocket.OPEN){
-          vm.ws.send(JSON.stringify(sendOutRegister))
-        }
-       var settool5 = setInterval(function () {
-          var receiveData =vm.receiveDataMsgType23
-          if(receiveData["RET"]==1){
-            vm.$emit('canRouterChange')
-            clearInterval(settool5)
-            alert("提交成功")
-          }else {
-            vm.$emit('canRouterChange')
-            clearInterval(settool5)
-            alert("提交失败")
-          }
-        },500)
+
       }
 
     },
     mounted () {
-
       /* Coding By YanM */
 
       /* Coding By YanM */
       /* Coding By Qianjf */
       var vm = this
+      localStorage.setItem("placemanID","0")
+     var outPlice= setInterval(function () {
+        if(localStorage.getItem("placemanID")==0){
+        }else {
+          vm.firstWs()
+          clearInterval(outPlice)
+          var Polices={}
+          Polices["PersonID"]=localStorage.getItem("placemanID")
+          Polices["ischoose"]=false
+          Polices["PoliceName"]=vm.policeList[0][localStorage.getItem("placemanID")]["PoliceName"]
+          Polices["Photo"]=vm.policeList[0][Polices["PersonID"]]["Photo"]
+          vm.outPolices.push(Polices)
+        }
+      },500)
 //      发送人员流动状态  2603临时外出
 //      setInterval(function () {
 //          if(vm.isSuccess==0){
 //            vm.firstWs()
 //          }
 //      },1000)
+
 //      获取外出登记的人员明细
-      setInterval(function () {
+    setInterval(function () {
         if(vm.isSuccess==1){
           var send2 = {
             Header: {
@@ -416,9 +503,22 @@
               DoorID : localStorage.getItem('DoorID'),
             })
           }
+          var send27 = {
+            Header: {
+              MsgID:"201501260000000035",
+              MsgType:27
+            },
+            Body: JSON.stringify({
+              OrgID : localStorage.getItem('OrgID'),
+              DoorID : localStorage.getItem('DoorID'),
+            })
+          }
           //发送数据
           if(vm.ws.readyState == WebSocket.OPEN){
             vm.ws.send(JSON.stringify(send2))
+          }
+          if(vm.ws.readyState == WebSocket.OPEN){
+            vm.ws.send(JSON.stringify(send27))
           }
           /*外出登记罪犯信息*/
           var receiveData = vm.receiveDataMsgType22
@@ -427,8 +527,8 @@
             for (var i=0;i<receiveData.length;i++){
                 var Criminal=receiveData[i]
                     Criminal["ischoose"]=false
-                    Criminal["CriminalName"]=vm.criminalList[0][Criminal["PersonID"]]["CriminalName"]
-                    Criminal["Photo"]=vm.criminalList[0][Criminal["PersonID"]]["Photo"]
+                    Criminal["CriminalName"]=vm.criminalList[0][Criminal["CriminalID"]]["CriminalName"]
+                    Criminal["Photo"]=vm.criminalList[0][Criminal["CriminalID"]]["Photo"]
                     outCriminal.push(Criminal)
                     vm.outCriminals=outCriminal
                     vm.outPages=Math.ceil(vm.outCriminals.length/12)==0?1:Math.ceil(vm.outCriminals.length/12)

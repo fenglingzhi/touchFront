@@ -5,10 +5,7 @@
     <el-col :span="1" style="height:10px"></el-col>
     <el-col :span="22">
       <div class="li2_parts">
-        <!--<div class="tabHead">-->
-        <!--<div class="tab"  v-on:click="toggle()">人员清点</div>-->
-        <!--<div class="tab tabing"  v-on:click="toggle()">清点记录</div>-->
-        <!--</div>-->
+
         <div class="tabHead">
           <div  :class="['tab', { tabing: isB1}]"  v-on:click="toggle1()">工具清点</div>
           <div  :class="['tab', { tabing: isB2}]"  v-on:click="toggle2()">清点记录</div>
@@ -17,7 +14,9 @@
           <div class="partsBody" style="height:392px;">
             <div class="bodyHead">
               <div class="title">柜内工具未点{{inTool.length}}件</div>
-              <div class="titleDescribe">（柜内工具总数：200个，<span style="color: #1443cd"  @click="$emit('hasCheakedTool')" >已点工具{{toolCalledCount}}个</span>）</div>
+
+              <div class="titleDescribe">（<span style="color: #1443cd"  @click="$emit('hasCheakedTool')" >已点工具{{toolCalledCount}}个</span>）</div>
+              <!--<div class="titleDescribe">（柜内工具总数：200个，<span style="color: #1443cd"  @click="$emit('hasCheakedTool')" >已点工具{{toolCalledCount}}个</span>）</div>-->
             </div>
             <div class="bodyCon">
 
@@ -128,7 +127,7 @@
 
 <script>
   import { SHANLEI,IMG,ajaxUrl} from '../../config'
-
+var vm=this
   export default {
     name: 'navheader',
     props:[
@@ -181,6 +180,9 @@
         a:1
       }
     },
+//    destroyed: function () {
+//     clearInterval(setInterClear)
+//    },
     methods: {
       toggle1: function () {
         this.isShow1 = true
@@ -353,23 +355,32 @@
           })
         }
         //发送数据
-        if(vm.ws.readyState == WebSocket.OPEN){
-          vm.ws.send(JSON.stringify(send))
-        }
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          url: ajaxUrl,
+          data:JSON.stringify(send),
+          success: function (result) {
+            if(result.RET==1){
+              vm.outChoose.splice(0,vm.outChoose.length)
+              vm.inChoose.splice(0,vm.inChoose.length)
+              alert("手动确定成功")
 
-        var settool1= setTimeout(function () {
-           if(vm.receiveDataMsgType30["RET"]==0){
-             alert("处理失败")
-             clearInterval(settool1)
+            }else {
+              alert("手动确定失败")
+            }
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        })
 
-           }else {
-             alert("处理成功")
-             clearInterval(settool1)
-
-           }
-         },500)
       },
       cancel:function () {
+        var vm=this
         var send = {
           Header: {
             MsgID:"201501260000000034",
@@ -381,20 +392,29 @@
           })
         }
         //发送数据
-        if(vm.ws.readyState == WebSocket.OPEN){
-          vm.ws.send(JSON.stringify(send))
-        }
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          url: ajaxUrl,
+          data:JSON.stringify(send),
+          success: function (result) {
+            if(result.RET==1){
+              vm.inChoose.splice(0,vm.inChoose.length)
+              vm.outChoose.splice(0,vm.outChoose.length)
+              alert("手动结束成功")
 
-        var settool2= setTimeout(function () {
-          if(vm.receiveDataMsgType33["RET"]==0){
-            alert("处理失败")
-            clearInterval(settool2)
-
-          }else {
-            alert("处理成功")
-            clearInterval(settool2)
+            }else {
+              alert("手动结束失败")
+            }
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
           }
-        },500)
+        })
+
       }
     },
     mounted () {
@@ -413,14 +433,14 @@
           OrgID : localStorage.getItem('OrgID'),
         })
       }
-      setInterval(function () {
+      var setInterClear= setInterval(function () {
         //发送数据
         if(vm.ws.readyState == WebSocket.OPEN){
           vm.ws.send(JSON.stringify(send))
         }
 //        接收数据
         var receiveData=vm.receiveDataMsgType32
-        console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",receiveData)
+//        console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",receiveData)
           if(receiveData!=""||receiveData!=null){
             var hasNotCall=[] //柜内未点1
             var outHasNotCall=[] //柜外未点0
