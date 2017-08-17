@@ -1,11 +1,11 @@
 <template>
   <div class="menufooter">
     <el-row class="menu_title_wrap">
-      <!--<el-col :span="1" class="menu_title"></el-col>-->
-      <el-col :span="4" class="menu_title" v-for="item in menuList" :key="1">
+      <el-col :span="1" class="menu_title"></el-col>
+      <el-col :span="3" class="menu_title" v-for="item in menuList" :key="1">
         <div @click="gopage(item.path)">{{item.name}}</div>
       </el-col>
-      <!--<el-col :span="1" class="menu_title"></el-col>-->
+      <el-col :span="1" class="menu_title"></el-col>
     </el-row>
   </div>
 </template>
@@ -23,7 +23,8 @@ export default {
         {name: '工具清点', path: '/toolcheck'},
         {name: '外出登记', path: '/outregister'},
 //      {name: '定位展示', path: '/position'},
-        {name: '互监组管理', path: '/mutualsupervision'}
+        {name: '互监组管理', path: '/mutualsupervision'},
+        {name: '卡绑定', path: '/cardbind'}
       ],
     }
   },
@@ -38,7 +39,7 @@ export default {
 //
       if(path === '/outwork' ){
 
-        if(this.canRouter==0){
+        if(this.canRouter===0){
             alert("请完成当前操作或者取消后再操作")
         }else {
           this.$router.push({ path: '/outwork' })
@@ -46,7 +47,7 @@ export default {
         }
 
       }else if(path === '/outregister'){
-        if(this.canRouter==0){
+        if(this.canRouter===0){
           alert("请完成当前操作或者取消后再操作")
         }else {
           this.$router.push({ path: '/outregister' })
@@ -55,7 +56,7 @@ export default {
 
 
       }else if(path === '/crimalcheck'){
-        if(this.canRouter==0){
+        if(this.canRouter===0){
           alert("请完成当前操作或者取消后再操作")
         }else {
           this.$router.push({ path: '/crimalcheck' })
@@ -63,24 +64,31 @@ export default {
 
 
       }else if(path === '/toolcheck'){
-        if(this.canRouter==0){
+        if(this.canRouter===0){
           alert("请完成当前操作或者取消后再操作")
         }else {
           this.$router.push({ path: '/toolcheck' })
         }
 
       }else if(path === '/mutualsupervision'){
-        if(this.canRouter==0){
+        if(this.canRouter===0){
           alert("请完成当前操作或者取消后再操作")
         }else {
           this.$router.push({ path: '/mutualsupervision' })
         }
 
       }else if(path === '/') {
-        if(this.canRouter==0){
+        if(this.canRouter===0){
           alert("请完成当前操作或者取消后再操作")
         }else {
           this.$router.push({ path: '/' })
+        }
+
+      }else if(path === '/cardbind') {
+        if(this.canRouter===0){
+          alert("请完成当前操作或者取消后再操作")
+        }else {
+          this.$router.push({ path: '/cardbind' })
         }
 
       }

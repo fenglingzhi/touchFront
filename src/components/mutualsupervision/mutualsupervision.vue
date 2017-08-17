@@ -140,6 +140,7 @@
           this.generalGroupList[i].ischoose=false
         }
         this.generalGroupList[dom+this.generalGroupA-1].ischoose=!this.generalGroupList[dom+this.generalGroupA-1].ischoose
+        this.$router.push({ path: '/position' })
       },
       chooseProvisionalGroup:function (dom) {
         for(var i=0;i< this.provisionalGroupList.length;i++){

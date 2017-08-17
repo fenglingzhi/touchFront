@@ -420,7 +420,7 @@
         }
 //        接收数据
         var receiveData=vm.receiveDataMsgType32
-        console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",receiveData)
+//        console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",receiveData)
           if(receiveData!=""||receiveData!=null){
             var hasNotCall=[] //柜内未点1
             var outHasNotCall=[] //柜外未点0

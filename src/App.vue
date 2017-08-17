@@ -36,6 +36,7 @@
       :receiveDataMsgType8="receiveDataMsgType8"
       :receiveDataMsgType33="receiveDataMsgType33"
       :canRouter="canRouter"
+      :mapList="mapList"
     ></router-view>
   <!--  :receiveDataMsgType35="receiveDataMsgType35"
     :receiveDataMsgType27="receiveDataMsgType27"
@@ -334,6 +335,7 @@
         nowfloatPersonA:1,
         nowfloatPersonB:9,
         onlinestatus:true,
+        mapList:[],                       //地图基础数据
         /* Coding By YanM */
         /* mj B*/
         receiveDataMsgType25:{},//进出ws工数据
@@ -1155,6 +1157,44 @@
             XHR = null;  //回收资源
           }
         });
+
+        /* 全部地图数据 */
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          url: SHANLEI + 'HomeIndex/GetMapList',
+          success: function (result) {
+            //所有警员信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
+            var map_hash = new Array();
+            // 重构警员信息哈希数据
+            for(var i=0;i<result.length;i++){
+              map_hash[result[i].FlnkID] = {
+                FlnkID:result[i].FlnkID,
+                MapCode:result[i].MapCode,
+                MapName:result[i].MapName,
+                MapUrl:result[i].MapUrl,
+                MapType:result[i].MapType,
+                Width:result[i].Width,
+                Height:result[i].Height,
+                Scale:result[i].Scale,
+                ParentID:result[i].ParentID,
+                OrderIndex:result[i].OrderIndex,
+                Pinyin:result[i].Pinyin,
+                IsDelete:result[i].IsDelete,
+                HostID:result[i].HostID,
+                UpdateTime:result[i].UpdateTime,
+              };
+            }
+            vm.mapList.push(map_hash)
+            console.log('地图基础数据',map_hash)
+          },
+          complete: function (XHR) {
+            XHR = null;  //回收资源
+          }
+        });
       }
     },
     mounted () {
@@ -1278,7 +1318,7 @@
           var alarmNews = JSON.parse(JSON.parse(event.data).Body)
             /* 区域过滤测试后解开 */
 //          if (alarmNews.OrgID === localStorage.getItem("OrgID")) {
-          console.log("ppppppppppppppppppppppppppppppppppppppppp",alarmNews)
+//          console.log("ppppppppppppppppppppppppppppppppppppppppp",alarmNews)
 
           var criminalData = alarmNews
             criminalData.criminalID = vm.criminalList[0][alarmNews.ObjectID].CriminalID
@@ -1351,14 +1391,22 @@
         /* 计划任务-返回数据-4 */
         if(JSON.parse(event.data).Header.MsgType === 4){
           var  plan_task = JSON.parse(JSON.parse(event.data).Body)
-          console.log('计划任务-返回数据-4',plan_task)
+//          console.log('计划任务-返回数据-4',plan_task)
           vm.plan = plan_task.PlanTypeName
           vm.planStartTime = plan_task.StartTime
           vm.planEndTime = plan_task.EndTime
-          if(vm.plan === '工具清点计划'){
-            vm.$router.push({ path: '/toolcheck' })
-          } else if(vm.plan === '人员清点计划'){
-            vm.$router.push({ path: '/crimalcheck' })
+          if(vm.plan == '工具清点计划'){
+            if(vm.canRouter === 1){
+              vm.$router.push({ path: '/toolcheck' })
+            } else {
+              alert('工具清点已经开始，请结束本次操作后开始工具清点')
+            }
+          } else if(vm.plan == '人员清点计划'){
+            if(vm.canRouter === 1){
+              vm.$router.push({ path: '/crimalcheck' })
+            } else {
+              alert('人员清点已经开始，请结束本次操作后开始人员清点')
+            }
           }
         }
 
@@ -1376,10 +1424,9 @@
 
         /* 警员刷卡-返回数据-6 */
         if(JSON.parse(event.data).Header.MsgType === 6){
-          alert('民警刷卡')
           var  placeman_card = JSON.parse(JSON.parse(event.data).Body)
-          alertYHDL = false
-//          localStorage.setItem('placemanID',placeman_card)
+          vm.alertYHDL = false
+          localStorage.setItem('placemanID',placeman_card)
           console.log('警员刷卡-返回数据-6',placeman_card)
 
         }
@@ -1391,17 +1438,17 @@
       /* 关闭状态 */
       vm.ws.onclose = function(){
         vm.onlinestatus = false
-        if(vm.onlinestatus == false){
-          setInterval(function () {
-            window.location.reload()
-          },1000)
-        }
+//        if(vm.onlinestatus === false){
+//          setInterval(function () {
+//            window.location.reload()
+//          },5000)
+//        }
       };
 
       /* 错误信息 */
-//      vm.ws.onerror = function(evt) {
-//          console.log("WebSocketError!",evt)
-//      }
+      vm.ws.onerror = function(evt) {
+          console.log("WebSocketError!",evt)
+      }
 
       /* Coding By YanM */
 
