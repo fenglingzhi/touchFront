@@ -67,6 +67,7 @@
             </el-row>
           </div>
           <div class="partsFoot">
+            <div class="alertText">{{alertText}}</div>
             <div style="margin: 13px 2px;float: right">
               <div class="sure" v-on:click="submitTool()">手动确定</div>
               <div class="sure" v-on:click="cancel()">手动结束</div>
@@ -147,7 +148,7 @@ var vm=this
       return {
 
         // 柜外工具
-
+        alertText:"",
         outCriminals: [
 
         ],
@@ -251,7 +252,7 @@ var vm=this
       getRecordback:function () {
         var vm = this
         if(vm.recordPage==0){
-            alert("已经是第一页了")
+//            alert("已经是第一页了")
         }else {
           vm.recordPage=vm.recordPage-1
           $.ajax({
@@ -306,12 +307,12 @@ var vm=this
           this.inA=this.inA+24
           this.inB=this.inB+24
         }else {
-          alert("已经最后一页了")
+//          alert("已经最后一页了")
         }
       },
       inBack:function () {
         if(this.inNowPage==1){
-          alert("已经是第一页了")
+//          alert("已经是第一页了")
         }else {
           this.inNowPage=this.inNowPage-1
           this.inA=this.inA-24
@@ -367,10 +368,16 @@ var vm=this
             if(result.RET==1){
               vm.outChoose.splice(0,vm.outChoose.length)
               vm.inChoose.splice(0,vm.inChoose.length)
-              alert("手动确定成功")
+              vm.alertText="手动确定成功"
+              setTimeout(function () {
+                vm.alertText=""
+              },2000)
 
             }else {
-              alert("手动确定失败")
+              vm.alertText="手动确定失败"
+              setTimeout(function () {
+                vm.alertText=""
+              },2000)
             }
           },
           complete: function (XHR, TS) {
@@ -404,10 +411,17 @@ var vm=this
             if(result.RET==1){
               vm.inChoose.splice(0,vm.inChoose.length)
               vm.outChoose.splice(0,vm.outChoose.length)
-              alert("手动结束成功")
+              vm.alertText="手动结束成功"
+              setTimeout(function () {
+                vm.alertText=""
+              },2000)
+
 
             }else {
-              alert("手动结束失败")
+              vm.alertText="手动结束失败"
+              setTimeout(function () {
+                vm.alertText=""
+              },2000)
             }
           },
           complete: function (XHR, TS) {
@@ -440,7 +454,6 @@ var vm=this
         }
 //        接收数据
         var receiveData=vm.receiveDataMsgType32
-//        console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",receiveData)
           if(receiveData!=""||receiveData!=null){
             var hasNotCall=[] //柜内未点1
             var outHasNotCall=[] //柜外未点0

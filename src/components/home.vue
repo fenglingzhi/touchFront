@@ -178,12 +178,12 @@ export default {
         this.float_personnelA=this.float_personnelA+6
         this.float_personnelB=this.float_personnelB+6
       }else {
-        alert("已经最后一页了")
+//        alert("已经最后一页了")
       }
     },
     floating_personnelBack:function () {
       if(this.float_personnelNowPage === 1){
-        alert("已经是第一页了")
+//        alert("已经是第一页了")
       }else {
         this.float_personnelNowPage=this.float_personnelNowPage-1
         this.float_personnelA=this.float_personnelA-6
@@ -197,12 +197,12 @@ export default {
         this.outside_persion_personnelsA=this.outside_persion_personnelsA+4
         this.outside_persion_personnelsB=this.outside_persion_personnelsB+4
       }else {
-        alert("已经最后一页了")
+//        alert("已经最后一页了")
       }
     },
     outside_persion_personnelsBack:function () {
       if(this.outside_persion_personnelsNowPage === 1){
-        alert("已经是第一页了")
+//        alert("已经是第一页了")
       }else {
         this.outside_persion_personnelsNowPage=this.outside_persion_personnelsNowPage-1
         this.outside_persion_personnelsA=this.outside_persion_personnelsA-4

@@ -12,7 +12,7 @@
             </div>
             <div class="bodyCon">
               <el-row >
-                <el-col :span="11">
+                <el-col :span="12">
                   <el-row >
                     <div class="deailHead">
                       外出地点
@@ -67,13 +67,13 @@
 
                   </el-row>
                 </el-col>
-                <el-col :span="2" style="height:10px;">
+                <el-col :span="1" style="height:10px;">
                 <!--中间空隙-->
                 </el-col>
                 <el-col :span="11">
                   <el-row >
                     <div class="deailHead">
-                      外出人员
+                      外出人员({{outCriminals.length}}人)
                     </div>
                     <div class="deailBody" style="height:269px;">
 
@@ -113,11 +113,11 @@
                   <el-row >
                     <el-col :span="3" style="height: 10px"></el-col>
                     <el-col :span="18" >
-                      <div class="pages">
-                        <span class="pageControl"><img src="../../assets/q1.png" v-on:click="outPoliceBack()" alt=""/></span>
-                        <span class="pagesText">{{outPoliceNowPage}}/{{outPolicePages}}</span>
-                        <span class="pageControl"><img src="../../assets/q2.png" v-on:click="outPoliceGo()" alt=""/></span>
-                      </div>
+                      <!--<div class="pages">-->
+                        <!--<span class="pageControl"><img src="../../assets/q1.png" v-on:click="outPoliceBack()" alt=""/></span>-->
+                        <!--<span class="pagesText">{{outPoliceNowPage}}/{{outPolicePages}}</span>-->
+                        <!--<span class="pageControl"><img src="../../assets/q2.png" v-on:click="outPoliceGo()" alt=""/></span>-->
+                      <!--</div>-->
                     </el-col>
                     <el-col :span="3" style="height: 10px"></el-col>
                   </el-row>
@@ -129,6 +129,7 @@
 
           </div>
           <div class="partsFoot">
+            <div class="alertText">{{alertText}}</div>
             <div style="margin: 13px 2px;float: right">
               <div class="sure" v-on:click="submitOutRegister()">提交</div>
               <div class="sure" v-on:click="cancel()">取消</div>
@@ -179,7 +180,8 @@
         outPoliceNowPage:1,//外出民警当前页
         outPoliceListAll:0,//外出民警总数
         outPoliceA:1,
-        outPoliceB:6
+        outPoliceB:6,
+        alertText:""
 
       }
     },
@@ -202,12 +204,12 @@
           this.areaA=this.areaA+12
           this.areaB=this.areaB+12
         }else {
-          alert("已经最后一页了")
+//          alert("已经最后一页了")
         }
       },
       areaBack:function () {
         if(this.areaNowPage==1){
-          alert("已经是第一页了")
+//          alert("已经是第一页了")
         }else {
           this.areaNowPage=this.areaNowPage-1
           this.areaA=this.areaA-12
@@ -221,12 +223,12 @@
             this.reasonA=this.reasonA+12
             this.reasonB=this.reasonB+12
           }else {
-            alert("已经最后一页了")
+//            alert("已经最后一页了")
           }
       },
       ReasonBack:function () {
         if(this.reasonNowPage==1){
-          alert("已经是第一页了")
+//          alert("已经是第一页了")
         }else {
           this.reasonNowPage=this.reasonNowPage-1
           this.reasonA=this.reasonA-12
@@ -240,12 +242,12 @@
           this.outCriminalsA=this.outCriminalsA+12
           this.outCriminalsB=this.outCriminalsB+12
         }else {
-          alert("已经最后一页了")
+//          alert("已经最后一页了")
         }
       },
       outcriminalBack:function () {
         if(this.outNowPage==1){
-          alert("已经是第一页了")
+//          alert("已经是第一页了")
         }else {
           this.outNowPage=this.outNowPage-1
           this.outCriminalsA=this.outCriminalsA-12
@@ -258,12 +260,12 @@
           this.outPoliceA=this.outPoliceA+6
           this.outPoliceB=this.outPoliceB+6
         }else {
-          alert("已经最后一页了")
+//          alert("已经最后一页了")
         }
       },
       outPoliceBack:function () {
         if(this.outPoliceNowPage==1){
-          alert("已经是第一页了")
+//          alert("已经是第一页了")
         }else {
           this.outPoliceNowPage=this.outPoliceNowPage-1
           this.outPoliceA=this.outPoliceA-6
@@ -307,7 +309,6 @@
 
       },
       cancel:function () {
-
         var vm=this
         var send3 = {
           Header: {
@@ -330,13 +331,21 @@
           data:JSON.stringify(send3),
           success: function (result) {
             if(result.RET==1){
-              alert("取消成功")
+              vm.alertText="取消成功"
               vm.$emit('canRouterChange')
-              vm.$router.push({ path: '/' })
+
+              setTimeout(function () {
+                vm.alertText=""
+                vm.$router.push({ path: '/' })
+              },2000)
+
 
             }else {
-              alert("取消失败")
+              vm.alertText="取消失败"
               vm.$emit('canRouterChange')
+              setTimeout(function () {
+                vm.alertText=""
+              },2000)
 
             }
           },
@@ -376,7 +385,11 @@
               if(result.RET==1){
                   vm.outCriminals.splice(index+vm.outCriminalsA-1,1)
               }else {
-                alert("删除失败")
+                vm.alertText="删除失败"
+                setTimeout(function () {
+                  vm.alertText=""
+                },2000)
+
               }
             },
             complete: function (XHR, TS) {
@@ -397,11 +410,20 @@
         var Reason='';
 
         for (var i=0;i<vm.outCriminals.length;i++){
-          Criminals=Criminals+vm.outCriminals[i]["CriminalID"]
+//          Criminals=Criminals+vm.outCriminals[i]["CriminalID"]
+          if(i==0){
+            Criminals=vm.outCriminals[i]["CriminalID"]
+          }else {
+            Criminals=Criminals+","+vm.outCriminals[i]["CriminalID"]
+          }
         }
         for (var i=0;i<vm.outPolices.length;i++){
 //          Polices.push(vm.outPolices[i]["PersonID"])
-          Polices=Polices+vm.outPolices[i]["PersonID"]
+          if(i==0){
+            Polices=vm.outPolices[i]["PersonID"]
+          }else {
+            Polices=Polices+","+vm.outPolices[i]["PersonID"]
+          }
 
         }
         for (var i=0;i<vm.areaNameList.length;i++){
@@ -416,7 +438,10 @@
           }
         }
         if(Areas==""||Reason==""){
-            alert("外出事由和外出地点必须选择！")
+          vm.alertText="外出事由和外出地点必须选择"
+          setTimeout(function () {
+            vm.alertText=""
+          },2000)
         }else {
 
           var sendOutRegister = {
@@ -432,7 +457,6 @@
               Polices:Polices,
               Reason:Reason,
               Areas:Areas
-
             })
           }
           //发送数据
@@ -447,11 +471,17 @@
             success: function (result) {
               if(result.RET==1){
                 vm.$emit('canRouterChange')
-                alert("提交成功")
-                vm.$router.push({ path: '/' })
+                vm.alertText="提交成功"
+                setTimeout(function () {
+                  vm.alertText=""
+                  vm.$router.push({ path: '/' })
+                },2000)
               }else {
                 vm.$emit('canRouterChange')
-                alert("提交失败")
+                vm.alertText="提交失败"
+                setTimeout(function () {
+                  vm.alertText=""
+                },2000)
               }
             },
             complete: function (XHR, TS) {

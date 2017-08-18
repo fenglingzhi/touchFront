@@ -5,8 +5,8 @@
     <el-col :span="22">
       <div class="li1_parts">
         <div class="tabHead">
-          <div :class="['tab', { tabing: isB1}]" v-on:click="toggle1()">出工</div>
-          <div :class="['tab', { tabing: isB2}]" v-on:click="toggle2()">留监</div>
+          <div :class="['tab', { tabing: isB1}]" v-on:click="toggle1()">{{buttonText}}（{{outCriminalList.length}}人）</div>
+          <div :class="['tab', { tabing: isB2}]" v-on:click="toggle2()">留监（{{inCriminalList.length}}人）</div>
         </div>
         <div class="partsBody" v-show="isShow1">
           <div class="bodyCon">
@@ -54,7 +54,8 @@
 
         </div>
         <div class="partsFoot">
-          <div class="sure" v-on:click="sub()">收工</div>
+          <div class="alertText">{{alertText}}</div>
+          <div class="sure" v-on:click="sub()">{{buttonText}}</div>
         </div>
       </div>
     </el-col>
@@ -69,7 +70,7 @@
   export default {
     name: 'navheader',
     props:[
-      'SocketAllData','receiveDataMsgType25'
+      'SocketAllData','receiveDataMsgType25','criminalList'
     ],
     data () {
       return {
@@ -92,6 +93,8 @@
         outA:1,
         outB:48,
         isSuccess:0,
+        alertText:"",
+        buttonText:""
 
       }
     },
@@ -115,12 +118,12 @@
           this.inA=this.inA+48
           this.inB=this.inB+48
         }else {
-          alert("已经最后一页了")
+//          alert("已经最后一页了")
         }
       },
       inBack:function () {
         if(this.inNowPage==1){
-          alert("已经是第一页了")
+//          alert("已经是第一页了")
         }else {
           this.inNowPage=this.inNowPage-1
           this.inA=this.inA-48
@@ -134,7 +137,7 @@
           this.outA=this.outA+48
           this.outB=this.outB+48
         }else {
-          alert("已经最后一页了")
+//          alert("已经最后一页了")
         }
       },
       outBack:function () {
@@ -148,12 +151,62 @@
 
       },
       sub:function () {
-        var vm = this
-        vm.$emit('canRouterChange')
-        vm.$router.push({ path: '/' })
+        var vm=this
+
+        var Polices=localStorage.getItem("placemanID");
+        var Reason;
+        if(vm.MoveType==2601){
+          Reason="出工"
+        }else {
+          Reason="收工"
+        }
+          var workSend = {
+            Header: {
+              MsgID:"201501260000000031",
+              MsgType:23
+            },
+            Body: JSON.stringify({
+              OrgID : localStorage.getItem('OrgID'),
+              DoorID : localStorage.getItem('DoorID'),
+              Polices:Polices,
+              Reason:Reason,
+
+            })
+          }
+          //发送数据
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            url: ajaxUrl,
+            data:JSON.stringify(workSend),
+            success: function (result) {
+              vm.$emit('canRouterChange')
+              if(result.RET==1){
+                vm.alertText="提交成功"
+                setTimeout(function () {
+                  vm.alertText=""
+                  vm.$router.push({ path: '/' })
+                },2000)
+              }else {
+                vm.alertText="提交失败"
+                setTimeout(function () {
+                  vm.alertText=""
+                  vm.$router.push({ path: '/' })
+                },2000)
+              }
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
+          })
 
 
       },
+
+
       firstWs:function () {
         var vm=this
         var send1 = {
@@ -193,6 +246,13 @@
     },
     mounted(){
       var vm = this
+      if(localStorage.getItem("AreaType")==1){
+        vm.buttonText="收工"
+        vm.MoveType="2602"
+      }else {
+        vm.buttonText="出工"
+        vm.MoveType="2601"
+      }
       localStorage.setItem("placemanID","0")
       var outWork= setInterval(function () {
         if(localStorage.getItem("placemanID")==0){
@@ -218,15 +278,17 @@
             vm.ws.send(JSON.stringify(personnel_distribution))
           }
           var  receiveDataMsgType25 = vm.receiveDataMsgType25
+          var getCriminalLists=[]
           if(receiveDataMsgType25!=""||receiveDataMsgType25!=null){
             vm.inPages=Math.ceil(vm.inCriminalList.length/48)==0?1:Math.ceil(vm.inCriminalList.length/48)
             for(var i=0;i<receiveDataMsgType25.length;i++){
               var getCriminalID = receiveDataMsgType25[i]["CriminalID"]
-              for(var j=0;j<vm.areaCriminalList.length;j++){
-                if(vm.areaCriminalList[j]["FlnkID"]==getCriminalID){
-                  vm.outCriminalList.push(vm.areaCriminalList[j])
-                }
-              }
+              var getCriminalList=receiveDataMsgType25[i]
+              getCriminalList["ischoose"]=false
+              getCriminalList["CriminalName"]=vm.criminalList[0][getCriminalID]["CriminalName"]
+              getCriminalList["Photo"]=vm.criminalList[0][getCriminalID]["Photo"]
+              getCriminalLists.push(getCriminalList)
+              vm.outCriminalList=getCriminalLists
               for(var k=0;k<vm.inCriminalList.length;k++){
                 if(vm.inCriminalList[k]["FlnkID"]==getCriminalID){
                   vm.inCriminalList.splice(k,1)
@@ -266,8 +328,6 @@
           XHR = null;  //回收资源
         }
       });
-
-
     }
   }
 
