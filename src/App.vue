@@ -1445,9 +1445,9 @@
       vm.ws.onclose = function(){
         vm.onlinestatus = false
         if(vm.onlinestatus === false){
-//          setInterval(function () {
-//            window.location.reload()
-//          },5000)
+          setInterval(function () {
+            window.location.reload()
+          },5000)
         }
       };
 
