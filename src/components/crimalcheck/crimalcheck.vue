@@ -380,9 +380,10 @@
             data:JSON.stringify(send),
             success: function (result) {
                 if(result.RET==1){
+                  vm.outChoose.splice(0,vm.outChoose.length)
+                  vm.inChoose.splice(0,vm.inChoose.length)
                   alert("手动确定成功")
-                  vm.outCriminals=[]
-                  vm.inCriminals=[]
+
                 }else {
                   alert("手动确定失败")
                 }
@@ -395,6 +396,7 @@
         }
       },
       cancel:function () {
+        var vm=this
         var send = {
           Header: {
             MsgID:"201501260000000034",
@@ -416,9 +418,10 @@
           data:JSON.stringify(send),
           success: function (result) {
             if(result.RET==1){
+              vm.inChoose.splice(0,vm.inChoose.length)
+              vm.outChoose.splice(0,vm.outChoose.length)
               alert("手动结束成功")
-              vm.outCriminals=[]
-              vm.inCriminals=[]
+
             }else {
               alert("手动结束失败")
             }
@@ -470,6 +473,7 @@
                 hasNotCall.push(notCall)
                 vm.inCriminals=hasNotCall
                 vm.inPages=Math.ceil(vm.inCriminals.length/24)==0?1:Math.ceil(vm.inCriminals.length/24)
+
               }else if(receiveData[i].Status=="2403"){
 
                 var outNotCall=receiveData[i]
@@ -485,6 +489,7 @@
                 outHasNotCall.push(outNotCall)
                 vm.outCriminals=outHasNotCall
                 vm.outPages=Math.ceil(vm.outCriminals.length/12)==0?1:Math.ceil(vm.outCriminals.length/12)
+
               }
             }
 //            for (var i=0;i<vm.inChoose.length;i++){
@@ -505,7 +510,7 @@
           }
 
 
-      },1000)
+      },500)
 
 //      localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
 //      获取第一页记录数据

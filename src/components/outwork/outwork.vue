@@ -90,7 +90,9 @@
         outNowPage:1,//外出当前页
         outListAll:0,//外出总数
         outA:1,
-        outB:48
+        outB:48,
+        isSuccess:0,
+
       }
     },
     methods: {
@@ -148,11 +150,57 @@
       sub:function () {
         var vm = this
         vm.$emit('canRouterChange')
+        vm.$router.push({ path: '/' })
+
+
+      },
+      firstWs:function () {
+        var vm=this
+        var send1 = {
+          Header: {
+            MsgID:"201501260000000035",
+            MsgType:20
+          },
+          Body: JSON.stringify({
+            OrgID : localStorage.getItem('OrgID'),
+            DoorID : localStorage.getItem('DoorID'),
+            AreaID : localStorage.getItem('AreaID'),
+            RegType:vm.MoveType
+          })
+        }
+        //发送数据
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          url: ajaxUrl,
+          data:JSON.stringify(send1),
+          success: function (result) {
+            if(result.RET==1){
+              vm.isSuccess=1
+            }else {
+              vm.isSuccess=0
+            }
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        })
 
       }
     },
     mounted(){
       var vm = this
+      localStorage.setItem("placemanID","0")
+      var outWork= setInterval(function () {
+        if(localStorage.getItem("placemanID")==0){
+        }else {
+          vm.firstWs()
+          clearInterval(outWork)
+        }
+      },500)
 //      发送内容
       var personnel_distribution = {
         Header: {
@@ -165,14 +213,15 @@
         })
       }
       setInterval(function () {
-        if(vm.ws.readyState == WebSocket.OPEN){
-          vm.ws.send(JSON.stringify(personnel_distribution))
-        }
-          var  flowPerson_outPrison_rec = vm.receiveDataMsgType25
-          if(flowPerson_outPrison_rec!=""||flowPerson_outPrison_rec!=null){
+        if(vm.isSuccess==1){
+          if(vm.ws.readyState == WebSocket.OPEN){
+            vm.ws.send(JSON.stringify(personnel_distribution))
+          }
+          var  receiveDataMsgType25 = vm.receiveDataMsgType25
+          if(receiveDataMsgType25!=""||receiveDataMsgType25!=null){
             vm.inPages=Math.ceil(vm.inCriminalList.length/48)==0?1:Math.ceil(vm.inCriminalList.length/48)
-            for(var i=0;i<flowPerson_outPrison_rec.length;i++){
-              var getCriminalID = flowPerson_outPrison_rec[i]["CriminalID"]
+            for(var i=0;i<receiveDataMsgType25.length;i++){
+              var getCriminalID = receiveDataMsgType25[i]["CriminalID"]
               for(var j=0;j<vm.areaCriminalList.length;j++){
                 if(vm.areaCriminalList[j]["FlnkID"]==getCriminalID){
                   vm.outCriminalList.push(vm.areaCriminalList[j])
@@ -185,10 +234,8 @@
               }
             }
           }
-
-
-        vm.outPages=Math.ceil(vm.outCriminalList.length/48)==0?1:Math.ceil(vm.outCriminalList.length/48)
-
+          vm.outPages=Math.ceil(vm.outCriminalList.length/48)==0?1:Math.ceil(vm.outCriminalList.length/48)
+        }
       },1000)
 
 

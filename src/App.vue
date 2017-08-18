@@ -34,12 +34,13 @@
       :receiveDataMsgType26="receiveDataMsgType26"
       :receiveDataMsgType23="receiveDataMsgType23"
       :receiveDataMsgType8="receiveDataMsgType8"
+      :receiveDataMsgType27="receiveDataMsgType27"
+
       :receiveDataMsgType33="receiveDataMsgType33"
       :canRouter="canRouter"
       :mapList="mapList"
     ></router-view>
   <!--  :receiveDataMsgType35="receiveDataMsgType35"
-    :receiveDataMsgType27="receiveDataMsgType27"
 -->
 
     <menufooter
@@ -348,6 +349,8 @@
         receiveDataMsgType26:{},//外出登记取消
         receiveDataMsgType8:{},//互监组管理刷卡
         receiveDataMsgType33:{},//手动结束清点
+        receiveDataMsgType27:{},//外出登记民警
+
 
 
 
@@ -392,6 +395,7 @@
 
       /* 选择监区 */
       selectArea: function (index) {
+
         this.alertJQXZactive = index
         this.setLocalStorage('prisonSelectText',this.prisonSelect[index].AreaName)
         this.setLocalStorage('OrgID',this.prisonSelect[index].OrgID)
@@ -1286,10 +1290,10 @@
           vm.receiveDataMsgType22=receiveDataMsgType22
         }
         /*陪同民警信息*/
-//        if(JSON.parse(vm.SocketAllData).Header.MsgType === 27) {
-//          var receiveDataMsgType27 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
-//          vm.receiveDataMsgType27=receiveDataMsgType27
-//        }
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 27) {
+          var receiveDataMsgType27 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          vm.receiveDataMsgType27=receiveDataMsgType27
+        }
         /*外出登记提交*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 23) {
           var receiveDataMsgType23 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
@@ -1320,13 +1324,13 @@
           var alarmNews = JSON.parse(JSON.parse(event.data).Body)
             /* 区域过滤测试后解开 */
 //          if (alarmNews.OrgID === localStorage.getItem("OrgID")) {
-//          console.log("ppppppppppppppppppppppppppppppppppppppppp",alarmNews)
-
           var criminalData = alarmNews
             criminalData.criminalID = vm.criminalList[0][alarmNews.ObjectID].CriminalID
             criminalData.Photo = vm.criminalList[0][alarmNews.ObjectID].Photo
             vm.alarmList.unshift(criminalData)
-            vm.alarmListSearch.push(criminalData)
+          /*限制报警条数不超过99*/
+            vm.alarmList.splice(99,99999999999999999999999999999999999999999999)
+//            vm.alarmListSearch.push(criminalData)
             vm.alarmText = alarmNews.Description
 
           vm.alarmPages = vm.alarmList.length

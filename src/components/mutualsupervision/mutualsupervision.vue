@@ -195,7 +195,7 @@
         }
 
       },
-      submit:function () {
+      submit1:function () {
         var vm=this
         var send = {
           Header: {
@@ -282,6 +282,155 @@
           },1000)
         }
       },
+      submit:function () {
+        var vm=this
+        var cardPersonList=""
+//        var cardPersonList=[]
+        for (var i=0;i<vm.cardPerson.length;i++){
+//          cardPersonList.push(vm.cardPerson[i]["PersonID"])
+          cardPersonList=cardPersonList+vm.cardPerson[i]["PersonID"]
+
+        }
+        var send1 = {
+          Header: {
+            MsgID:"201501260000000034",
+            MsgType:35
+          },
+          Body: JSON.stringify({
+            CmdType:1,
+            CriminalIDs:cardPersonList
+          })
+        }
+        if(vm.cardPerson==[]||vm.cardPerson==''){
+//          alert("还没人刷卡")
+        }else {
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            url: ajaxUrl,
+            data:JSON.stringify(send1),
+            success: function (result) {
+              if(result.RET==1){
+                alert(result.Description)
+              }else if(result.RET==2){
+                var r=confirm(result.Description);
+                if (r==true)
+                {
+                  var send2 = {
+                    Header: {
+                      MsgID:"201501260000000034",
+                      MsgType:35
+                    },
+                    Body: JSON.stringify({
+                      CmdType:2,
+                      CriminalIDs:cardPersonList
+                    })
+                  }
+                  //发送数据
+                  $.ajax({
+                    type: "get",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "jsonp",
+                    jsonp: "callback",
+                    async: false,
+                    url: ajaxUrl,
+                    data:JSON.stringify(send2),
+                    success: function (result) {
+                      if(result.RET==1){
+                        alert(result.Description)
+                      }else {
+                        alert(result.Description)
+                      }
+                    },
+                    complete: function (XHR, TS) {
+                      XHR = null;  //回收资源
+                    }
+                  })
+
+
+                }
+              }else if(result.RET==3){
+                alert(result.Description)
+              }else if(result.RET==4){
+                var r=confirm(result.Description);
+                if (r==true)
+                {
+                  var send4 = {
+                    Header: {
+                      MsgID:"201501260000000034",
+                      MsgType:35
+                    },
+                    Body: JSON.stringify({
+                      CmdType:2,
+                      CriminalIDs:cardPersonList
+                    })
+                  }
+                  //发送数据
+                  $.ajax({
+                    type: "get",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "jsonp",
+                    jsonp: "callback",
+                    async: false,
+                    url: ajaxUrl,
+                    data:JSON.stringify(send4),
+                    success: function (result) {
+                      if(result.RET==1){
+                        alert(result.Description)
+                      }else {
+                        alert(result.Description)
+                      }
+                    },
+                    complete: function (XHR, TS) {
+                      XHR = null;  //回收资源
+                    }
+                  })
+                }else {
+                  var send5 = {
+                    Header: {
+                      MsgID:"201501260000000034",
+                      MsgType:35
+                    },
+                    Body: JSON.stringify({
+                      CmdType:3,
+                      CriminalIDs:cardPersonList
+                    })
+                  }
+                  //发送数据
+                  $.ajax({
+                    type: "get",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "jsonp",
+                    jsonp: "callback",
+                    async: false,
+                    url: ajaxUrl,
+                    data:JSON.stringify(send5),
+                    success: function (result) {
+                      if(result.RET==1){
+                        alert(result.Description)
+                      }else {
+                        alert(result.Description)
+                      }
+                    },
+                    complete: function (XHR, TS) {
+                      XHR = null;  //回收资源
+                    }
+                  })
+                }
+              }
+            },
+            error: function (err) {
+          console.log("请求异常")
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
+          })
+        }
+      },
       firstWs:function () {
         var vm=this
         var send1 = {
@@ -297,18 +446,27 @@
           })
         }
         //发送数据
-        if(vm.ws.readyState == WebSocket.OPEN){
-          vm.ws.send(JSON.stringify(send1))
-        }
-        setInterval(function () {
-          var receiveData =vm.receiveDataMsgType20
-          if(receiveData["RET"]==1){
-            vm.isSuccess=1
-          }else {
-            vm.isSuccess=0
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          url: ajaxUrl,
+          data:JSON.stringify(send1),
+          success: function (result) {
+            if(result.RET==1){
+              vm.isSuccess=1
+            }else {
+              vm.isSuccess=0
+            }
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
           }
+        })
 
-        },1000)
+
       },
 
     },
@@ -372,35 +530,29 @@
           XHR = null;  //回收资源
         }
       });
-//      发送人员流动状态  2603临时外出
-      setInterval(function () {
-        if(vm.isSuccess==0){
-          vm.firstWs()
-        }
-      },1000)
+
+      vm.firstWs()
+
       setInterval(function () {
           if(vm.isSuccess==1){
             /*刷卡信息*/
             var receiveData = vm.receiveDataMsgType8
             if(receiveData!=""||receiveData!=null){
-              if(receiveData[0]["PsType"]==2002){
-                console.log(receiveData,"aaaaaaaaaaaaaaaa",vm.criminalList[0])
-                receiveData[0]["ischoose"]=false
-                receiveData[0]["CriminalName"]=vm.criminalList[0][receiveData[0]["PersonID"]]["CriminalName"]
-                receiveData[0]["Photo"]=vm.criminalList[0][receiveData[0]["PersonID"]]["Photo"]
+              if(receiveData["Type"]==2002){
+                receiveData["ischoose"]=false
+                receiveData["CriminalName"]=vm.criminalList[0][receiveData["PersonID"]]["CriminalName"]
+                receiveData["Photo"]=vm.criminalList[0][receiveData["PersonID"]]["Photo"]
                 for( var i=0;i< vm.cardPerson.length;i++){
-                  if(vm.cardPerson[i]["PersonID"]==receiveData[0]["PersonID"]){
+                  if(vm.cardPerson[i]["PersonID"]==receiveData["PersonID"]){
                     vm.cardPerson.splice(i,1)
                   }
                 }
-                vm.cardPerson.push(receiveData[0])
-
-
+                vm.cardPerson.push(receiveData)
               }
             }
 
           }
-      },500)
+      },200)
       /* Coding By Qianjf */
 
     }
