@@ -396,6 +396,7 @@
         this.setLocalStorage('prisonSelectText',this.prisonSelect[index].AreaName)
         this.setLocalStorage('OrgID',this.prisonSelect[index].OrgID)
         this.setLocalStorage('AreaID',this.prisonSelect[index].AreaID)
+        this.setLocalStorage('AreaType',this.prisonSelect[index].AreaType)
       },
 
       /* 默认初始化监区 */
@@ -414,6 +415,7 @@
             vm.setLocalStorage('OrgID',vm.prisonSelect[0].OrgID)
             vm.setLocalStorage('DoorID',vm.prisonSelect[0].Door)
             vm.setLocalStorage('AreaID',vm.prisonSelect[0].AreaID)
+            vm.setLocalStorage('AreaType',vm.prisonSelect[0].AreaType)
           },
           error: function (err) {
             console.log(err)
@@ -1438,11 +1440,11 @@
       /* 关闭状态 */
       vm.ws.onclose = function(){
         vm.onlinestatus = false
-//        if(vm.onlinestatus === false){
-//          setInterval(function () {
-//            window.location.reload()
-//          },5000)
-//        }
+        if(vm.onlinestatus === false){
+          setInterval(function () {
+            window.location.reload()
+          },5000)
+        }
       };
 
       /* 错误信息 */

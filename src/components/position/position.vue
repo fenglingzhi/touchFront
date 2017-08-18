@@ -16,7 +16,7 @@
                   <el-row >
                     <el-row >
                       <div class="map">
-                        <img src="../../../static/cimg.jpg" alt="" ref="abc">
+                        <img :src="criminalsituationLsit[0].MapUrl" alt="" ref="abc">
                         <!--<div class="point" v-for="(item,index) in criminalList" :style="{'top':item.top,'left':item.left}"></div>-->
                         <!--<div class="point" v-for="(item,index) in criminalList"></div>-->
                       </div>
@@ -29,10 +29,10 @@
                 <el-col :span="6">
                   <el-row >
                     <div class="deailBody">
-                      <el-col :span="8" v-for="(item,index) in criminalList.slice(0,9)" :key="1">
+                      <el-col :span="8" v-for="(item,index) in criminalsituationLsit" :key="1">
                         <div class="criminal" v-on:click="select(index)" :class="['criminal',{criminal_active:item.status}]">
                           <img :src="item.Photo" width="100%" height="130px" alt=""/>
-                          <span class="criminalName">{{item.CriminalName}}</span>
+                          <span class="criminalName">{{item.PSName}}</span>
                         </div>
                       </el-col>
                     </div>
@@ -55,17 +55,18 @@
 </template>
 
 <script>
-  import { SHANLEI,IMG } from '../../config'
+  import { SHANLEI,IMG,ajaxUrl,MapUrl } from '../../config'
 
   export default {
     name: 'navheader',
     props:[
-      'mapList'
+      'mapList',
+      'criminalList'
     ],
 
     data () {
       return {
-        criminalList:[
+        criminalLists:[
           {
             CriminalName:'张三',
             CriminalID:'0111111',
@@ -163,6 +164,8 @@
             top:120
           },
         ],
+        criminalGroupIDs:'9C4CE802-D8AB-4172-AC11-15578F19B0FC',
+        criminalsituationLsit:[]
       }
     },
     methods: {
@@ -175,20 +178,72 @@
         vm.criminalList[index].status = true
       },
       /* 地图定位 */
-      point:function () {
+      pointS:function () {
         let vm = this
-        for(let i = 0; i< vm.criminalList.length; i++){
-          var html ='<div class="point" style="top:'+vm.criminalList[i].top+'px; left: '+vm.criminalList[i].left+'px"></div>'
-          $('.map').append(html)
+        let criminalGroup  = {
+          Header: {
+            MsgID:"201501260000000035",
+            MsgType:36
+          },
+          Body: JSON.stringify({
+            CriminalGroupID:vm.criminalGroupIDs
+          })
         }
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+//          dataType: "jsonp",
+          dataType:'json',
+//          jsonp: "callback",
+          async: false,
+//          url: ajaxUrl,
+          url:'http://rapapi.org/mockjsdata/23163/maps',
+          data:JSON.stringify(criminalGroup),
+          success: function (result) {
+            console.log('地图定位信息',result.data)
+//            var criminalFlinkID = []//互监组人员id列表
+//            for(let i = 0; i<result.data.length; i++){
+//              criminalFlinkID.push(result.data[i].CriminalID)
+//            }
+            console.log('11111111111',vm.mapList[0])
+            var MapIdList = []//地图id列表]
+            var MapUrls=''
+            for(let i = 0; i<result.data.length; i++){
+              MapIdList.push(result.data[i].MapID)
+//              MapUrls=vm.mapList[0]['c1313a92-6387-4d1a-bfbd-618441657968'].MapUrl
+              /* 互监组成员信息 */
+              vm.criminalsituationLsit.push({
+                PSName:result.data[i].PSName,
+                CriminalID:result.data[i].CriminalID,
+                CriminalX:result.data[i].X,
+                CriminalY:result.data[i].Y,
+//                CriminalPhoto:vm.criminalList[0][result.data[i].CriminalID]
+                MapUrl:MapUrl+'/Maps/20170608104303监舍2F.svg'
+              })
+            }
+            console.log('eeeeeeeeeeeee',vm.criminalsituationLsit)
+            for(let i = 0; i< result.data.length; i++){
+              var html ='<div class="point" style="top:'+result.data[i].X+'px; left: '+result.data[i].Y+'px"></div>'
+              $('.map').append(html)
+            }
+          },
+          complete: function (XHR) {
+            XHR = null;  //回收资源
+          }
+        });
+
 
       },
+
     },
     mounted () {
       let vm = this
       /* Coding By YanM */
-      this.point()
-      console.log('jjjjjjjjjjjj',vm.mapList)
+      if(vm.criminalList!==null || vm.mapList!==null){
+
+      }
+      vm.pointS()
+
       /* Coding By YanM */
     }
   }
