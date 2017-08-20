@@ -11,6 +11,7 @@
       @aaa="closeWeb()"
     ></navheader>
     <router-view
+      @openLogin="loginOpen"
       @hasCheaked="onHasCheaked"
       @hasCheakedTool="onHasCheakedTool"
       @canRouterChange="canRouterChange"
@@ -39,6 +40,7 @@
       :receiveDataMsgType33="receiveDataMsgType33"
       :canRouter="canRouter"
       :mapList="mapList"
+
     ></router-view>
   <!--  :receiveDataMsgType35="receiveDataMsgType35"
 -->
@@ -488,7 +490,6 @@
           success: function (result) {
             if(result != null){
               vm.alertYHDL = false
-              console.log(result)
               localStorage.setItem('placemanID',result[0].FlnkID)
               vm.canRouter=0
             }else{
@@ -1462,9 +1463,11 @@
       /* Coding By YanM */
 
       /* Coding By Qianjf */
-       setInterval(function () {
-         vm.alertText=""
-       },2000)
+      localStorage.setItem("moveTypes","0")//1为进出工，2为临时外出登记
+
+//      setInterval(function () {
+//         vm.alertText=""
+//       },2000)
       /* Coding By Qianjf */
 
     }
