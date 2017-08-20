@@ -249,7 +249,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .li4_parts {
     height: 740px;
     margin: 0px auto;
