@@ -12,7 +12,7 @@
           <div class="partsBody" style="height:392px;">
             <div class="bodyHead">
               <div class="title">监内未点人员{{inCriminals.length}}人</div>
-              <div class="titleDescribe">（本监区总人数：{{orgCriminalCount}}人，<span @click="$emit('hasCheakedTool')" style="color: #1443cd">已点人数{{hascelled}}人</span>）</div>
+              <div class="titleDescribe">（本监区总人数：{{orgCriminalCount}}人，<span @click="$emit('hasCheaked')" style="color: #1443cd">已点人数{{hascelled}}人</span>）</div>
             </div>
             <div class="bodyCon">
               <el-col :span="2"  v-for="(criminal,index) in inCriminals.slice(inA-1,inB)" :key="1">
@@ -236,9 +236,6 @@
       },
       chooseOut:function (index){
         var PersonID=this.outCriminals[index+this.outA-1]["PersonID"]
-//        this.outCriminals[index+this.outA-1].ischoose=true
-//        this.outChoose.push(PersonID)
-//        alert(this.outChoose)
         if(this.outChoose.indexOf(PersonID)==-1){
           this.outChoose.push(PersonID)
           this.outCriminals[index+this.outA-1].ischoose=true
@@ -368,46 +365,56 @@
             ObjectID:subCriminals
           })
         }
-        if(subCriminals==[]||subCriminals==''){
-            vm.alertText="还没选人"
-            setTimeout(function () {
-              vm.alertText=""
-            },2000)
-        }else {
-          //发送数据
-          $.ajax({
-            type: "get",
-            contentType: "application/json; charset=utf-8",
-            dataType: "jsonp",
-            jsonp: "callback",
-            async: false,
-            url: ajaxUrl,
-            data:JSON.stringify(send),
-            success: function (result) {
-                if(result.RET==1){
-//                  vm.outChoose.splice(0,vm.outChoose.length)
-//                  vm.inChoose.splice(0,vm.inChoose.length)
-                  vm.alertText="手动确定成功"
-                  setTimeout(function () {
-                    vm.alertText=""
-                    vm.$router.push({ path: '/' })
-                  },2000)
+        vm.$emit('openLogin',true)
+        var submitCriminalSet=setInterval(function () {
+          if(localStorage.getItem("placemanID")==0){
 
-                }else {
-                  vm.alertText="手动确定失败"
-                  setTimeout(function () {
-                    vm.alertText=""
-                  },2000)
+          }else {
+            clearInterval(submitCriminalSet)
+            if(subCriminals==[]||subCriminals==''){
+              vm.alertText="还没选人"
+              setTimeout(function () {
+                vm.alertText=""
+              },2000)
+            }else {
+              //发送数据
+              $.ajax({
+                type: "get",
+                contentType: "application/json; charset=utf-8",
+                dataType: "jsonp",
+                jsonp: "callback",
+                async: false,
+                url: ajaxUrl,
+                data:JSON.stringify(send),
+                success: function (result) {
+                  if(result.RET==1){
+                  vm.outChoose.splice(0,vm.outChoose.length)
+                  vm.inChoose.splice(0,vm.inChoose.length)
+                    vm.alertText="手动确定成功"
+                    setTimeout(function () {
+                      vm.alertText=""
+//                    vm.$router.push({ path: '/' })
+                    },2000)
+
+                  }else {
+                    vm.alertText="手动确定失败"
+                    setTimeout(function () {
+                      vm.alertText=""
+                    },2000)
+                  }
+                },
+                complete: function (XHR, TS) {
+                  XHR = null;  //回收资源
                 }
-            },
-            complete: function (XHR, TS) {
-              XHR = null;  //回收资源
+              })
             }
-          })
-        }
+          }
+        },1000)
+
       },
       cancel:function () {
         var vm=this
+        vm.$emit('openLogin',true)
         var send = {
           Header: {
             MsgID:"201501260000000034",
@@ -418,36 +425,44 @@
             CountType:2
           })
         }
-        //发送数据
-        $.ajax({
-          type: "get",
-          contentType: "application/json; charset=utf-8",
-          dataType: "jsonp",
-          jsonp: "callback",
-          async: false,
-          url: ajaxUrl,
-          data:JSON.stringify(send),
-          success: function (result) {
-            if(result.RET==1){
+        var cancelSet=setInterval(function () {
+          if(localStorage.getItem("placemanID")==0){
+
+          }else {
+              clearInterval(cancelSet)
+            //发送数据
+            $.ajax({
+              type: "get",
+              contentType: "application/json; charset=utf-8",
+              dataType: "jsonp",
+              jsonp: "callback",
+              async: false,
+              url: ajaxUrl,
+              data:JSON.stringify(send),
+              success: function (result) {
+                if(result.RET==1){
 //              vm.inChoose.splice(0,vm.inChoose.length)
 //              vm.outChoose.splice(0,vm.outChoose.length)
-              vm.alertText="手动结束成功"
-              setTimeout(function () {
-                vm.alertText=""
-                vm.$router.push({ path: '/' })
-              },2000)
+                  vm.alertText="手动结束成功"
+                  setTimeout(function () {
+                    vm.alertText=""
+//                vm.$router.push({ path: '/' })
+                  },2000)
 
-            }else {
-              vm.alertText="手动结束失败"
-              setTimeout(function () {
-                vm.alertText=""
-              },2000)
-            }
-          },
-          complete: function (XHR, TS) {
-            XHR = null;  //回收资源
+                }else {
+                  vm.alertText="手动结束失败"
+                  setTimeout(function () {
+                    vm.alertText=""
+                  },2000)
+                }
+              },
+              complete: function (XHR, TS) {
+                XHR = null;  //回收资源
+              }
+            })
           }
-        })
+        },500)
+
 
       }
 
@@ -467,6 +482,7 @@
           OrgID : localStorage.getItem('OrgID'),
         })
       }
+      localStorage.setItem("placemanID","0")
 
       setInterval(function () {
         //发送数据
@@ -511,27 +527,11 @@
 
               }
             }
-//            for (var i=0;i<vm.inChoose.length;i++){
-//                for (var j=0;j<vm.inCriminals.length;j++){
-//                    if(vm.inChoose[i]==vm.inCriminals[j]["PersonID"]){
-//                      vm.inCriminals[j]["ischoose"]=true
-//                    }
-//                }
-//            }
-//
-//            for (var i=0;i<vm.outChoose.length;i++){
-//              for (var j=0;j<vm.outCriminals.length;j++){
-//                if(vm.outChoose[i]==vm.outCriminals[j]["PersonID"]){
-//                  vm.outCriminals[j]["ischoose"]=true
-//                }
-//              }
-//            }
           }
 
 
       },500)
 
-//      localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
 //      获取第一页记录数据
       $.ajax({
         type: "get",

@@ -343,6 +343,8 @@ var vm=this
       submitTool:function () {
 
         var vm=this
+        vm.$emit('openLogin',true)
+
         var subTools=this.outChoose.concat(this.inChoose);
         var send = {
           Header: {
@@ -355,39 +357,49 @@ var vm=this
             ObjectID:subTools
           })
         }
-        //发送数据
-        $.ajax({
-          type: "get",
-          contentType: "application/json; charset=utf-8",
-          dataType: "jsonp",
-          jsonp: "callback",
-          async: false,
-          url: ajaxUrl,
-          data:JSON.stringify(send),
-          success: function (result) {
-            if(result.RET==1){
-              vm.outChoose.splice(0,vm.outChoose.length)
-              vm.inChoose.splice(0,vm.inChoose.length)
-              vm.alertText="手动确定成功"
-              setTimeout(function () {
-                vm.alertText=""
-              },2000)
+          var submitToolSet=setInterval(function () {
+            if(localStorage.getItem("placemanID")==0){
 
             }else {
-              vm.alertText="手动确定失败"
-              setTimeout(function () {
-                vm.alertText=""
-              },2000)
+              clearInterval(submitToolSet)
+              //发送数据
+              $.ajax({
+                type: "get",
+                contentType: "application/json; charset=utf-8",
+                dataType: "jsonp",
+                jsonp: "callback",
+                async: false,
+                url: ajaxUrl,
+                data:JSON.stringify(send),
+                success: function (result) {
+                  if(result.RET==1){
+                    vm.outChoose.splice(0,vm.outChoose.length)
+                    vm.inChoose.splice(0,vm.inChoose.length)
+                    vm.alertText="手动确定成功"
+                    setTimeout(function () {
+                      vm.alertText=""
+                    },2000)
+
+                  }else {
+                    vm.alertText="手动确定失败"
+                    setTimeout(function () {
+                      vm.alertText=""
+                    },2000)
+                  }
+                },
+                complete: function (XHR, TS) {
+                  XHR = null;  //回收资源
+                }
+              })
+
             }
-          },
-          complete: function (XHR, TS) {
-            XHR = null;  //回收资源
-          }
-        })
+          },1000)
+
 
       },
       cancel:function () {
         var vm=this
+        vm.$emit('openLogin',true)
         var send = {
           Header: {
             MsgID:"201501260000000034",
@@ -398,36 +410,44 @@ var vm=this
             CountType:1
           })
         }
-        //发送数据
-        $.ajax({
-          type: "get",
-          contentType: "application/json; charset=utf-8",
-          dataType: "jsonp",
-          jsonp: "callback",
-          async: false,
-          url: ajaxUrl,
-          data:JSON.stringify(send),
-          success: function (result) {
-            if(result.RET==1){
-              vm.inChoose.splice(0,vm.inChoose.length)
-              vm.outChoose.splice(0,vm.outChoose.length)
-              vm.alertText="手动结束成功"
-              setTimeout(function () {
-                vm.alertText=""
-              },2000)
+        var cancelSet=setInterval(function () {
+          if(localStorage.getItem("placemanID")==0){
+
+          }else {
+            clearInterval(cancelSet)
+            //发送数据
+            $.ajax({
+              type: "get",
+              contentType: "application/json; charset=utf-8",
+              dataType: "jsonp",
+              jsonp: "callback",
+              async: false,
+              url: ajaxUrl,
+              data:JSON.stringify(send),
+              success: function (result) {
+                if(result.RET==1){
+                  vm.inChoose.splice(0,vm.inChoose.length)
+                  vm.outChoose.splice(0,vm.outChoose.length)
+                  vm.alertText="手动结束成功"
+                  setTimeout(function () {
+                    vm.alertText=""
+                  },2000)
 
 
-            }else {
-              vm.alertText="手动结束失败"
-              setTimeout(function () {
-                vm.alertText=""
-              },2000)
-            }
-          },
-          complete: function (XHR, TS) {
-            XHR = null;  //回收资源
+                }else {
+                  vm.alertText="手动结束失败"
+                  setTimeout(function () {
+                    vm.alertText=""
+                  },2000)
+                }
+              },
+              complete: function (XHR, TS) {
+                XHR = null;  //回收资源
+              }
+            })
           }
-        })
+        },500)
+
 
       }
     },
@@ -438,6 +458,8 @@ var vm=this
       /* Coding By YanM */
       /* Coding By Qianjf */
       var vm = this
+      localStorage.setItem("placemanID","0")
+
       var send = {
         Header: {
           MsgID:"201501260000000032",

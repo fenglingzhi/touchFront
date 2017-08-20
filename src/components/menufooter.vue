@@ -38,17 +38,15 @@ export default {
 //      }
 //
       if(path === '/outwork' ){
-
-        if(this.canRouter===0){
-            alert("请完成当前操作或者取消后再操作")
+        if(localStorage.getItem("moveTypes")==2){
+            alert("请先完成临时外出登记")
         }else {
           this.$router.push({ path: '/outwork' })
           vm.$emit('openLogin',true)
         }
-
       }else if(path === '/outregister'){
-        if(this.canRouter===0){
-          alert("请完成当前操作或者取消后再操作")
+        if(localStorage.getItem("moveTypes")==1){
+          alert("请先完成进出工登记")
         }else {
           this.$router.push({ path: '/outregister' })
           vm.$emit('openLogin',true)
@@ -56,40 +54,17 @@ export default {
 
 
       }else if(path === '/crimalcheck'){
-        if(this.canRouter===0){
-          alert("请完成当前操作或者取消后再操作")
-        }else {
           this.$router.push({ path: '/crimalcheck' })
-        }
-
-
       }else if(path === '/toolcheck'){
-        if(this.canRouter===0){
-          alert("请完成当前操作或者取消后再操作")
-        }else {
           this.$router.push({ path: '/toolcheck' })
-        }
-
       }else if(path === '/mutualsupervision'){
-        if(this.canRouter===0){
-          alert("请完成当前操作或者取消后再操作")
-        }else {
           this.$router.push({ path: '/mutualsupervision' })
-        }
-
       }else if(path === '/') {
-        if(this.canRouter===0){
-          alert("请完成当前操作或者取消后再操作")
-        }else {
           this.$router.push({ path: '/' })
-        }
-
       }else if(path === '/cardbind') {
-        if(this.canRouter===0){
-          alert("请完成当前操作或者取消后再操作")
-        }else {
+
           this.$router.push({ path: '/cardbind' })
-        }
+
 
       }
     },

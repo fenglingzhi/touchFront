@@ -62,6 +62,9 @@
     <el-col :span="1"  style="height:10px"></el-col>
   </el-row>
 
+
+
+
 </template>
 
 <script>
@@ -152,56 +155,65 @@
       },
       sub:function () {
         var vm=this
+        vm.$emit('openLogin',true)
+        var subSetInterval=setInterval(function () {
+          if(localStorage.getItem("placemanID")==0){
 
-        var Polices=localStorage.getItem("placemanID");
-        var Reason;
-        if(vm.MoveType==2601){
-          Reason="出工"
-        }else {
-          Reason="收工"
-        }
-          var workSend = {
-            Header: {
-              MsgID:"201501260000000031",
-              MsgType:23
-            },
-            Body: JSON.stringify({
-              OrgID : localStorage.getItem('OrgID'),
-              DoorID : localStorage.getItem('DoorID'),
-              Polices:Polices,
-              Reason:Reason,
-
-            })
-          }
-          //发送数据
-          $.ajax({
-            type: "get",
-            contentType: "application/json; charset=utf-8",
-            dataType: "jsonp",
-            jsonp: "callback",
-            async: false,
-            url: ajaxUrl,
-            data:JSON.stringify(workSend),
-            success: function (result) {
-              vm.$emit('canRouterChange')
-              if(result.RET==1){
-                vm.alertText="提交成功"
-                setTimeout(function () {
-                  vm.alertText=""
-                  vm.$router.push({ path: '/' })
-                },2000)
-              }else {
-                vm.alertText="提交失败"
-                setTimeout(function () {
-                  vm.alertText=""
-                  vm.$router.push({ path: '/' })
-                },2000)
-              }
-            },
-            complete: function (XHR, TS) {
-              XHR = null;  //回收资源
+          }else {
+              clearInterval(subSetInterval)
+            var Polices=localStorage.getItem("placemanID");
+            var Reason;
+            if(vm.MoveType==2601){
+              Reason="出工"
+            }else {
+              Reason="收工"
             }
-          })
+            var workSend = {
+              Header: {
+                MsgID:"201501260000000031",
+                MsgType:23
+              },
+              Body: JSON.stringify({
+                OrgID : localStorage.getItem('OrgID'),
+                DoorID : localStorage.getItem('DoorID'),
+                Polices:Polices,
+                Reason:Reason,
+
+              })
+            }
+            //发送数据
+            $.ajax({
+              type: "get",
+              contentType: "application/json; charset=utf-8",
+              dataType: "jsonp",
+              jsonp: "callback",
+              async: false,
+              url: ajaxUrl,
+              data:JSON.stringify(workSend),
+              success: function (result) {
+                localStorage.setItem("moveTypes","0")
+                if(result.RET==1){
+                  vm.alertText="提交成功"
+                  setTimeout(function () {
+                    vm.alertText=""
+                    vm.$router.push({ path: '/' })
+                  },2000)
+                }else {
+                  vm.alertText="提交失败"
+                  setTimeout(function () {
+                    vm.alertText=""
+                    vm.$router.push({ path: '/' })
+                  },2000)
+                }
+              },
+              complete: function (XHR, TS) {
+                XHR = null;  //回收资源
+              }
+            })
+
+          }
+
+        },1000)
 
 
       },
@@ -233,6 +245,7 @@
           success: function (result) {
             if(result.RET==1){
               vm.isSuccess=1
+              localStorage.setItem("placemanID","0")
             }else {
               vm.isSuccess=0
             }
@@ -257,6 +270,7 @@
       var outWork= setInterval(function () {
         if(localStorage.getItem("placemanID")==0){
         }else {
+          localStorage.setItem("moveTypes","1")//1为进出工，2为临时外出登记
           vm.firstWs()
           clearInterval(outWork)
         }
