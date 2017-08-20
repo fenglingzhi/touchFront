@@ -61,6 +61,7 @@
             </el-row>
           </div>
           <div class="partsFoot">
+            <div class="alertText">{{alertText}}</div>
             <div style="margin: 13px 2px;float: right">
               <div class="sure" v-on:click="submitCriminal()">手动确定</div>
               <div class="sure" v-on:click="cancel()">手动结束</div>
@@ -164,7 +165,8 @@
         outListAll:0,//外出未点总数
         outChoose:[],//外出选中人员
         outA:1,
-        outB:12
+        outB:12,
+        alertText:""
       }
     },
     methods: {
@@ -187,12 +189,12 @@
           this.inA=this.inA+24
           this.inB=this.inB+24
         }else {
-          alert("已经最后一页了")
+//          alert("已经最后一页了")
         }
       },
       inBack:function () {
         if(this.inNowPage==1){
-          alert("已经是第一页了")
+//          alert("已经是第一页了")
         }else {
           this.inNowPage=this.inNowPage-1
           this.inA=this.inA-24
@@ -220,12 +222,12 @@
           this.outA=this.outA+12
           this.outB=this.outB+12
         }else {
-          alert("已经最后一页了")
+//          alert("已经最后一页了")
         }
       },
       outBack:function () {
         if(this.outNowPage==1){
-          alert("已经是第一页了")
+//          alert("已经是第一页了")
         }else {
           this.outNowPage=this.outNowPage-1
           this.outA=this.outA-12
@@ -268,7 +270,7 @@
               vm.records=result
             },
             error: function (err) {
-              alert("请求异常")
+//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -288,14 +290,14 @@
               vm.recordCount=result
             },
             error: function (err) {
-              alert("请求异常")
+//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
             }
           });
         }else {
-          alert("已经到了最后一页了")
+//          alert("已经到了最后一页了")
         }
 
 
@@ -304,7 +306,7 @@
       getRecordback:function () {
         var vm = this
         if(vm.recordPage==0){
-          alert("已经是第一页了")
+//          alert("已经是第一页了")
         }else {
           vm.recordPage=vm.recordPage-1
 //          localStorage.setItem("OrgID","43368189-CE77-4721-BAA7-1545BB3E5A42")
@@ -325,7 +327,7 @@
               vm.records=result
             },
             error: function (err) {
-              alert("请求异常")
+//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -344,7 +346,7 @@
               vm.recordCount=result
             },
             error: function (err) {
-              alert("请求异常")
+//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -367,7 +369,10 @@
           })
         }
         if(subCriminals==[]||subCriminals==''){
-            alert("还没选人")
+            vm.alertText="还没选人"
+            setTimeout(function () {
+              vm.alertText=""
+            },2000)
         }else {
           //发送数据
           $.ajax({
@@ -380,19 +385,25 @@
             data:JSON.stringify(send),
             success: function (result) {
                 if(result.RET==1){
-                  vm.outChoose.splice(0,vm.outChoose.length)
-                  vm.inChoose.splice(0,vm.inChoose.length)
-                  alert("手动确定成功")
+//                  vm.outChoose.splice(0,vm.outChoose.length)
+//                  vm.inChoose.splice(0,vm.inChoose.length)
+                  vm.alertText="手动确定成功"
+                  setTimeout(function () {
+                    vm.alertText=""
+                    vm.$router.push({ path: '/' })
+                  },2000)
 
                 }else {
-                  alert("手动确定失败")
+                  vm.alertText="手动确定失败"
+                  setTimeout(function () {
+                    vm.alertText=""
+                  },2000)
                 }
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
             }
           })
-
         }
       },
       cancel:function () {
@@ -418,12 +429,19 @@
           data:JSON.stringify(send),
           success: function (result) {
             if(result.RET==1){
-              vm.inChoose.splice(0,vm.inChoose.length)
-              vm.outChoose.splice(0,vm.outChoose.length)
-              alert("手动结束成功")
+//              vm.inChoose.splice(0,vm.inChoose.length)
+//              vm.outChoose.splice(0,vm.outChoose.length)
+              vm.alertText="手动结束成功"
+              setTimeout(function () {
+                vm.alertText=""
+                vm.$router.push({ path: '/' })
+              },2000)
 
             }else {
-              alert("手动结束失败")
+              vm.alertText="手动结束失败"
+              setTimeout(function () {
+                vm.alertText=""
+              },2000)
             }
           },
           complete: function (XHR, TS) {
@@ -449,6 +467,7 @@
           OrgID : localStorage.getItem('OrgID'),
         })
       }
+
       setInterval(function () {
         //发送数据
         if(vm.ws.readyState == WebSocket.OPEN){

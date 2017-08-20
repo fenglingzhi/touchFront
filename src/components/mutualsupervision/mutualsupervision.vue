@@ -67,13 +67,13 @@
 
                   </el-row>
                 </el-col>
-                <el-col :span="2" style="height:10px;">
+                <el-col :span="1" style="height:10px;">
                   <!--中间空隙-->
                 </el-col>
-                <el-col :span="7">
+                <el-col :span="8">
                   <el-row >
                     <div class="deailHead">
-                      刷卡区域
+                      刷卡区域({{cardPerson.length}}人)
                     </div>
                     <div class="deailBody" style="height:269px;">
                       <el-col :span="8" v-for="(person,index) in cardPerson.slice(0,1112)" :key="1">
@@ -91,9 +91,11 @@
 
           </div>
           <div class="partsFoot">
+            <div class="alertText">{{alertText}}</div>
+
             <div style="margin: 13px 2px;float: right">
               <div class="sure" v-on:click="submit()">提交</div>
-              <div class="sure">取消</div>
+              <div class="sure" v-on:click="cancelSubmit()">取消</div>
             </div>
           </div>
         </div>
@@ -129,6 +131,7 @@
         provisionalGroupA:1,
         provisionalGroupB:12,
         isSuccess:0,
+        alertText:"",
         cardPerson:[]//刷卡罪犯集合
 
       }
@@ -140,7 +143,7 @@
           this.generalGroupList[i].ischoose=false
         }
         this.generalGroupList[dom+this.generalGroupA-1].ischoose=!this.generalGroupList[dom+this.generalGroupA-1].ischoose
-        this.$router.push({ path: '/position' })
+//        this.$router.push({ path: '/position' })
       },
       chooseProvisionalGroup:function (dom) {
         for(var i=0;i< this.provisionalGroupList.length;i++){
@@ -154,12 +157,12 @@
           this.generalGroupA=this.generalGroupA+30
           this.generalGroupB=this.generalGroupB+30
         }else {
-          alert("已经最后一页了")
+//          alert("已经最后一页了")
         }
       },
       generalGroupBack:function () {
         if(this.generalGroupNowPage==1){
-          alert("已经是第一页了")
+//          alert("已经是第一页了")
         }else {
           this.generalGroupNowPage=this.generalGroupNowPage-1
           this.generalGroupA=this.generalGroupA-30
@@ -174,12 +177,12 @@
           this.provisionalGroupA=this.provisionalGroupA+12
           this.provisionalGroupB=this.provisionalGroupB+12
         }else {
-          alert("已经最后一页了")
+//          alert("已经最后一页了")
         }
       },
       provisionalGroupBack:function () {
         if(this.provisionalGroupNowPage==1){
-          alert("已经是第一页了")
+//          alert("已经是第一页了")
         }else {
           this.provisionalGroupNowPage=this.provisionalGroupNowPage-1
           this.provisionalGroupA=this.provisionalGroupA-12
@@ -195,101 +198,11 @@
         }
 
       },
-      submit1:function () {
-        var vm=this
-        var send = {
-          Header: {
-            MsgID:"201501260000000034",
-            MsgType:35
-          },
-          Body: JSON.stringify({
-            Type:1,
-            CriminalIDs:vm.cardPerson
-          })
-        }
-        if(vm.cardPerson==[]||vm.cardPerson==''){
-          alert("还没选人")
-        }else {
-          //发送数据
-          if(vm.ws.readyState == WebSocket.OPEN){
-            vm.ws.send(JSON.stringify(send))
-          }
-          /*接收数据*/
-         var set1=setInterval(function () {
-            var receiveData = vm.receiveDataMsgType35
-            if(receiveData["RET"]==1){
-              clearInterval(set1)
-              alert(receiveData["Description"])
-            }else if(receiveData["RET"]==2){
-              clearInterval(set1)
-              var r=confirm(receiveData["Description"]);
-              if (r==true)
-              {
-                var send1 = {
-                  Header: {
-                    MsgID:"201501260000000034",
-                    MsgType:35
-                  },
-                  Body: JSON.stringify({
-                    Type:2,
-                    CriminalIDs:vm.cardPerson
-                  })
-                }
-                //发送数据
-                if(vm.ws.readyState == WebSocket.OPEN){
-                  vm.ws.send(JSON.stringify(send1))
-                }
-                var set2=setInterval(function () {
-                  if(receiveData["RET"]==1){
-                    clearInterval(set2)
-                    alert(receiveData["Description"])
-                  }
-                },1000)
-              }
-
-            }else if(receiveData["RET"]==3){
-              clearInterval(set1)
-             alert(receiveData["Description"])
-
-            }else if(receiveData["RET"]==4){
-              clearInterval(set1)
-              var r=confirm(receiveData["Description"]);
-              if (r==true)
-              {
-                var send3 = {
-                  Header: {
-                    MsgID:"201501260000000034",
-                    MsgType:35
-                  },
-                  Body: JSON.stringify({
-                    Type:3,
-                    CriminalIDs:vm.cardPerson
-                  })
-                }
-                //发送数据
-                if(vm.ws.readyState == WebSocket.OPEN){
-                  vm.ws.send(JSON.stringify(send3))
-                }
-                var set3=setInterval(function () {
-                  if(receiveData["RET"]==1){
-                    clearInterval(set3)
-                    alert(receiveData["Description"])
-                  }
-                },1000)
-              }
-            }
-
-          },1000)
-        }
-      },
       submit:function () {
         var vm=this
-        var cardPersonList=""
-//        var cardPersonList=[]
+        var cardPersonList=[]
         for (var i=0;i<vm.cardPerson.length;i++){
-//          cardPersonList.push(vm.cardPerson[i]["PersonID"])
-          cardPersonList=cardPersonList+vm.cardPerson[i]["PersonID"]
-
+          cardPersonList.push(vm.cardPerson[i]["PersonID"])
         }
         var send1 = {
           Header: {
@@ -302,7 +215,10 @@
           })
         }
         if(vm.cardPerson==[]||vm.cardPerson==''){
-//          alert("还没人刷卡")
+          vm.alertText="还没人刷卡"
+          setTimeout(function () {
+            vm.alertText=""
+          },2000)
         }else {
           $.ajax({
             type: "get",
@@ -313,9 +229,12 @@
             url: ajaxUrl,
             data:JSON.stringify(send1),
             success: function (result) {
-              if(result.RET==1){
-                alert(result.Description)
-              }else if(result.RET==2){
+              if(result.Ret==1){
+                vm.alertText=result.Description
+                setTimeout(function () {
+                  vm.alertText=""
+                },2000)
+              }else if(result.Ret==2){
                 var r=confirm(result.Description);
                 if (r==true)
                 {
@@ -340,9 +259,15 @@
                     data:JSON.stringify(send2),
                     success: function (result) {
                       if(result.RET==1){
-                        alert(result.Description)
+                        vm.alertText=result.Description
+                        setTimeout(function () {
+                          vm.alertText=""
+                        },2000)
                       }else {
-                        alert(result.Description)
+                        vm.alertText=result.Description
+                        setTimeout(function () {
+                          vm.alertText=""
+                        },2000)
                       }
                     },
                     complete: function (XHR, TS) {
@@ -350,11 +275,13 @@
                     }
                   })
 
-
                 }
-              }else if(result.RET==3){
-                alert(result.Description)
-              }else if(result.RET==4){
+              }else if(result.Ret==3){
+                vm.alertText=result.Description
+                setTimeout(function () {
+                  vm.alertText=""
+                },2000)
+              }else if(result.Ret==4){
                 var r=confirm(result.Description);
                 if (r==true)
                 {
@@ -379,9 +306,15 @@
                     data:JSON.stringify(send4),
                     success: function (result) {
                       if(result.RET==1){
-                        alert(result.Description)
+                        vm.alertText=result.Description
+                        setTimeout(function () {
+                          vm.alertText=""
+                        },2000)
                       }else {
-                        alert(result.Description)
+                        vm.alertText=result.Description
+                        setTimeout(function () {
+                          vm.alertText=""
+                        },2000)
                       }
                     },
                     complete: function (XHR, TS) {
@@ -409,10 +342,16 @@
                     url: ajaxUrl,
                     data:JSON.stringify(send5),
                     success: function (result) {
-                      if(result.RET==1){
-                        alert(result.Description)
+                      if(result.Ret==1){
+                        vm.alertText=result.Description
+                        setTimeout(function () {
+                          vm.alertText=""
+                        },2000)
                       }else {
-                        alert(result.Description)
+                        vm.alertText=result.Description
+                        setTimeout(function () {
+                          vm.alertText=""
+                        },2000)
                       }
                     },
                     complete: function (XHR, TS) {
@@ -430,6 +369,9 @@
             }
           })
         }
+      },
+      cancelSubmit:function () {
+        this.$router.push({ path: '/' })
       },
       firstWs:function () {
         var vm=this

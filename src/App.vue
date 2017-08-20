@@ -126,6 +126,7 @@
 
         </div>
         <div class="partsFoot">
+          <div class="alertText">{{alertText}}</div>
           <div style="margin: 20px 2px;float: right">
             <div class="sure" v-on:click="alarmHandle()">处理</div>
           </div>
@@ -279,6 +280,7 @@
           </el-row>
         </div>
         <div class="partsFoot">
+          <div class="alertText">{{alertText}}</div>
           <div style="margin: 20px 2px;float: right">
             <div class="sure" @click="logonSbumit">确定</div>
           </div>
@@ -376,6 +378,7 @@
         alarmB:1,
         groupTeam:[],//互监组成员
         SocketAllData:{},
+        alertText:"",//登录页面提示
         /* mj e*/
         alertYHDL: false,                 //用户登录
         alertJQXZ: false,                 //监区选择
@@ -489,7 +492,7 @@
               localStorage.setItem('placemanID',result[0].FlnkID)
               vm.canRouter=0
             }else{
-              alert('用户或密码错误')
+              vm.alertText='用户或密码错误'
             }
           }
         })
@@ -555,7 +558,6 @@
         for (var i=0;i<vm.alarmList.length;i++){
           if(this.alarmList[i]["AlarmRecordID"]==alarmRecordID){
             var placemanID = localStorage.getItem("placemanID")
-            console.log("ooooooooooooooooooooooooooooooooooooooooooo",vm.policeList,"ss",placemanID)
             $.ajax({
               type:"get",
               contentType:"application/json; charset=utf-8",
@@ -571,7 +573,7 @@
               url:'http://10.58.1.145:88/api/Event/AlarmHandle' + "?callback=?",
               success: function (result) {
                 if(result==0){
-                    alert("处理失败")
+                    vm.alertText="处理失败"
                 }else {
                   /*页面删除效果*/
                   for(var j=0;j<vm.alarmList.length;j++){
@@ -588,13 +590,13 @@
                         }
                       }
                   }
-                  alert("处理成功")
+                  vm.alertText="处理成功"
 
                 }
 
               },
               error: function (err) {
-                alert("请求异常")
+                vm.alertText="请求异常"
               },
               complete: function (XHR, TS) {
                 XHR = null;  //回收资源
@@ -642,14 +644,14 @@
           }
 
         }else {
-          alert("已经最后一页了")
+//          alert("已经最后一页了")
         }
 
       },
       /*报警翻页*/
       alarmBack:function () {
         if(this.alarmNowPage==1){
-          alert("已经是第一页了")
+//          alert("已经是第一页了")
         }else {
           this.alarmNowPage=this.alarmNowPage-1
           this.alarmA=this.alarmA-1
@@ -707,7 +709,7 @@
               vm.GetCriminalCalledList=result
             },
             error: function (err) {
-              alert("请求异常")
+//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -727,14 +729,14 @@
               vm.criminalCount=result
             },
             error: function (err) {
-              alert("请求异常")
+//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
             }
           });
         }else {
-          alert("已经到了最后一页了")
+//          alert("已经到了最后一页了")
         }
 
 
@@ -743,7 +745,7 @@
       getCriminalback:function () {
         var vm = this
         if(vm.criminalPage==0){
-          alert("已经是第一页了")
+//          alert("已经是第一页了")
         }else {
           vm.criminalPage=vm.criminalPage-1
           $.ajax({
@@ -763,7 +765,7 @@
               vm.GetCriminalCalledList=result
             },
             error: function (err) {
-              alert("请求异常")
+//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -782,7 +784,7 @@
               vm.criminalCount=result
             },
             error: function (err) {
-              alert("请求异常")
+//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -794,7 +796,7 @@
       getToolback:function () {
         var vm = this
         if(vm.toolPage==0){
-          alert("已经是第一页了")
+//          alert("已经是第一页了")
         }else {
           vm.toolPage=vm.toolPage-1
           $.ajax({
@@ -814,7 +816,7 @@
               vm.GetToolCalledList=result
             },
             error: function (err) {
-              alert("请求异常")
+//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -833,7 +835,7 @@
               vm.toolCount=result
             },
             error: function (err) {
-              alert("请求异常")
+//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -863,7 +865,7 @@
               vm.GetToolCalledList=result
             },
             error: function (err) {
-              alert("请求异常")
+//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -883,14 +885,14 @@
               vm.criminalCount=result
             },
             error: function (err) {
-              alert("请求异常")
+//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
             }
           });
         }else {
-          alert("已经到了最后一页了")
+//          alert("已经到了最后一页了")
         }
 
 
@@ -918,7 +920,7 @@
             vm.GetCriminalCalledList=result
           },
           error: function (err) {
-            alert("请求异常")
+//            alert("请求异常")
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
@@ -937,7 +939,7 @@
             vm.toolCount=result
           },
           error: function (err) {
-            alert("请求异常")
+//            alert("请求异常")
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
@@ -991,7 +993,7 @@
             vm.GetCriminalCalledList=result
           },
           error: function (err) {
-            alert("请求异常")
+//            alert("请求异常")
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
@@ -1010,7 +1012,7 @@
             vm.criminalCount=result
           },
           error: function (err) {
-            alert("请求异常")
+//            alert("请求异常")
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
@@ -1263,7 +1265,7 @@
         vm.SocketAllData = event.data
         /*过滤进出工数据*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 25){
-          var  receiveDataMsgType25 = JSON.parse(JSON.parse(this.SocketAllData).Body)
+          var  receiveDataMsgType25 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType25=receiveDataMsgType25
         }
         /*工具清点提交返回结果*/
@@ -1325,23 +1327,21 @@
         if (JSON.parse(event.data).Header.MsgType === 2) {
           var alarmNews = JSON.parse(JSON.parse(event.data).Body)
             /* 区域过滤测试后解开 */
-//          if (alarmNews.OrgID === localStorage.getItem("OrgID")) {
+          if (alarmNews.OrgID === localStorage.getItem("OrgID")) {
           var criminalData = alarmNews
             criminalData.criminalID = vm.criminalList[0][alarmNews.ObjectID].CriminalID
             criminalData.Photo = vm.criminalList[0][alarmNews.ObjectID].Photo
             vm.alarmList.unshift(criminalData)
           /*限制报警条数不超过99*/
             vm.alarmList.splice(99,99999999999999999999999999999999999999999999)
-//            vm.alarmListSearch.push(criminalData)
             vm.alarmText = alarmNews.Description
-
           vm.alarmPages = vm.alarmList.length
             if (vm.alarmList.length != 0) {
               vm.alertBJTK = true
             } else {
               vm.alertBJTK = false
             }
-//          }
+          }
         }
 
         /* 人员分布返回数据-14 */
@@ -1453,6 +1453,7 @@
         }
       };
 
+
       /* 错误信息 */
       vm.ws.onerror = function(evt) {
           console.log("WebSocketError!",evt)
@@ -1461,7 +1462,9 @@
       /* Coding By YanM */
 
       /* Coding By Qianjf */
-
+       setInterval(function () {
+         vm.alertText=""
+       },2000)
       /* Coding By Qianjf */
 
     }
@@ -1696,7 +1699,15 @@
     width: 30px;
     position: absolute;
     color: white;
-    margin: 5px 36px;
-    font-size: 16px;
+    margin: 5px 50px;
+    font-size: 18px;
+  }
+  .alertText{
+    float: left;
+    position: absolute;
+    margin: 15px 16px;
+    font-size: 22px;
+    color: red;
+    font-weight: 1000;
   }
 </style>
