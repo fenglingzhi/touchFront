@@ -517,6 +517,8 @@
       loginclose:function () {
         this.$router.push({ path: '/' })
         this.alertYHDL=false
+        this.policeLogin.account=''
+        this.policeLogin.password=''
       },
 
       closeWeb:function () {
