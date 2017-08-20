@@ -29,8 +29,8 @@
             <span class="out">本监外出{{FlnkIDList1.length}}人）</span>
           </h4>
           <el-row class="float_person_wrap">
-            <el-col :span="8" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)" :key='1'>
-              <div class="float_person_card outperson" :class="item.prisonstatus">
+            <el-col :span="8" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)" :key='1' :class="">
+              <div class="float_person_card illegal" :class="item.prisonstatus">
                 <el-col :span="10" class="photo">
                   <img :src="item.Photo" alt="" width="100%" height="100%">
                 </el-col>
