@@ -4,12 +4,12 @@
     <el-col :span="1" style="height:10px"></el-col>
     <el-col :span="22">
       <div class="li3_parts">
-        <div class="tabHead"style="height:40px;">
-          <div  :class="['tab', { tabing: isB1}]"  v-on:click="toggle1()">外出登记</div>
-          <div  :class="['tab', { tabing: isB2}]"  v-on:click="toggle2()">登记记录</div>
-        </div>
+        <!--<div class="tabHead"style="height:40px;">-->
+          <!--<div  :class="['tab', { tabing: isB1}]"  v-on:click="toggle1()">外出登记</div>-->
+          <!--<div  :class="['tab', { tabing: isB2}]"  v-on:click="toggle2()">登记记录</div>-->
+        <!--</div>-->
         <div class="tab1" v-show="isShow1">
-          <div class="partsBody" style="height: 655px">
+          <div class="partsBody">
             <div class="bodyHead">
               <div class="title">外出登记</div>
             </div>
@@ -423,7 +423,9 @@
         var r=confirm("确定要删除该人员？");
         if (r==true)
         {
-          this.cardPerson.splice(index+this.outCriminalsA-1,1)
+
+//          alert(vm.outCriminals[index+vm.outCriminalsA-1]["CriminalID"])
+
           var sendDelPerson = {
             Header: {
               MsgID:"201501260000000031",
@@ -435,7 +437,6 @@
               PeopleID :vm.outCriminals[index+vm.outCriminalsA-1]["CriminalID"]
             })
           }
-
           $.ajax({
             type: "get",
             contentType: "application/json; charset=utf-8",
@@ -500,8 +501,8 @@
             Reason=vm.reasonList[i]["DictCodeName"]
           }
         }
-        if(Areas==""||Reason==""){
-          vm.alertText="外出事由和外出地点必须选择"
+        if(Areas==""||Reason==""||Criminals==""){
+          vm.alertText="外出事由和外出地点必须选择，外出人员也不能为空"
           setTimeout(function () {
             vm.alertText=""
           },2000)
@@ -568,7 +569,6 @@
         if(localStorage.getItem("placemanID")==0){
         }else {
           localStorage.setItem("moveTypes","2")//1为进出工，2为临时外出登记
-
           vm.firstWs()
           clearInterval(outPlice)
           var Polices={}
@@ -655,7 +655,7 @@
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID")},
-        url: 'http://10.58.1.145:88/api/Move/GetOutAreaList' + "?callback=?",
+        url:  SHANLEI+'Move/GetOutAreaList' + "?callback=?",
         success: function (result) {
           if(result!=""||result!=null){
             vm.areaListAll=result.length
@@ -682,7 +682,7 @@
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID")},
-        url: 'http://10.58.1.145:88/api/Move/GetMoveReasonList' + "?callback=?",
+        url: SHANLEI+'Move/GetMoveReasonList' + "?callback=?",
         success: function (result) {
           if(result!=""||result!=null){
             vm.reasonListAll=result.length

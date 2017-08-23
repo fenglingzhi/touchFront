@@ -36,6 +36,7 @@
       :receiveDataMsgType23="receiveDataMsgType23"
       :receiveDataMsgType8="receiveDataMsgType8"
       :receiveDataMsgType27="receiveDataMsgType27"
+      :cardPerson="cardPerson"
 
       :receiveDataMsgType33="receiveDataMsgType33"
       :canRouter="canRouter"
@@ -359,7 +360,7 @@
 
 
 
-
+        cardPerson:[],//互监组刷卡区域成员
         toolList:[],// 工具基础信息集合
         GetCriminalCalledList:[],//已点罪犯
         criminalCalledIsLastPage:false,//已点罪犯是否是最后一页
@@ -488,12 +489,20 @@
           },
           url: SHANLEI + 'HomeIndex/CheckUser',
           success: function (result) {
+
             if(result != null){
               vm.alertYHDL = false
               localStorage.setItem('placemanID',result[0].FlnkID)
               vm.canRouter=0
+              vm.policeLogin.password=""
+              vm.policeLogin.account=""
             }else{
+              vm.policeLogin.password=""
+              vm.policeLogin.account=""
               vm.alertText='用户或密码错误'
+              setTimeout(function () {
+                vm.alertText=''
+              },2000)
             }
           }
         })
@@ -571,7 +580,7 @@
                   "PoliceName":vm.policeList[0][placemanID]["PoliceName"],
                   "PoliceRole":vm.policeList[0][placemanID]["role"]
               },
-              url:'http://10.58.1.145:88/api/Event/AlarmHandle' + "?callback=?",
+              url: SHANLEI+'Event/AlarmHandle' + "?callback=?",
               success: function (result) {
                 if(result==0){
                     vm.alertText="处理失败"
@@ -592,12 +601,15 @@
                       }
                   }
                   vm.alertText="处理成功"
+                  setTimeout(function () {
+                    vm.alertText=""
+                  },2000)
 
                 }
 
               },
               error: function (err) {
-                vm.alertText="请求异常"
+//                vm.alertText="请求异常"
               },
               complete: function (XHR, TS) {
                 XHR = null;  //回收资源
@@ -628,7 +640,7 @@
               jsonp: "callback",
               async: false,
               data:{"GroupID":ObjectID},
-              url: 'http://10.58.1.145:88/api/Group/GetCriminalListByGroup' + "?callback=?",
+              url:  SHANLEI+'Group/GetCriminalListByGroup' + "?callback=?",
               success: function (result) {
                 vm.groupTeam = result
               },
@@ -669,7 +681,7 @@
               jsonp: "callback",
               async: false,
               data:{"GroupID":ObjectID},
-              url: 'http://10.58.1.145:88/api/Group/GetCriminalListByGroup' + "?callback=?",
+              url:  SHANLEI+'Group/GetCriminalListByGroup' + "?callback=?",
               success: function (result) {
                 vm.groupTeam = result
               },
@@ -700,7 +712,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.criminalPage,"PageSize":18},
-            url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCntRecord' + "?callback=?",
+            url:  SHANLEI+'CriminalCnt/GetCriminalCntRecord' + "?callback=?",
             success: function (result) {
               if(result.length!=18){
                 vm.criminalCalledIsLastPage=true
@@ -725,7 +737,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+            url:  SHANLEI+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
             success: function (result) {
               vm.criminalCount=result
             },
@@ -756,7 +768,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.criminalPage,"PageSize":18},
-            url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCntRecord' + "?callback=?",
+            url:  SHANLEI+'CriminalCnt/GetCriminalCntRecord' + "?callback=?",
             success: function (result) {
               if(result.length!=18){
                 vm.criminalCalledIsLastPage=true
@@ -780,7 +792,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+            url:  SHANLEI+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
             success: function (result) {
               vm.criminalCount=result
             },
@@ -807,7 +819,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.toolPage,"PageSize":18},
-            url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCalledList' + "?callback=?",
+            url:  SHANLEI+'ToolCnt/GetToolCalledList' + "?callback=?",
             success: function (result) {
               if(result.length!=18){
                 vm.toolCalledIsLastPage=true
@@ -831,7 +843,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCalledCount' + "?callback=?",
+            url:  SHANLEI+'ToolCnt/GetToolCalledCount' + "?callback=?",
             success: function (result) {
               vm.toolCount=result
             },
@@ -856,7 +868,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.toolPage,"PageSize":18},
-            url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCalledList' + "?callback=?",
+            url: SHANLEI+'ToolCnt/GetToolCalledList' + "?callback=?",
             success: function (result) {
               if(result.length!=18){
                 vm.toolCalledIsLastPage=true
@@ -881,7 +893,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+            url: SHANLEI+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
             success: function (result) {
               vm.criminalCount=result
             },
@@ -911,14 +923,14 @@
           jsonp: "callback",
           async: false,
           data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":18},
-          url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCalledList' + "?callback=?",
+          url:  SHANLEI+'ToolCnt/GetToolCalledList' + "?callback=?",
           success: function (result) {
             if(result.length!=18){
               vm.toolCalledIsLastPage=true
             }else {
               vm.toolCalledIsLastPage=false
             }
-            vm.GetCriminalCalledList=result
+            vm.GetToolCalledList=result
           },
           error: function (err) {
 //            alert("请求异常")
@@ -935,7 +947,7 @@
           jsonp: "callback",
           async: false,
           data:{"OrgID":localStorage.getItem("OrgID")},
-          url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCalledCount' + "?callback=?",
+          url:  SHANLEI+'ToolCnt/GetToolCalledCount' + "?callback=?",
           success: function (result) {
             vm.toolCount=result
           },
@@ -983,7 +995,7 @@
           jsonp: "callback",
           async: false,
           data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":18},
-          url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCalledList' + "?callback=?",
+          url:  SHANLEI+'CriminalCnt/GetCriminalCalledList' + "?callback=?",
           success: function (result) {
 
             if(result.length!=18){
@@ -1008,7 +1020,7 @@
           jsonp: "callback",
           async: false,
           data:{"OrgID":localStorage.getItem("OrgID")},
-          url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+          url:  SHANLEI+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
           success: function (result) {
             vm.criminalCount=result
           },
@@ -1100,12 +1112,12 @@
           jsonp: "callback",
           async: false,
           data: {OrgID: localStorage.getItem('OrgID')},
-          url: 'http://10.58.1.145:88/api/ToolCnt/GetToolList' + "?callback=?",
+          url:  SHANLEI+'ToolCnt/GetToolList' + "?callback=?",
           success: function (result) {
 
             //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
             var toolList_hash = new Array();
-            // 重构罪犯信息哈希数据
+            // 重构工具信息哈希数据
             for(var i=0;i<result.length;i++){
               toolList_hash[result[i].FlnkID] = {
                 FlnkID:result[i].FlnkID,
@@ -1313,6 +1325,21 @@
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 8) {
           var receiveDataMsgType8 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType8=receiveDataMsgType8
+          var receiveData=receiveDataMsgType8
+
+          if(receiveData!=""||receiveData!=null){
+            if(receiveData["Type"]==2002){
+              receiveData["ischoose"]=false
+              receiveData["CriminalName"]=vm.criminalList[0][receiveData["PersonID"]]["CriminalName"]
+              receiveData["Photo"]=vm.criminalList[0][receiveData["PersonID"]]["Photo"]
+              for( var i=0;i< vm.cardPerson.length;i++){
+                if(vm.cardPerson[i]["PersonID"]==receiveData["PersonID"]){
+                  vm.cardPerson.splice(i,1)
+                }
+              }
+              vm.cardPerson.push(receiveData)
+            }
+          }
         }
 //        /*互监组管理提交*/
 //        if(JSON.parse(vm.SocketAllData).Header.MsgType === 35) {
@@ -1327,8 +1354,9 @@
         /* 报警信息 */
         if (JSON.parse(event.data).Header.MsgType === 2) {
           var alarmNews = JSON.parse(JSON.parse(event.data).Body)
+          console.log("报警。。。。。。。",alarmNews)
             /* 区域过滤测试后解开 */
-          if (alarmNews.OrgID === localStorage.getItem("OrgID")) {
+          if (alarmNews.OrgID.toUpperCase() == localStorage.getItem("OrgID")) {
           var criminalData = alarmNews
             criminalData.criminalID = vm.criminalList[0][alarmNews.ObjectID].CriminalID
             criminalData.Photo = vm.criminalList[0][alarmNews.ObjectID].Photo
