@@ -7,6 +7,7 @@
       :plan="plan"
       :planStartTime="planStartTime"
       :planEndTime="planEndTime"
+      :NextTime="NextTime"
       :onlinestatus="onlinestatus"
       @aaa="closeWeb()"
     ></navheader>
@@ -334,6 +335,7 @@
         plan:'',                          //计划任务
         planStartTime:'',                 //计划任务开始时间
         planEndTime:'',                   //计划任务结束时间
+        NextTime:'',                      //下次计划人数时间
         nowfloatTime:0,                   //实时流动倒计时
         nowfloatPerson:[],                //实时流动人员
         nowfloatPersonFirst:[],           //实时流动人员大头像
@@ -1404,13 +1406,16 @@
           vm.plan = plan_task.PlanTypeName
           vm.planStartTime = plan_task.StartTime
           vm.planEndTime = plan_task.EndTime
+          vm.NextTime = plan_task.NextTime
           if(vm.plan == '工具清点计划'){
-            if(vm.canRouter === 1){
+            alert('工具清点')
+            if(vm.canRouter == 1){
               vm.$router.push({ path: '/toolcheck' })
             } else {
               alert('工具清点已经开始，请结束本次操作后开始工具清点')
             }
           } else if(vm.plan == '人员清点计划'){
+              alert('人员清点')
             if(vm.canRouter === 1){
               vm.$router.push({ path: '/crimalcheck' })
             } else {

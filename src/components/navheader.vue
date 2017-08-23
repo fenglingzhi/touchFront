@@ -17,8 +17,11 @@
           <span>{{localWeek}}</span>
           <span>{{localYear}}</span>
         </p>
-        <p>
+        <p v-if="plan">
           <span class="nav-plan">{{ plan }}</span><span class="nav-plan-time">计划清点：{{ planStartTime }} - {{planEndTime}}</span>
+        </p>
+        <p v-if="NextTime">
+          <span class="nav-plan">下次{{ plan }}</span><span class="nav-plan-time">计划清点：{{ NextTime }}</span>
         </p>
       </el-col>
       <el-col :span="2">
@@ -39,7 +42,8 @@
       plan:'',
       planStartTime:'',
       planEndTime:'',
-      onlinestatus:true
+      onlinestatus:true,
+      NextTime:''
     },
     data () {
       return {
