@@ -19,7 +19,6 @@
               <!--<div class="titleDescribe">（柜内工具总数：200个，<span style="color: #1443cd"  @click="$emit('hasCheakedTool')" >已点工具{{toolCalledCount}}个</span>）</div>-->
             </div>
             <div class="bodyCon">
-
               <el-col :span="2"  v-for="(tool,index) in inTool.slice(inA-1,inB)" :key="1">
                 <div  :class="['criminal', {chosed: tool.ischoose}]" v-on:click="chooseIn(index)" >
                   <img :src="tool.Photo" width="98%" height="85" alt=""/>
@@ -209,7 +208,7 @@ var vm=this
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.recordPage,"PageSize":20},
-            url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCntRecord' + "?callback=?",
+            url:  SHANLEI+'ToolCnt/GetToolCntRecord' + "?callback=?",
             success: function (result) {
                 if(result.length!=20){
                     vm.recordIsLastPage=true
@@ -236,7 +235,7 @@ var vm=this
           jsonp: "callback",
           async: false,
           data:{"OrgID":localStorage.getItem("OrgID")},
-          url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCntRecordsCount' + "?callback=?",
+          url:  SHANLEI+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
           success: function (result) {
             vm.recordCount=result
           },
@@ -262,7 +261,7 @@ var vm=this
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.recordPage,"PageSize":20},
-            url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCntRecord' + "?callback=?",
+            url:  SHANLEI+'ToolCnt/GetToolCntRecord' + "?callback=?",
             success: function (result) {
               if(result.length!=20){
                 vm.recordIsLastPage=true
@@ -286,7 +285,7 @@ var vm=this
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCntRecordsCount' + "?callback=?",
+            url:  SHANLEI+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
             success: function (result) {
               vm.recordCount=result
             },
@@ -344,8 +343,15 @@ var vm=this
 
         var vm=this
         vm.$emit('openLogin',true)
-
-        var subTools=this.outChoose.concat(this.inChoose);
+        var allTools=this.outChoose.concat(this.inChoose);
+        var subTools=""
+        for (var i=0;i<allTools.length;i++){
+          if(i==0){
+            subTools=allTools[i]
+          }else {
+            subTools=subTools+","+allTools[i]
+          }
+        }
         var send = {
           Header: {
             MsgID:"201501260000000034",
@@ -373,14 +379,20 @@ var vm=this
                 data:JSON.stringify(send),
                 success: function (result) {
                   if(result.RET==1){
-                    vm.outChoose.splice(0,vm.outChoose.length)
-                    vm.inChoose.splice(0,vm.inChoose.length)
+
+//                      vm.outTool=[]
+//                      vm.inTool=[]
+                      vm.inChoose=[]
+                      vm.outChoose=[]
+
+                    localStorage.setItem("placemanID","0")
                     vm.alertText="手动确定成功"
                     setTimeout(function () {
                       vm.alertText=""
                     },2000)
 
                   }else {
+                    localStorage.setItem("placemanID","0")
                     vm.alertText="手动确定失败"
                     setTimeout(function () {
                       vm.alertText=""
@@ -426,16 +438,22 @@ var vm=this
               data:JSON.stringify(send),
               success: function (result) {
                 if(result.RET==1){
-                  vm.inChoose.splice(0,vm.inChoose.length)
-                  vm.outChoose.splice(0,vm.outChoose.length)
+
+//                      vm.outTool=[]
+//                      vm.inTool=[]
+                      vm.inChoose=[]
+                      vm.outChoose=[]
+
+
+                  localStorage.setItem("placemanID","0")
                   vm.alertText="手动结束成功"
                   setTimeout(function () {
                     vm.alertText=""
                   },2000)
-
-
                 }else {
+
                   vm.alertText="手动结束失败"
+                  localStorage.setItem("placemanID","0")
                   setTimeout(function () {
                     vm.alertText=""
                   },2000)
@@ -452,6 +470,7 @@ var vm=this
       }
     },
     mounted () {
+
 
       /* Coding By YanM */
 
@@ -476,9 +495,11 @@ var vm=this
         }
 //        接收数据
         var receiveData=vm.receiveDataMsgType32
-          if(receiveData!=""||receiveData!=null){
+
+//          if(receiveData!=""||receiveData!=null){
             var hasNotCall=[] //柜内未点1
             var outHasNotCall=[] //柜外未点0
+
             for (var i=0;i<receiveData.length;i++){
               if(receiveData[i].Status=="2502"){
                  if(vm.toolList[0][receiveData[i]["ToolID"]]["IsInsideTool"]==1){
@@ -492,8 +513,8 @@ var vm=this
                      }
                    }
                     hasNotCall.push(hasNotCall_B)
-                    vm.inTool=hasNotCall
-                    vm.inPages=Math.ceil(vm.inTool.length/24)==0?1:Math.ceil(vm.inTool.length/24)
+                     vm.inTool=hasNotCall
+                     vm.inPages=Math.ceil(vm.inTool.length/24)==0?1:Math.ceil(vm.inTool.length/24)
                   }else if(vm.toolList[0][receiveData[i]["ToolID"]]["IsInsideTool"]==0) {
                     var outHasNotCall_B=receiveData[i]
                     outHasNotCall_B["Photo"]=vm.toolList[0][receiveData[i]["ToolID"]]["Photo"]
@@ -505,14 +526,22 @@ var vm=this
                        outHasNotCall_B["ischoose"]=true
                      }
                    }
-                    outHasNotCall.push(outHasNotCall_B)
-                    vm.outTool=outHasNotCall
+
+                   outHasNotCall.push(outHasNotCall_B)
+                   vm.outTool=outHasNotCall
                     vm.outPages=Math.ceil(vm.outTool.length/12)==0?1:Math.ceil(vm.outTool.length/12)
                   }
             }
            }
-          }
-      },1000)
+                  if(hasNotCall.length==0){
+                    vm.inTool=[]
+                  }
+                  if(outHasNotCall.length==0){
+                    vm.outTool=[]
+                  }
+//          }
+
+      },500)
 
 //      获取第一页记录数据
       $.ajax({
@@ -522,7 +551,7 @@ var vm=this
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":20},
-        url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCntRecord' + "?callback=?",
+        url:  SHANLEI+'ToolCnt/GetToolCntRecord' + "?callback=?",
         success: function (result) {
           if(result.length!=20){
             vm.recordIsLastPage=true
@@ -547,7 +576,7 @@ var vm=this
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID")},
-        url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCntRecordsCount' + "?callback=?",
+        url: SHANLEI+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
         success: function (result) {
           vm.recordCount=result
         },
@@ -567,7 +596,7 @@ var vm=this
           jsonp: "callback",
           async: false,
           data:{"OrgID":localStorage.getItem("OrgID")},
-          url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCalledCount' + "?callback=?",
+          url:  SHANLEI+'ToolCnt/GetToolCalledCount' + "?callback=?",
           success: function (result) {
             vm.toolCalledCount=result
           },
@@ -585,7 +614,7 @@ var vm=this
           jsonp: "callback",
           async: false,
           data:{"OrgID":localStorage.getItem("OrgID")},
-          url: 'http://10.58.1.145:88/api/ToolCnt/GetToolCalledCount' + "?callback=?",
+          url:  SHANLEI+'ToolCnt/GetToolCalledCount' + "?callback=?",
           success: function (result) {
             vm.orgCriminalCount=result
           },

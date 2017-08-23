@@ -155,6 +155,8 @@
       },
       sub:function () {
         var vm=this
+        localStorage.setItem("placemanID","0")
+
         vm.$emit('openLogin',true)
         var subSetInterval=setInterval(function () {
           if(localStorage.getItem("placemanID")==0){
@@ -178,7 +180,6 @@
                 DoorID : localStorage.getItem('DoorID'),
                 Polices:Polices,
                 Reason:Reason,
-
               })
             }
             //发送数据
@@ -260,7 +261,7 @@
     mounted(){
       var vm = this
       if(localStorage.getItem("AreaType")==1){
-        vm.buttonText="收工"
+        vm.buttonText="结束"
         vm.MoveType="2602"
       }else {
         vm.buttonText="出工"
@@ -271,7 +272,9 @@
         if(localStorage.getItem("placemanID")==0){
         }else {
           localStorage.setItem("moveTypes","1")//1为进出工，2为临时外出登记
+
           vm.firstWs()
+
           clearInterval(outWork)
         }
       },500)
@@ -312,7 +315,7 @@
           }
           vm.outPages=Math.ceil(vm.outCriminalList.length/48)==0?1:Math.ceil(vm.outCriminalList.length/48)
         }
-      },1000)
+      },500)
 
 
 //      获取当前监区罪犯集合
@@ -323,7 +326,7 @@
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID")},
-        url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalList' + "?callback=?",
+        url: SHANLEI+'CriminalCnt/GetCriminalList' + "?callback=?",
         success: function (result) {
           if(result!=""||result!=null){
             vm.inListAll=result.length

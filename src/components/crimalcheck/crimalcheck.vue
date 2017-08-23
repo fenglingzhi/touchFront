@@ -256,7 +256,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.recordPage,"PageSize":20},
-            url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCntRecord' + "?callback=?",
+            url:  SHANLEI+'CriminalCnt/GetCriminalCntRecord' + "?callback=?",
             success: function (result) {
               if(result.length!=20){
                 vm.recordIsLastPage=true
@@ -282,7 +282,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCntRecordsCount' + "?callback=?",
+            url:  SHANLEI+'CriminalCnt/GetCriminalCntRecordsCount' + "?callback=?",
             success: function (result) {
               vm.recordCount=result
             },
@@ -314,7 +314,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.recordPage,"PageSize":20},
-            url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCntRecord' + "?callback=?",
+            url:  SHANLEI+'CriminalCnt/GetCriminalCntRecord' + "?callback=?",
             success: function (result) {
               if(result.length!=20){
                 vm.recordIsLastPage=true
@@ -338,7 +338,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCntRecordsCount' + "?callback=?",
+            url:  SHANLEI+'CriminalCnt/GetCriminalCntRecordsCount' + "?callback=?",
             success: function (result) {
               vm.recordCount=result
             },
@@ -353,7 +353,15 @@
       },
       submitCriminal:function () {
         var vm=this
-        var subCriminals=this.outChoose.concat(this.inChoose);
+        var allCriminals=this.outChoose.concat(this.inChoose);
+        var subCriminals=""
+        for (var i=0;i<allCriminals.length;i++){
+            if(i==0){
+              subCriminals=allCriminals[i]
+            }else {
+              subCriminals=subCriminals+","+allCriminals[i]
+            }
+        }
         var send = {
           Header: {
             MsgID:"201501260000000034",
@@ -365,6 +373,7 @@
             ObjectID:subCriminals
           })
         }
+        console.log("人员清点",send)
         vm.$emit('openLogin',true)
         var submitCriminalSet=setInterval(function () {
           if(localStorage.getItem("placemanID")==0){
@@ -390,6 +399,7 @@
                   if(result.RET==1){
                   vm.outChoose.splice(0,vm.outChoose.length)
                   vm.inChoose.splice(0,vm.inChoose.length)
+                    localStorage.setItem("placemanID","0")
                     vm.alertText="手动确定成功"
                     setTimeout(function () {
                       vm.alertText=""
@@ -398,6 +408,7 @@
 
                   }else {
                     vm.alertText="手动确定失败"
+                    localStorage.setItem("placemanID","0")
                     setTimeout(function () {
                       vm.alertText=""
                     },2000)
@@ -441,15 +452,22 @@
               data:JSON.stringify(send),
               success: function (result) {
                 if(result.RET==1){
-//              vm.inChoose.splice(0,vm.inChoose.length)
-//              vm.outChoose.splice(0,vm.outChoose.length)
+
+                    vm.inChoose=[]
+                    vm.outChoose=[]
+
                   vm.alertText="手动结束成功"
+                  localStorage.setItem("placemanID","0")
+
                   setTimeout(function () {
                     vm.alertText=""
+
 //                vm.$router.push({ path: '/' })
                   },2000)
 
                 }else {
+                  localStorage.setItem("placemanID","0")
+
                   vm.alertText="手动结束失败"
                   setTimeout(function () {
                     vm.alertText=""
@@ -527,6 +545,12 @@
 
               }
             }
+            if(hasNotCall.length==0){
+              vm.inCriminals=[]
+            }
+            if(outHasNotCall.length==0){
+              vm.outCriminals=[]
+            }
           }
 
 
@@ -540,7 +564,7 @@
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":20},
-        url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCntRecord' + "?callback=?",
+        url: SHANLEI+'CriminalCnt/GetCriminalCntRecord' + "?callback=?",
         success: function (result) {
           if(result.length!=20){
             vm.recordIsLastPage=true
@@ -564,7 +588,7 @@
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID")},
-        url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCntRecordsCount' + "?callback=?",
+        url: SHANLEI+'CriminalCnt/GetCriminalCntRecordsCount' + "?callback=?",
         success: function (result) {
           vm.recordCount=result
         },
@@ -584,7 +608,7 @@
           jsonp: "callback",
           async: false,
           data:{"OrgID":localStorage.getItem("OrgID")},
-          url: 'http://10.58.1.145:88/api/CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+          url:  SHANLEI+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
           success: function (result) {
             vm.hascelled=result
           },
@@ -602,7 +626,7 @@
           jsonp: "callback",
           async: false,
           data:{"OrgID":localStorage.getItem("OrgID")},
-          url: 'http://10.58.1.145:88/api/CriminalCnt/GetCurOrgCriminalCount' + "?callback=?",
+          url:  SHANLEI+'CriminalCnt/GetCurOrgCriminalCount' + "?callback=?",
           success: function (result) {
             vm.orgCriminalCount=result[0].Total
           },

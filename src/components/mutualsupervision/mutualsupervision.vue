@@ -20,7 +20,7 @@
                     <div class="deailBody" style="height:269px;">
                       <el-col :span="4" v-for="(generalGroup,index) in generalGroupList.slice(generalGroupA-1,generalGroupB)" :key="1">
                         <div  :class="['choose', {choosed: generalGroup.ischoose}]" v-on:click="chooseGeneralGroup(index)">
-                          {{generalGroup.GroupCode}}
+                          {{generalGroup.GroupNum}}
                         </div>
                       </el-col>
 
@@ -48,7 +48,7 @@
                       <div class="deailBody" style="height:110px;">
                         <el-col :span="4" v-for="(provisionalGroup,index) in provisionalGroupList.slice(provisionalGroupA-1,provisionalGroupB)" :key="1">
                           <div  :class="['choose', {choosed: provisionalGroup.ischoose}]" v-on:click="chooseProvisionalGroup(index)">
-                            {{provisionalGroup.GroupCode}}
+                            {{provisionalGroup.GroupNum}}
                           </div>
                         </el-col>
                       </div>
@@ -113,7 +113,7 @@
   export default {
     name: 'navheader',
     props:[
-      'SocketAllData','criminalList','receiveDataMsgType8','receiveDataMsgType35','receiveDataMsgType20'
+      'SocketAllData','criminalList','receiveDataMsgType8','receiveDataMsgType35','receiveDataMsgType20','cardPerson'
     ],
 
     data () {
@@ -132,7 +132,7 @@
         provisionalGroupB:12,
         isSuccess:0,
         alertText:"",
-        cardPerson:[]//刷卡罪犯集合
+//        cardPerson:[]//刷卡罪犯集合
 
       }
     },
@@ -473,7 +473,7 @@
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID")},
-        url: 'http://10.58.1.145:88/api/Group/GetGeneralGroupList' + "?callback=?",
+        url:  SHANLEI+'Group/GetGeneralGroupList' + "?callback=?",
         success: function (result) {
           if(result!=""||result!=null){
             vm.generalGroupListAll=result.length
@@ -500,7 +500,7 @@
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID")},
-        url: 'http://10.58.1.145:88/api/Group/GetProvisionalGroupList' + "?callback=?",
+        url:  SHANLEI+'Group/GetProvisionalGroupList' + "?callback=?",
         success: function (result) {
           if(result!=""||result!=null){
             vm.provisionalGroupListAll=result.length
@@ -522,26 +522,26 @@
 
       vm.firstWs()
 
-      setInterval(function () {
-          if(vm.isSuccess==1){
-            /*刷卡信息*/
-            var receiveData = vm.receiveDataMsgType8
-            if(receiveData!=""||receiveData!=null){
-              if(receiveData["Type"]==2002){
-                receiveData["ischoose"]=false
-                receiveData["CriminalName"]=vm.criminalList[0][receiveData["PersonID"]]["CriminalName"]
-                receiveData["Photo"]=vm.criminalList[0][receiveData["PersonID"]]["Photo"]
-                for( var i=0;i< vm.cardPerson.length;i++){
-                  if(vm.cardPerson[i]["PersonID"]==receiveData["PersonID"]){
-                    vm.cardPerson.splice(i,1)
-                  }
-                }
-                vm.cardPerson.push(receiveData)
-              }
-            }
-
-          }
-      },200)
+//      setInterval(function () {
+//          if(vm.isSuccess==1){
+//            /*刷卡信息*/
+//            var receiveData = vm.receiveDataMsgType8
+//            if(receiveData!=""||receiveData!=null){
+//              if(receiveData["Type"]==2002){
+//                receiveData["ischoose"]=false
+//                receiveData["CriminalName"]=vm.criminalList[0][receiveData["PersonID"]]["CriminalName"]
+//                receiveData["Photo"]=vm.criminalList[0][receiveData["PersonID"]]["Photo"]
+//                for( var i=0;i< vm.cardPerson.length;i++){
+//                  if(vm.cardPerson[i]["PersonID"]==receiveData["PersonID"]){
+//                    vm.cardPerson.splice(i,1)
+//                  }
+//                }
+//                vm.cardPerson.push(receiveData)
+//              }
+//            }
+//
+//          }
+//      },200)
       /* Coding By Qianjf */
 
     }
