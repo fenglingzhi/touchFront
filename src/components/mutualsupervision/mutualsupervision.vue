@@ -372,6 +372,8 @@
       },
       cancelSubmit:function () {
         this.$router.push({ path: '/' })
+         this.$emit('delCardPerson')
+
 //        var vm=this
 //        var send3 = {
 //          Header: {
@@ -502,7 +504,7 @@
         data:{"OrgID":localStorage.getItem("OrgID")},
         url:  SHANLEI+'Group/GetProvisionalGroupList' + "?callback=?",
         success: function (result) {
-          if(result!=""||result!=null){
+          if(result!=""&&result!=null){
             vm.provisionalGroupListAll=result.length
             vm.provisionalGroupPages=Math.ceil(result.length/12)==0?1:Math.ceil(result.length/12)
             for (var i=0;i<result.length;i++){

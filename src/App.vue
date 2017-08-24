@@ -17,6 +17,7 @@
       @hasCheaked="onHasCheaked"
       @hasCheakedTool="onHasCheakedTool"
       @canRouterChange="canRouterChange"
+      @delCardPerson="delCardPerson"
       :criminalList="criminalList"
       :toolList="toolList"
       :FlnkIDList1="FlnkIDList_11"
@@ -96,7 +97,6 @@
                   </el-row>
                 </div>
                 <div v-show="false" id="alarmRecordID">{{alarm.AlarmRecordID}}</div>
-
                 <div  v-show="isPerson">
                   <div style="height:18px;"></div>
                   <el-row>
@@ -395,12 +395,12 @@
         alertYDMD: false,                 //已点名单
         alertBJTK: false,                 //报警弹框
         alertYDGJ:false,                  //已点工具
-        isPerson:true,
-        isGrup:false,
-        canRouter:1,                  //流动路由判
-        criminalList:[],                   //罪犯基础信息集合
         chest_card:[],
-        wristband:[]
+        wristband:[],
+        isPerson:true,                     //报警类别：人
+        isGrup:false,                      //报警类别：互监组
+        canRouter:1,                      //流动路由判
+        criminalList:[]                   //罪犯基础信息集合
       }
     },
     methods: {
@@ -554,6 +554,10 @@
 
       /* Coding By Qianjf */
 
+     /* 零时互监组取消操作，清空刷卡内容*/
+      delCardPerson:function () {
+        this.cardPerson=[]
+      },
       /* 登录弹窗显示 */
       canRouterChange:function () {
         this.canRouter = 1
@@ -579,60 +583,80 @@
       alarmHandle:function () {
         var vm = this
         var alarmRecordID = $("#alarmRecordID").html()
-        for (var i=0;i<vm.alarmList.length;i++){
-          if(this.alarmList[i]["AlarmRecordID"]==alarmRecordID){
-            var placemanID = localStorage.getItem("placemanID")
-            $.ajax({
-              type:"get",
-              contentType:"application/json; charset=utf-8",
-              dataType:"jsonp",
-              jsonp:"callback",
-              async:false,
-              data:{
-                  "EventID":alarmRecordID,
-                  "PoliceID":placemanID,
-                  "PoliceName":vm.policeList[0][placemanID]["PoliceName"],
-                  "PoliceRole":vm.policeList[0][placemanID]["role"]
-              },
-              url: SHANLEI+'Event/AlarmHandle' + "?callback=?",
-              success: function (result) {
-                if(result==0){
-                    vm.alertText="处理失败"
-                }else {
-                  /*页面删除效果*/
-                  for(var j=0;j<vm.alarmList.length;j++){
-                      if(vm.alarmList[j]["AlarmRecordID"]==alarmRecordID){
-                        vm.alarmList.splice(j-1,1);
-                        vm.alarmPages=vm.alarmList.length
-                        if( vm.alarmPages> vm.alarmNowPage||vm.alarmPages==vm.alarmNowPage){
-                        }else {
-                          if(vm.alarmPages==0){
-                            vm.alarmPages=1
-                            vm.alertBJTK=false
+        var alarmHandS = setInterval(function () {
+          if(localStorage.getItem("placemanID")==0){
+             vm.alertYHDL=true
+            clearInterval(alarmHandS)
+          }else {
+//            for (var i=0;i<vm.alarmList.length;i++){
+//              if(vm.alarmList[i]["AlarmRecordID"]==alarmRecordID){
+                var placemanID = localStorage.getItem("placemanID")
+                $.ajax({
+                  type:"get",
+                  contentType:"application/json; charset=utf-8",
+                  dataType:"jsonp",
+                  jsonp:"callback",
+                  async:false,
+                  data:{
+                    "EventID":alarmRecordID,
+                    "PoliceID":placemanID,
+                    "PoliceName":vm.policeList[0][placemanID]["PoliceName"],
+                    "PoliceRole":vm.policeList[0][placemanID]["role"]
+                  },
+                  url: SHANLEI+'Event/AlarmHandle' + "?callback=?",
+                  success: function (result) {
+                    clearInterval(alarmHandS)
+                    if(result==0){
+                      vm.alertText="处理失败"
+                      setTimeout(function () {
+                        vm.alertText=""
+                      },2000)
+                    }else {
+                      /*页面删除效果*/
+
+                      for(var j=0;j<vm.alarmList.length;j++){
+                        if(vm.alarmList[j]["AlarmRecordID"]==alarmRecordID){
+                          vm.alarmList.splice(j,1);
+                          vm.alarmPages=vm.alarmList.length
+                          if( vm.alarmPages> vm.alarmNowPage||vm.alarmPages==vm.alarmNowPage){
+                          }else {
+                            if(vm.alarmPages==0){
+                              vm.alarmPages=1
+                              vm.alertBJTK=false
+                            }
+//                            vm.alarmNowPage=vm.alarmPages
+                            vm.alarmBack()
+
                           }
-                          vm.alarmNowPage=vm.alarmPages
                         }
                       }
-                  }
-                  vm.alertText="处理成功"
-                  setTimeout(function () {
-                    vm.alertText=""
-                  },2000)
+                      vm.alarmText =  vm.alarmList[0].Description
 
-                }
+                      vm.alertText="处理成功"
+                      setTimeout(function () {
+                        vm.alertText=""
+                      },2000)
 
-              },
-              error: function (err) {
+                    }
+
+                  },
+                  error: function (err) {
+                    clearInterval(alarmHandS)
 //                vm.alertText="请求异常"
-              },
-              complete: function (XHR, TS) {
-                XHR = null;  //回收资源
-              }
-            });
+                  },
+                  complete: function (XHR, TS) {
+                    clearInterval(alarmHandS)
+                    XHR = null;  //回收资源
+                  }
+                });
 
+
+//              }
+//            }
 
           }
-        }
+        },500)
+
 
       },
 
@@ -989,6 +1013,7 @@
         }else  if (chose=="alertJQXZ"){
           this.alertJQXZ=false
         }else  if (chose=="alertBJXX"){
+          localStorage.setItem("placemanID","0")
           this.alertBJXX=false
         }else  if (chose=="alertSSLD"){
           this.alertSSLD=false
@@ -1059,7 +1084,7 @@
       /*报警详情弹框*/
       alertAlarm:function () {
         this.alertBJXX=true
-
+        localStorage.setItem("placemanID","0")
       },
 
       /* 所有基础全量数据 */
@@ -1150,7 +1175,7 @@
                 ToolType:result[i].ToolType,
                 ToolName:result[i].ToolName,
                 IsInsideTool:result[i].IsInsideTool,
-                Photo:result[i].Photo
+                Photo:IMG + result[i].Photo
               };
             }
             vm.toolList.push(toolList_hash)
@@ -1184,7 +1209,7 @@
                 Telephone:result[i].Telephone,
                 IntercomNum:result[i].IntercomNum,
                 PoliceMobile:result[i].PoliceMobile,
-                Photo:result[i].Photo,
+                Photo:IMG + result[i].Photo,
                 Pinyin:result[i].Pinyin,
                 OrderIndex:result[i].OrderIndex,
                 DBID:result[i].DBID,
@@ -1380,7 +1405,7 @@
         /* 报警信息 */
         if (JSON.parse(event.data).Header.MsgType === 2) {
           var alarmNews = JSON.parse(JSON.parse(event.data).Body)
-          console.log("报警。。。。。。。",alarmNews)
+//          console.log("报警。。。。。。。",alarmNews)
             /* 区域过滤测试后解开 */
           if (alarmNews.OrgID.toUpperCase() == localStorage.getItem("OrgID")) {
           var criminalData = alarmNews
@@ -1388,9 +1413,10 @@
             criminalData.Photo = vm.criminalList[0][alarmNews.ObjectID].Photo
             vm.alarmList.unshift(criminalData)
           /*限制报警条数不超过99*/
-            vm.alarmList.splice(99,99999999999999999999999999999999999999999999)
-            vm.alarmText = alarmNews.Description
-          vm.alarmPages = vm.alarmList.length
+            vm.alarmList.splice(99,99999999999)
+//            vm.alarmText = alarmNews.Description
+            vm.alarmText =  vm.alarmList[0].Description
+            vm.alarmPages = vm.alarmList.length
             if (vm.alarmList.length != 0) {
               vm.alertBJTK = true
             } else {
@@ -1460,14 +1486,14 @@
           vm.planEndTime = plan_task.EndTime
           vm.NextTime = plan_task.NextTime
           if(vm.plan == '工具清点计划'){
-            alert('工具清点')
+//            alert('工具清点')
             if(vm.canRouter == 1){
               vm.$router.push({ path: '/toolcheck' })
             } else {
               alert('工具清点已经开始，请结束本次操作后开始工具清点')
             }
           } else if(vm.plan == '人员清点计划'){
-              alert('人员清点')
+//              alert('人员清点')
             if(vm.canRouter === 1){
               vm.$router.push({ path: '/crimalcheck' })
             } else {
@@ -1554,12 +1580,12 @@
 
       /* 关闭状态 */
       vm.ws.onclose = function(){
-        vm.onlinestatus = false
-        if(vm.onlinestatus === false){
-          setInterval(function () {
-            window.location.reload()
-          },5000)
-        }
+//        vm.onlinestatus = false
+//        if(vm.onlinestatus === false){
+//          setInterval(function () {
+//            window.location.reload()
+//          },5000)
+//        }
       };
 
 

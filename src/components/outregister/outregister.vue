@@ -618,7 +618,7 @@
           }
           /*外出登记罪犯信息*/
           var receiveData = vm.receiveDataMsgType22
-          if(receiveData!=""||receiveData!=null){
+          if(receiveData!=""&&receiveData!=null){
             var outCriminal=[] //外出罪犯
             for (var i=0;i<receiveData.length;i++){
                 var Criminal=receiveData[i]
@@ -632,7 +632,7 @@
           }
           /*陪同民警信息*/
           var receiveDataP = vm.receiveDataMsgType27
-          if(receiveDataP!=""||receiveDataP!=null){
+          if(receiveDataP!=""&&receiveDataP!=null){
             var outPolice=[] //陪同民警
             for (var i=0;i<receiveDataP.length;i++){
               var Polices=receiveDataP[i]
@@ -657,7 +657,7 @@
         data:{"OrgID":localStorage.getItem("OrgID")},
         url:  SHANLEI+'Move/GetOutAreaList' + "?callback=?",
         success: function (result) {
-          if(result!=""||result!=null){
+          if(result!=""&&result!=null){
             vm.areaListAll=result.length
               vm.areaPages=Math.ceil(result.length/30)==0?1:Math.ceil(result.length/30)
             for (var i=0;i<result.length;i++){
@@ -684,7 +684,7 @@
         data:{"OrgID":localStorage.getItem("OrgID")},
         url: SHANLEI+'Move/GetMoveReasonList' + "?callback=?",
         success: function (result) {
-          if(result!=""||result!=null){
+          if(result!=""&&result!=null){
             vm.reasonListAll=result.length
             vm.reasonPages=Math.ceil(result.length/12)==0?1:Math.ceil(result.length/12)
             for (var i=0;i<result.length;i++){

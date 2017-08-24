@@ -180,9 +180,7 @@ var vm=this
         a:1
       }
     },
-//    destroyed: function () {
-//     clearInterval(setInterClear)
-//    },
+
     methods: {
       toggle1: function () {
         this.isShow1 = true
@@ -384,7 +382,50 @@ var vm=this
 //                      vm.inTool=[]
                       vm.inChoose=[]
                       vm.outChoose=[]
+//      获取第一页记录数据
+                    $.ajax({
+                      type: "get",
+                      contentType: "application/json; charset=utf-8",
+                      dataType: "jsonp",
+                      jsonp: "callback",
+                      async: false,
+                      data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":20},
+                      url:  SHANLEI+'ToolCnt/GetToolCntRecord' + "?callback=?",
+                      success: function (result) {
+                        if(result.length!=20){
+                          vm.recordIsLastPage=true
+                        }else {
+                          vm.recordIsLastPage=false
 
+                        }
+                        vm.records=result
+                      },
+                      error: function (err) {
+//          alert("请求异常")
+                      },
+                      complete: function (XHR, TS) {
+                        XHR = null;  //回收资源
+                      }
+                    });
+//      获取总记录条数
+                    $.ajax({
+                      type: "get",
+                      contentType: "application/json; charset=utf-8",
+                      dataType: "jsonp",
+                      jsonp: "callback",
+                      async: false,
+                      data:{"OrgID":localStorage.getItem("OrgID")},
+                      url: SHANLEI+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
+                      success: function (result) {
+                        vm.recordCount=result
+                      },
+                      error: function (err) {
+//          alert("请求异常")
+                      },
+                      complete: function (XHR, TS) {
+                        XHR = null;  //回收资源
+                      }
+                    });
                     localStorage.setItem("placemanID","0")
                     vm.alertText="手动确定成功"
                     setTimeout(function () {
@@ -444,7 +485,50 @@ var vm=this
                       vm.inChoose=[]
                       vm.outChoose=[]
 
+//      获取第一页记录数据
+                  $.ajax({
+                    type: "get",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "jsonp",
+                    jsonp: "callback",
+                    async: false,
+                    data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":20},
+                    url:  SHANLEI+'ToolCnt/GetToolCntRecord' + "?callback=?",
+                    success: function (result) {
+                      if(result.length!=20){
+                        vm.recordIsLastPage=true
+                      }else {
+                        vm.recordIsLastPage=false
 
+                      }
+                      vm.records=result
+                    },
+                    error: function (err) {
+//          alert("请求异常")
+                    },
+                    complete: function (XHR, TS) {
+                      XHR = null;  //回收资源
+                    }
+                  });
+//      获取总记录条数
+                  $.ajax({
+                    type: "get",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "jsonp",
+                    jsonp: "callback",
+                    async: false,
+                    data:{"OrgID":localStorage.getItem("OrgID")},
+                    url: SHANLEI+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
+                    success: function (result) {
+                      vm.recordCount=result
+                    },
+                    error: function (err) {
+//          alert("请求异常")
+                    },
+                    complete: function (XHR, TS) {
+                      XHR = null;  //回收资源
+                    }
+                  });
                   localStorage.setItem("placemanID","0")
                   vm.alertText="手动结束成功"
                   setTimeout(function () {
@@ -470,14 +554,13 @@ var vm=this
       }
     },
     mounted () {
-
-
       /* Coding By YanM */
 
       /* Coding By YanM */
       /* Coding By Qianjf */
       var vm = this
       localStorage.setItem("placemanID","0")
+      localStorage.setItem("toolClean","1")
 
       var send = {
         Header: {
@@ -488,13 +571,16 @@ var vm=this
           OrgID : localStorage.getItem('OrgID'),
         })
       }
-      var setInterClear= setInterval(function () {
-        //发送数据
-        if(vm.ws.readyState == WebSocket.OPEN){
-          vm.ws.send(JSON.stringify(send))
-        }
+      var toolClean1=setInterval(function () {
+          if(localStorage.getItem("toolClean")==0){
+              clearInterval(toolClean1)
+          }else {
+            //发送数据
+            if(vm.ws.readyState == WebSocket.OPEN){
+              vm.ws.send(JSON.stringify(send))
+            }
 //        接收数据
-        var receiveData=vm.receiveDataMsgType32
+            var receiveData=vm.receiveDataMsgType32
 
 //          if(receiveData!=""||receiveData!=null){
             var hasNotCall=[] //柜内未点1
@@ -502,44 +588,46 @@ var vm=this
 
             for (var i=0;i<receiveData.length;i++){
               if(receiveData[i].Status=="2502"){
-                 if(vm.toolList[0][receiveData[i]["ToolID"]]["IsInsideTool"]==1){
-                    var hasNotCall_B=receiveData[i]
-                    hasNotCall_B["Photo"]=vm.toolList[0][receiveData[i]["ToolID"]]["Photo"]
-                    hasNotCall_B["ToolName"]=vm.toolList[0][receiveData[i]["ToolID"]]["ToolName"]
-                    hasNotCall_B["ToolIDName"]=vm.toolList[0][receiveData[i]["ToolID"]]["ToolID"]
-                   for (var m=0;m<vm.inChoose.length;m++){
-                       if(vm.inChoose[m]==hasNotCall_B["ToolID"]){
-                         hasNotCall_B["ischoose"]=true
-                     }
-                   }
-                    hasNotCall.push(hasNotCall_B)
-                     vm.inTool=hasNotCall
-                     vm.inPages=Math.ceil(vm.inTool.length/24)==0?1:Math.ceil(vm.inTool.length/24)
-                  }else if(vm.toolList[0][receiveData[i]["ToolID"]]["IsInsideTool"]==0) {
-                    var outHasNotCall_B=receiveData[i]
-                    outHasNotCall_B["Photo"]=vm.toolList[0][receiveData[i]["ToolID"]]["Photo"]
-                    outHasNotCall_B["ToolName"]=vm.toolList[0][receiveData[i]["ToolID"]]["ToolName"]
-                    outHasNotCall_B["ToolIDName"]=vm.toolList[0][receiveData[i]["ToolID"]]["ToolID"]
-                   outHasNotCall_B["ischoose"]=false
-                   for (var m=0;m<vm.outChoose.length;m++){
-                     if(vm.outChoose[m]==outHasNotCall_B["ToolID"]){
-                       outHasNotCall_B["ischoose"]=true
-                     }
-                   }
+                if(vm.toolList[0][receiveData[i]["ToolID"]]["IsInsideTool"]==1){
+                  var hasNotCall_B=receiveData[i]
+                  hasNotCall_B["Photo"]=vm.toolList[0][receiveData[i]["ToolID"]]["Photo"]
+                  hasNotCall_B["ToolName"]=vm.toolList[0][receiveData[i]["ToolID"]]["ToolName"]
+                  hasNotCall_B["ToolIDName"]=vm.toolList[0][receiveData[i]["ToolID"]]["ToolID"]
+                  for (var m=0;m<vm.inChoose.length;m++){
+                    if(vm.inChoose[m]==hasNotCall_B["ToolID"]){
+                      hasNotCall_B["ischoose"]=true
+                    }
+                  }
+                  hasNotCall.push(hasNotCall_B)
+                  vm.inTool=hasNotCall
+                  vm.inPages=Math.ceil(vm.inTool.length/24)==0?1:Math.ceil(vm.inTool.length/24)
+                }else if(vm.toolList[0][receiveData[i]["ToolID"]]["IsInsideTool"]==0) {
+                  var outHasNotCall_B=receiveData[i]
+                  outHasNotCall_B["Photo"]=vm.toolList[0][receiveData[i]["ToolID"]]["Photo"]
+                  outHasNotCall_B["ToolName"]=vm.toolList[0][receiveData[i]["ToolID"]]["ToolName"]
+                  outHasNotCall_B["ToolIDName"]=vm.toolList[0][receiveData[i]["ToolID"]]["ToolID"]
+                  outHasNotCall_B["ischoose"]=false
+                  for (var m=0;m<vm.outChoose.length;m++){
+                    if(vm.outChoose[m]==outHasNotCall_B["ToolID"]){
+                      outHasNotCall_B["ischoose"]=true
+                    }
+                  }
 
-                   outHasNotCall.push(outHasNotCall_B)
-                   vm.outTool=outHasNotCall
-                    vm.outPages=Math.ceil(vm.outTool.length/12)==0?1:Math.ceil(vm.outTool.length/12)
-                  }
+                  outHasNotCall.push(outHasNotCall_B)
+                  vm.outTool=outHasNotCall
+                  vm.outPages=Math.ceil(vm.outTool.length/12)==0?1:Math.ceil(vm.outTool.length/12)
+                }
+              }
             }
-           }
-                  if(hasNotCall.length==0){
-                    vm.inTool=[]
-                  }
-                  if(outHasNotCall.length==0){
-                    vm.outTool=[]
-                  }
+            if(hasNotCall.length==0){
+              vm.inTool=[]
+            }
+            if(outHasNotCall.length==0){
+              vm.outTool=[]
+            }
 //          }
+          }
+
 
       },500)
 
@@ -588,47 +676,54 @@ var vm=this
         }
       });
 //      获取已点工具总数,本监区工具总数
-      setInterval(function () {
-        $.ajax({
-          type: "get",
-          contentType: "application/json; charset=utf-8",
-          dataType: "jsonp",
-          jsonp: "callback",
-          async: false,
-          data:{"OrgID":localStorage.getItem("OrgID")},
-          url:  SHANLEI+'ToolCnt/GetToolCalledCount' + "?callback=?",
-          success: function (result) {
-            vm.toolCalledCount=result
-          },
-          error: function (err) {
+      var toolClean2=setInterval(function () {
+        if(localStorage.getItem("toolClean")==0){
+          clearInterval(toolClean2)
+        }else {
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            data:{"OrgID":localStorage.getItem("OrgID")},
+            url:  SHANLEI+'ToolCnt/GetToolCalledCount' + "?callback=?",
+            success: function (result) {
+              vm.toolCalledCount=result
+            },
+            error: function (err) {
 //            alert("请求异常")
-          },
-          complete: function (XHR, TS) {
-            XHR = null;  //回收资源
-          }
-        });
-        $.ajax({
-          type: "get",
-          contentType: "application/json; charset=utf-8",
-          dataType: "jsonp",
-          jsonp: "callback",
-          async: false,
-          data:{"OrgID":localStorage.getItem("OrgID")},
-          url:  SHANLEI+'ToolCnt/GetToolCalledCount' + "?callback=?",
-          success: function (result) {
-            vm.orgCriminalCount=result
-          },
-          error: function (err) {
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
+          });
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            data:{"OrgID":localStorage.getItem("OrgID")},
+            url:  SHANLEI+'ToolCnt/GetToolCalledCount' + "?callback=?",
+            success: function (result) {
+              vm.orgCriminalCount=result
+            },
+            error: function (err) {
 //            alert("请求异常")
-          },
-          complete: function (XHR, TS) {
-            XHR = null;  //回收资源
-          }
-        });
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
+          });
+        }
       },500)
 
       /* Coding By Qianjf */
 
+    },
+    destroyed: function () {
+      localStorage.setItem("toolClean","0")
     }
 
   }
