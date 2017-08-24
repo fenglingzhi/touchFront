@@ -12,6 +12,7 @@
       @aaa="closeWeb()"
     ></navheader>
     <router-view
+      @clearCardInfo="clearCardInfo"
       @bindCardSelect="bindCardSelect"
       @CardBindPageInit="CardBindPageInit"
       @openLogin="loginOpen"
@@ -394,8 +395,8 @@
         alertYDMD: false,                 //已点名单
         alertBJTK: false,                 //报警弹框
         alertYDGJ:false,                  //已点工具
-        chest_card:[],
-        wristband:[],
+        chest_card:[],                    //胸卡
+        wristband:[],                     //腕带
         isPerson:true,                     //报警类别：人
         isGrup:false,                      //报警类别：互监组
         canRouter:1,                      //流动路由判
@@ -549,9 +550,15 @@
         this.chest_card = []
       },
 
+      /* 卡解绑页面初始化 */
+      clearCardInfo:function () {
+        this.wristband = []
+      },
+
       /* 卡绑定选人 */
       bindCardSelect:function (index) {
         let vm = this
+        vm.CardBindPageInit()
         if(vm.chest_card.length!==0){
           for(let i = 0; i<vm.chest_card.length; i++){
             vm.chest_card[i].status = false
@@ -1540,7 +1547,8 @@
                 CardID:chest_card.CardID,
                 CardType:chest_card.CardType,
                 CriminalID:chest_card.CriminalID,
-                status:false
+                status:false,
+                wristband:''
               })
             //刷卡去重
             }else{
@@ -1550,10 +1558,11 @@
                     CardID:chest_card.CardID,
                     CardType:chest_card.CardType,
                     CriminalID:chest_card.CriminalID,
-                    status:false
+                    status:false,
+                    wristband:''
                   })
                 } else {
-                  alert('重复输入')
+//                  alert('重复输入')
                 }
               }
             }
@@ -1561,20 +1570,24 @@
           //判断为腕带
           } else {
             if(wristband.CriminalID === "00000000-0000-0000-0000-000000000000"){
+                alert(1)
               //判断胸牌是否为空
               if(vm.chest_card.length!==0){
                 for(let i = 0; i<vm.chest_card.length; i++){
                   if(vm.chest_card[i].status === true){
+                    //提交绑定数据
                     vm.chest_card[i].wristband=wristband.CardID
                   }
                 }
               }
             } else {
+                alert(2)
               if(vm.wristband.length === 0){
+                  console.log('2222222222222222222',wristband)
                 vm.wristband.push(wristband)
               } else {
-                for(let i = 0; i<=vm.chest_card.length; i++){
-                  if(vm.wristband[i].CardID !== chest_card.CardID){
+                for(let i = 0; i<=vm.wristband.length; i++){
+                  if(vm.wristband[i].CardID !== wristband.CardID){
                     vm.chest_card.push(wristband)
                   } else {
                     alert('重复输入')

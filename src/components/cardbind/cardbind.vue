@@ -6,14 +6,13 @@
         <div class="tab1">
           <div class="partsBody">
             <div class="bodyHead">
-              <div class="title">卡绑定</div>
+              <div class="title">{{CardTitle}}</div>
             </div>
             <div class="bodyCon">
               <el-row >
                   <el-row class="float_person_wrap">
-                    <el-col :span="4" v-for="(item,index) in chest_card" :key='1'>
-                      {{chest_card}}
-                      <div class="float_person_card card_bind_init" :class="['card_bind_init', {card_bind_select: item.status}]" @click="$emit('bindCardSelect',index)">
+                    <el-col :span="4" v-for="(item,index) in chest_card" :key='1' v-show="!isUnbind">
+                      <div class="float_person_card card_bind_init" :class="['card_bind_init', {card_bind_select: item.status}, {card_bind_success:item.wristband!==''}]" @click="$emit('bindCardSelect',index)">
                         <el-col :span="10" class="photo">
                           <!--<img :src="item.Photo" alt="" width="100%" height="100%">-->
                         </el-col>
@@ -25,6 +24,23 @@
                           <!--<p>外出地点：{{item.destination}}</p>-->
                           <!--<p>陪同民警：{{item.withplace}}</p>-->
                           <p>腕带编号：{{item.wristband}}</p>
+                          <!--<p>外出事由：{{item.outreasons}}</p>-->
+                        </el-col>
+                      </div>
+                    </el-col>
+                    <el-col :span="4" v-for="item in wristband" :key='1' v-show="isUnbind">
+                      <div class="float_person_card card_bind_success" @click="$emit('clearCardInfo')">
+                        <el-col :span="10" class="photo">
+                          <!--<img :src="item.Photo" alt="" width="100%" height="100%">-->
+                        </el-col>
+                        <el-col :span="12" class="crimal_content">
+                          <p>姓名：{{item.CriminalName}}</p>
+                          <p>罪犯编号：{{item.CriminalID}}</p>
+                          <!--<p>胸牌编号：{{item.CardID}}</p>-->
+                          <!--<p>当前区域：{{item.area}}</p>-->
+                          <!--<p>外出地点：{{item.destination}}</p>-->
+                          <!--<p>陪同民警：{{item.withplace}}</p>-->
+                          <p>腕带编号：{{item.CardID}}</p>
                           <!--<p>外出事由：{{item.outreasons}}</p>-->
                         </el-col>
                       </div>
@@ -64,94 +80,16 @@
     ],
     data () {
       return {
-//        criminalList:[
-//          {
-//            CriminalName:'张三',
-//            CriminalID:'0111111',
-//            UpdateTime:'',
-//            status:false
-//          },
-//          {
-//            CriminalName:'张三',
-//            CriminalID:'0111111',
-//            UpdateTime:'',
-//            status:false
-//          },
-//          {
-//            CriminalName:'张三',
-//            CriminalID:'0111111',
-//            UpdateTime:'',
-//            status:false
-//          },
-//          {
-//            CriminalName:'张三',
-//            CriminalID:'0111111',
-//            UpdateTime:'',
-//            status:false
-//          },
-//          {
-//            CriminalName:'张三',
-//            CriminalID:'0111111',
-//            UpdateTime:'',
-//            status:false
-//          },
-//          {
-//            CriminalName:'张三',
-//            CriminalID:'0111111',
-//            UpdateTime:'',
-//            status:false
-//          },
-//          {
-//            CriminalName:'张三',
-//            CriminalID:'0111111',
-//            UpdateTime:'',
-//            status:false
-//          },
-//          {
-//            CriminalName:'张三',
-//            CriminalID:'0111111',
-//            UpdateTime:'',
-//            status:false
-//          },
-//          {
-//            CriminalName:'张三',
-//            CriminalID:'0111111',
-//            UpdateTime:'',
-//            status:false
-//          },
-//          {
-//            CriminalName:'张三',
-//            CriminalID:'0111111',
-//            UpdateTime:'',
-//            status:false
-//          },
-//          {
-//            CriminalName:'张三',
-//            CriminalID:'0111111',
-//            UpdateTime:'',
-//            status:false
-//          },
-//          {
-//            CriminalName:'张三',
-//            CriminalID:'0111111',
-//            UpdateTime:'',
-//            status:false
-//          },
-//        ],
-        wristbandID:'',
+        isUnbind:false,
+        CardTitle:'卡绑定'
       }
     },
     methods: {
-//      bindCardSelect:function (index) {
-//        let vm = this
-//        for(let i = 0; i<vm.chest_card.length; i++){
-//          vm.chest_card[i].status = false
-//        }
-//        vm.chest_card[index].status = true
-//      },
       /* 请求开始换卡 */
       bandCardInfo_onBind:function () {
         let vm = this
+        vm.CardTitle = '卡绑定'
+        vm.isUnbind = false
         alert('开始换卡')
         var bandCardInfo_req = {
           Header: {
@@ -184,11 +122,13 @@
           alert('提交换卡')
         let vm = this
         let ChangeCardPeopleList = []
-//        ChangeCardPeopleList.push({
-//          CriminalID:vm.chest_card[0].CriminalID,
-//          ChestCard:vm.chest_card[0].CardID,
-//          WristCard:vm.chest_card
-//        })
+        for(let i = 0; i<vm.chest_card.length; i++){
+          ChangeCardPeopleList.push({
+            CriminalID:vm.chest_card[i].CriminalID,
+            ChestCard:vm.chest_card[i].CardID,
+            WristCard:vm.chest_card[i].wristband
+          })
+        }
         console.log('提交换卡数据',ChangeCardPeopleList)
         var bandCardInfoSubmit = {
           Header: {
@@ -213,7 +153,7 @@
             console.log('卡绑定信息',result)
             if(result.RET === 1){
               alert('绑定成功')
-//              vm.$router.push({ path: '/' })
+              vm.$router.push({ path: '/' })
             } else {
               alert('绑定失败')
 //              vm.$router.push({ path: '/' })
@@ -227,6 +167,8 @@
       /* 请求开始解绑 */
       UnbandCardInfo_onUnBind:function () {
         let vm = this
+        vm.CardTitle = '卡解绑'
+        vm.isUnbind = true
         var bandCardInfo_req = {
           Header: {
             MsgID:"201501260000000001",
@@ -253,16 +195,18 @@
           }
         });
       },
-      /* 解绑 */
+      /* 提交解绑 */
       bandCardInfoUnbind:function () {
         let vm = this
         alert('提交解绑')
-        console.log('sssssssssssssssssssssssssssss',vm.wristband)
         let UnBundingList = []
-        UnBundingList.push({
-          CriminalID:vm.wristband[0].CriminalID,
-          WristCard:vm.wristband[0].CardID
-        })
+        for(let i = 0; i<vm.wristband.length; i++){
+          UnBundingList.push({
+            CriminalID:vm.wristband[i].CriminalID,
+            WristCard:vm.wristband[i].CardID
+          })
+        }
+
         console.log('提交解绑数据',UnBundingList)
         var UnbandCardInfoSubmit = {
           Header: {
@@ -285,7 +229,7 @@
           success: function (result) {
             if(result.RET === 1){
               alert('解除绑定成功')
-//              vm.$router.push({ path: '/' })
+              vm.$router.push({ path: '/' })
             } else {
               alert('解除绑定失败')
 //              vm.$router.push({ path: '/' })
@@ -377,7 +321,8 @@
     box-shadow: inset 0px 0px 9px 3px rgb(68, 74, 71);
   }
   .card_bind_success{
-    background: #196efc;
+    background: #196efc !important;
+    /*box-shadow: none ;*/
   }
   .card_bind_init{
     background: #109b62;
