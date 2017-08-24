@@ -296,7 +296,7 @@
           }
           var  receiveDataMsgType25 = vm.receiveDataMsgType25
           var getCriminalLists=[]
-          if(receiveDataMsgType25!=""||receiveDataMsgType25!=null){
+          if(receiveDataMsgType25!=""&&receiveDataMsgType25!=null){
             vm.inPages=Math.ceil(vm.inCriminalList.length/48)==0?1:Math.ceil(vm.inCriminalList.length/48)
             for(var i=0;i<receiveDataMsgType25.length;i++){
               var getCriminalID = receiveDataMsgType25[i]["CriminalID"]
@@ -328,7 +328,7 @@
         data:{"OrgID":localStorage.getItem("OrgID")},
         url: SHANLEI+'CriminalCnt/GetCriminalList' + "?callback=?",
         success: function (result) {
-          if(result!=""||result!=null){
+          if(result!=""&&result!=null){
             vm.inListAll=result.length
             for (var i=0;i<result.length;i++){
               result[i]["ischoose"]=false

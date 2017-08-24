@@ -139,7 +139,6 @@
     },
     data () {
       return {
-
         isShow1: true,
         isShow2: false,
         isB1: true,
@@ -485,11 +484,18 @@
       }
 
     },
+    destroyed: function () {
+      localStorage.setItem("crimalCheckClean","0")
+
+    },
     mounted () {
       /* Coding By YanM */
 
       /* Coding By YanM */
       /* Coding By Qianjf */
+      localStorage.setItem("crimalCheckClean","1")
+      localStorage.setItem("placemanID","0")
+
       var vm = this
       var send = {
         Header: {
@@ -502,57 +508,62 @@
       }
       localStorage.setItem("placemanID","0")
 
-      setInterval(function () {
+    var crimalCheckClean1= setInterval(function () {
+      if(localStorage.getItem("crimalCheckClean")==0){
+        clearInterval(crimalCheckClean1)
+      }else {
         //发送数据
         if(vm.ws.readyState == WebSocket.OPEN){
           vm.ws.send(JSON.stringify(send))
         }
         //接收数据
-          var  receiveData = vm.receiveDataMsgType31
-          if(receiveData!=""||receiveData!=null){
-            var hasNotCall=[] //监内未点2402
-            var outHasNotCall=[] //外出未点2403
-            for (var i=0;i<receiveData.length;i++){
-              if(receiveData[i].Status=="2402"){
-                var notCall=receiveData[i]
-                notCall["ischoose"]=false
-                notCall["CriminalName"]=vm.criminalList[0][notCall["PersonID"]]["CriminalName"]
-                notCall["Photo"]=vm.criminalList[0][notCall["PersonID"]]["Photo"]
-                for (var m=0;m<vm.inChoose.length;m++){
-                  if(vm.inChoose[m]==notCall["PersonID"]){
-                    notCall["ischoose"]=true
-                  }
+        var  receiveData = vm.receiveDataMsgType31
+        if(receiveData!=""&&receiveData!=null){
+          var hasNotCall=[] //监内未点2402
+          var outHasNotCall=[] //外出未点2403
+          for (var i=0;i<receiveData.length;i++){
+            if(receiveData[i].Status=="2402"){
+              var notCall=receiveData[i]
+              notCall["ischoose"]=false
+              notCall["CriminalName"]=vm.criminalList[0][notCall["PersonID"]]["CriminalName"]
+              notCall["Photo"]=vm.criminalList[0][notCall["PersonID"]]["Photo"]
+              for (var m=0;m<vm.inChoose.length;m++){
+                if(vm.inChoose[m]==notCall["PersonID"]){
+                  notCall["ischoose"]=true
                 }
-                hasNotCall.push(notCall)
-                vm.inCriminals=hasNotCall
-                vm.inPages=Math.ceil(vm.inCriminals.length/24)==0?1:Math.ceil(vm.inCriminals.length/24)
-
-              }else if(receiveData[i].Status=="2403"){
-
-                var outNotCall=receiveData[i]
-                outNotCall["ischoose"]=false
-                outNotCall["CriminalName"]=vm.criminalList[0][outNotCall["PersonID"]]["CriminalName"]
-                outNotCall["Photo"]=vm.criminalList[0][outNotCall["PersonID"]]["Photo"]
-                for (var n=0;n<vm.outChoose.length;n++){
-                  if(vm.outChoose[n]==outNotCall["PersonID"]){
-                    outNotCall["ischoose"]=true
-                  }
-                }
-
-                outHasNotCall.push(outNotCall)
-                vm.outCriminals=outHasNotCall
-                vm.outPages=Math.ceil(vm.outCriminals.length/12)==0?1:Math.ceil(vm.outCriminals.length/12)
-
               }
-            }
-            if(hasNotCall.length==0){
-              vm.inCriminals=[]
-            }
-            if(outHasNotCall.length==0){
-              vm.outCriminals=[]
+              hasNotCall.push(notCall)
+              vm.inCriminals=hasNotCall
+              vm.inPages=Math.ceil(vm.inCriminals.length/24)==0?1:Math.ceil(vm.inCriminals.length/24)
+
+            }else if(receiveData[i].Status=="2403"){
+
+              var outNotCall=receiveData[i]
+              outNotCall["ischoose"]=false
+              outNotCall["CriminalName"]=vm.criminalList[0][outNotCall["PersonID"]]["CriminalName"]
+              outNotCall["Photo"]=vm.criminalList[0][outNotCall["PersonID"]]["Photo"]
+              for (var n=0;n<vm.outChoose.length;n++){
+                if(vm.outChoose[n]==outNotCall["PersonID"]){
+                  outNotCall["ischoose"]=true
+                }
+              }
+
+              outHasNotCall.push(outNotCall)
+              vm.outCriminals=outHasNotCall
+              vm.outPages=Math.ceil(vm.outCriminals.length/12)==0?1:Math.ceil(vm.outCriminals.length/12)
+
             }
           }
+          if(hasNotCall.length==0){
+            vm.inCriminals=[]
+          }
+          if(outHasNotCall.length==0){
+            vm.outCriminals=[]
+          }
+        }
 
+
+      }
 
       },500)
 
@@ -600,43 +611,48 @@
         }
       });
 //      获取已点人员总数,本监区总人数
-      setInterval(function () {
-        $.ajax({
-          type: "get",
-          contentType: "application/json; charset=utf-8",
-          dataType: "jsonp",
-          jsonp: "callback",
-          async: false,
-          data:{"OrgID":localStorage.getItem("OrgID")},
-          url:  SHANLEI+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
-          success: function (result) {
-            vm.hascelled=result
-          },
-          error: function (err) {
+      var crimalCheckClean2= setInterval(function () {
+        if(localStorage.getItem("crimalCheckClean")==0){
+          clearInterval(crimalCheckClean2)
+        }else {
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            data:{"OrgID":localStorage.getItem("OrgID")},
+            url:  SHANLEI+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+            success: function (result) {
+              vm.hascelled=result
+            },
+            error: function (err) {
 //            alert("请求异常")
-          },
-          complete: function (XHR, TS) {
-            XHR = null;  //回收资源
-          }
-        });
-        $.ajax({
-          type: "get",
-          contentType: "application/json; charset=utf-8",
-          dataType: "jsonp",
-          jsonp: "callback",
-          async: false,
-          data:{"OrgID":localStorage.getItem("OrgID")},
-          url:  SHANLEI+'CriminalCnt/GetCurOrgCriminalCount' + "?callback=?",
-          success: function (result) {
-            vm.orgCriminalCount=result[0].Total
-          },
-          error: function (err) {
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
+          });
+          $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            jsonp: "callback",
+            async: false,
+            data:{"OrgID":localStorage.getItem("OrgID")},
+            url:  SHANLEI+'CriminalCnt/GetCurOrgCriminalCount' + "?callback=?",
+            success: function (result) {
+              vm.orgCriminalCount=result[0].Total
+            },
+            error: function (err) {
 //            alert("请求异常")
-          },
-          complete: function (XHR, TS) {
-            XHR = null;  //回收资源
-          }
-        });
+            },
+            complete: function (XHR, TS) {
+              XHR = null;  //回收资源
+            }
+          });
+        }
+
       },1000)
 
       /* Coding By Qianjf */
