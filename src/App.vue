@@ -12,6 +12,7 @@
       @aaa="closeWeb()"
     ></navheader>
     <router-view
+      @bindCardSelect="bindCardSelect"
       @CardBindPageInit="CardBindPageInit"
       @openLogin="loginOpen"
       @hasCheaked="onHasCheaked"
@@ -47,8 +48,6 @@
       :wristband="wristband"
 
     ></router-view>
-  <!--  :receiveDataMsgType35="receiveDataMsgType35"
--->
 
     <menufooter
       @openLogin="loginOpen"
@@ -548,6 +547,17 @@
       /* 卡绑定页面初始化 */
       CardBindPageInit:function () {
         this.chest_card = []
+      },
+
+      /* 卡绑定选人 */
+      bindCardSelect:function (index) {
+        let vm = this
+        if(vm.chest_card.length!==0){
+          for(let i = 0; i<vm.chest_card.length; i++){
+            vm.chest_card[i].status = false
+          }
+          vm.chest_card[index].status = true
+        }
       },
 
       /* Coding By YanM */
@@ -1311,7 +1321,6 @@
 
       /* 打开websocket */
       vm.ws.onopen = function(){
-//        alert('开启');
         vm.onlinestatus = true
         setInterval(function () {
           /* 保持心跳-参数-01 */
@@ -1480,20 +1489,17 @@
         /* 计划任务-返回数据-4 */
         if(JSON.parse(event.data).Header.MsgType === 4){
           var  plan_task = JSON.parse(JSON.parse(event.data).Body)
-//          console.log('计划任务-返回数据-4',plan_task)
           vm.plan = plan_task.PlanTypeName
           vm.planStartTime = plan_task.StartTime
           vm.planEndTime = plan_task.EndTime
           vm.NextTime = plan_task.NextTime
           if(vm.plan == '工具清点计划'){
-//            alert('工具清点')
             if(vm.canRouter == 1){
               vm.$router.push({ path: '/toolcheck' })
             } else {
               alert('工具清点已经开始，请结束本次操作后开始工具清点')
             }
           } else if(vm.plan == '人员清点计划'){
-//              alert('人员清点')
             if(vm.canRouter === 1){
               vm.$router.push({ path: '/crimalcheck' })
             } else {
@@ -1527,7 +1533,7 @@
         if(JSON.parse(event.data).Header.MsgType === 51){
           var  chest_card = JSON.parse(JSON.parse(event.data).Body)
           var  wristband = JSON.parse(JSON.parse(event.data).Body)
-          console.log('chest_card',chest_card)
+          //判断是胸卡
           if(chest_card.CardType === 0){
             if(vm.chest_card.length ===0){
               vm.chest_card.push({
@@ -1536,6 +1542,7 @@
                 CriminalID:chest_card.CriminalID,
                 status:false
               })
+            //刷卡去重
             }else{
               for(let i = 0; i<=vm.chest_card.length; i++){
                 if(vm.chest_card[i].CardID !== chest_card.CardID){
@@ -1551,15 +1558,21 @@
               }
             }
             console.log('胸牌',vm.chest_card)
+          //判断为腕带
           } else {
-            console.log('wristband',wristband.CardID)
             if(wristband.CriminalID === "00000000-0000-0000-0000-000000000000"){
-              vm.wristband = wristband.CardID
+              //判断胸牌是否为空
+              if(vm.chest_card.length!==0){
+                for(let i = 0; i<vm.chest_card.length; i++){
+                  if(vm.chest_card[i].status === true){
+                    vm.chest_card[i].wristband=wristband.CardID
+                  }
+                }
+              }
             } else {
-//              vm.wristband.push(wristband)
-              if(vm.wristband.length ===0){
+              if(vm.wristband.length === 0){
                 vm.wristband.push(wristband)
-              }else{
+              } else {
                 for(let i = 0; i<=vm.chest_card.length; i++){
                   if(vm.wristband[i].CardID !== chest_card.CardID){
                     vm.chest_card.push(wristband)
@@ -1570,7 +1583,7 @@
               }
             }
 
-            console.log('腕带',vm.wristband)
+            console.log('腕带',vm.chest_card)
           }
         }
 

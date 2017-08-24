@@ -12,7 +12,8 @@
               <el-row >
                   <el-row class="float_person_wrap">
                     <el-col :span="4" v-for="(item,index) in chest_card" :key='1'>
-                      <div class="float_person_card card_bind_init" :class="['card_bind_init', {card_bind_select: item.status}]" @click="bindCardSelect(index)">
+                      {{chest_card}}
+                      <div class="float_person_card card_bind_init" :class="['card_bind_init', {card_bind_select: item.status}]" @click="$emit('bindCardSelect',index)">
                         <el-col :span="10" class="photo">
                           <!--<img :src="item.Photo" alt="" width="100%" height="100%">-->
                         </el-col>
@@ -23,7 +24,7 @@
                           <!--<p>当前区域：{{item.area}}</p>-->
                           <!--<p>外出地点：{{item.destination}}</p>-->
                           <!--<p>陪同民警：{{item.withplace}}</p>-->
-                          <p>腕带编号：{{wristbandID}}</p>
+                          <p>腕带编号：{{item.wristband}}</p>
                           <!--<p>外出事由：{{item.outreasons}}</p>-->
                         </el-col>
                       </div>
@@ -141,13 +142,13 @@
       }
     },
     methods: {
-      bindCardSelect:function (index) {
-        let vm = this
-        for(let i = 0; i<vm.chest_card.length; i++){
-          vm.chest_card[i].status = false
-        }
-        vm.chest_card[index].status = true
-      },
+//      bindCardSelect:function (index) {
+//        let vm = this
+//        for(let i = 0; i<vm.chest_card.length; i++){
+//          vm.chest_card[i].status = false
+//        }
+//        vm.chest_card[index].status = true
+//      },
       /* 请求开始换卡 */
       bandCardInfo_onBind:function () {
         let vm = this
@@ -162,7 +163,6 @@
             RegType:4601
           })
         }
-        console.log('bandCardInfo_req',bandCardInfo_req)
         $.ajax({
           type: "get",
           contentType: "application/json; charset=utf-8",
@@ -172,7 +172,7 @@
           url: GUFEI,
           data:JSON.stringify(bandCardInfo_req),
           success: function (result) {
-            console.log('卡绑定信息',result)
+            console.log('执行开始换卡',result)
           },
           complete: function (XHR) {
             XHR = null;  //回收资源
@@ -184,12 +184,12 @@
           alert('提交换卡')
         let vm = this
         let ChangeCardPeopleList = []
-        ChangeCardPeopleList.push({
-          CriminalID:vm.chest_card[0].CriminalID,
-          ChestCard:vm.chest_card[0].CardID,
-          WristCard:vm.wristbandID
-        })
-        console.log(ChangeCardPeopleList)
+//        ChangeCardPeopleList.push({
+//          CriminalID:vm.chest_card[0].CriminalID,
+//          ChestCard:vm.chest_card[0].CardID,
+//          WristCard:vm.chest_card
+//        })
+        console.log('提交换卡数据',ChangeCardPeopleList)
         var bandCardInfoSubmit = {
           Header: {
             MsgID:"201501260000000001",
@@ -213,10 +213,10 @@
             console.log('卡绑定信息',result)
             if(result.RET === 1){
               alert('绑定成功')
-              vm.$router.push({ path: '/' })
+//              vm.$router.push({ path: '/' })
             } else {
               alert('绑定失败')
-              vm.$router.push({ path: '/' })
+//              vm.$router.push({ path: '/' })
             }
           },
           complete: function (XHR) {
@@ -237,7 +237,6 @@
             RegType:4603
           })
         }
-        console.log('bandCardInfo_req',bandCardInfo_req)
         $.ajax({
           type: "get",
           contentType: "application/json; charset=utf-8",
@@ -264,7 +263,7 @@
           CriminalID:vm.wristband[0].CriminalID,
           WristCard:vm.wristband[0].CardID
         })
-        console.log(UnBundingList)
+        console.log('提交解绑数据',UnBundingList)
         var UnbandCardInfoSubmit = {
           Header: {
             MsgID:"201501260000000001",
@@ -275,7 +274,6 @@
             UnBundingList:UnBundingList
           })
         }
-        console.log('UnbandCardInfoSubmit',UnbandCardInfoSubmit)
         $.ajax({
           type: "get",
           contentType: "application/json; charset=utf-8",
@@ -285,7 +283,6 @@
           url: GUFEI,
           data:JSON.stringify(UnbandCardInfoSubmit),
           success: function (result) {
-            console.log('卡绑定信息',result)
             if(result.RET === 1){
               alert('解除绑定成功')
 //              vm.$router.push({ path: '/' })
@@ -340,6 +337,7 @@
       /* Coding By YanM */
 //      vm.chest_card[0].status = true
 //      vm.bandCardInfo_onBind()
+//      vm.cardBindMap()
       vm.$emit('CardBindPageInit')
       /* Coding By YanM */
     }
