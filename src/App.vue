@@ -12,6 +12,7 @@
       @aaa="closeWeb()"
     ></navheader>
     <router-view
+      @CardBindPageInit="CardBindPageInit"
       @openLogin="loginOpen"
       @hasCheaked="onHasCheaked"
       @hasCheakedTool="onHasCheakedTool"
@@ -38,10 +39,11 @@
       :receiveDataMsgType8="receiveDataMsgType8"
       :receiveDataMsgType27="receiveDataMsgType27"
       :cardPerson="cardPerson"
-
       :receiveDataMsgType33="receiveDataMsgType33"
       :canRouter="canRouter"
       :mapList="mapList"
+      :chest_card="chest_card"
+      :wristband="wristband"
 
     ></router-view>
   <!--  :receiveDataMsgType35="receiveDataMsgType35"
@@ -49,7 +51,8 @@
 
     <menufooter
       @openLogin="loginOpen"
-      :canRouter="canRouter"></menufooter>
+      :canRouter="canRouter">
+    </menufooter>
 
 
     <!--监区选择 star-->
@@ -395,7 +398,9 @@
         isPerson:true,
         isGrup:false,
         canRouter:1,                  //流动路由判
-        criminalList:[]                   //罪犯基础信息集合
+        criminalList:[],                   //罪犯基础信息集合
+        chest_card:[],
+        wristband:[]
       }
     },
     methods: {
@@ -403,7 +408,6 @@
 
       /* 选择监区 */
       selectArea: function (index) {
-
         this.alertJQXZactive = index
         this.setLocalStorage('prisonSelectText',this.prisonSelect[index].AreaName)
         this.setLocalStorage('OrgID',this.prisonSelect[index].OrgID)
@@ -541,13 +545,20 @@
         vm.ws.close()
       },
 
+      /* 卡绑定页面初始化 */
+      CardBindPageInit:function () {
+        this.chest_card = []
+      },
+
       /* Coding By YanM */
 
       /* Coding By Qianjf */
+
       /* 登录弹窗显示 */
       canRouterChange:function () {
         this.canRouter = 1
       },
+
       /*自适应各种屏幕*/
       changeSize:function () {
         var oldWidth = 1584;
@@ -563,6 +574,7 @@
         $("#app").css("-moz-transform-origin", "0 0");
         $("#app").css("-o-transform-origin", "0 0");
       },
+
       /*报警处理*/
       alarmHandle:function () {
         var vm = this
@@ -623,6 +635,7 @@
         }
 
       },
+
       /*报警翻页*/
       alarmGo:function () {
           var vm = this
@@ -663,6 +676,7 @@
         }
 
       },
+
       /*报警翻页*/
       alarmBack:function () {
         if(this.alarmNowPage==1){
@@ -756,6 +770,7 @@
 
 
       },
+
       /* 已点人员名单翻页 */
       getCriminalback:function () {
         var vm = this
@@ -807,6 +822,7 @@
           });
         }
       },
+
       /* 已点工具名单翻页 */
       getToolback:function () {
         var vm = this
@@ -858,6 +874,7 @@
           });
         }
       },
+
       /* 已点工具名单翻页 */
       getToolGo:function () {
         var vm = this
@@ -912,6 +929,7 @@
 
 
       },
+
       /* 已点工具展示及其数据加载 */
       onHasCheakedTool: function () {
         this.alertYDGJ=true
@@ -961,6 +979,7 @@
           }
         });
       },
+
       /* Coding By Qianjf */
 
       /* 弹窗关闭 */
@@ -980,10 +999,12 @@
             this.alertYDGJ=false
         }
       },
+
       /* 选择监区弹窗打开 */
       onClickPosition: function () {
         this.alertJQXZ=true
       },
+
       /* 已点罪犯展示及其数据加载 */
       onHasCheaked: function () {
         this.alertYDMD=true
@@ -1034,11 +1055,13 @@
           }
         });
       },
-     /*报警详情弹框*/
+
+      /*报警详情弹框*/
       alertAlarm:function () {
         this.alertBJXX=true
 
       },
+
       /* 所有基础全量数据 */
       allDataInit:function () {
         var vm = this
@@ -1221,6 +1244,7 @@
           }
         });
       }
+
     },
     mounted () {
       let vm = this
@@ -1471,6 +1495,57 @@
           localStorage.setItem('placemanID',placeman_card)
           console.log('警员刷卡-返回数据-6',placeman_card)
 
+        }
+
+        /* 绑定卡-刷卡数据-51 */
+        if(JSON.parse(event.data).Header.MsgType === 51){
+          var  chest_card = JSON.parse(JSON.parse(event.data).Body)
+          var  wristband = JSON.parse(JSON.parse(event.data).Body)
+          console.log('chest_card',chest_card)
+          if(chest_card.CardType === 0){
+            if(vm.chest_card.length ===0){
+              vm.chest_card.push({
+                CardID:chest_card.CardID,
+                CardType:chest_card.CardType,
+                CriminalID:chest_card.CriminalID,
+                status:false
+              })
+            }else{
+              for(let i = 0; i<=vm.chest_card.length; i++){
+                if(vm.chest_card[i].CardID !== chest_card.CardID){
+                  vm.chest_card.push({
+                    CardID:chest_card.CardID,
+                    CardType:chest_card.CardType,
+                    CriminalID:chest_card.CriminalID,
+                    status:false
+                  })
+                } else {
+                  alert('重复输入')
+                }
+              }
+            }
+            console.log('胸牌',vm.chest_card)
+          } else {
+            console.log('wristband',wristband.CardID)
+            if(wristband.CriminalID === "00000000-0000-0000-0000-000000000000"){
+              vm.wristband = wristband.CardID
+            } else {
+//              vm.wristband.push(wristband)
+              if(vm.wristband.length ===0){
+                vm.wristband.push(wristband)
+              }else{
+                for(let i = 0; i<=vm.chest_card.length; i++){
+                  if(vm.wristband[i].CardID !== chest_card.CardID){
+                    vm.chest_card.push(wristband)
+                  } else {
+                    alert('重复输入')
+                  }
+                }
+              }
+            }
+
+            console.log('腕带',vm.wristband)
+          }
         }
 
         /* 调用ajax全量数据 */

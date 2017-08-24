@@ -22,7 +22,6 @@ export default {
         {name: '人员清点', path: '/crimalcheck'},
         {name: '工具清点', path: '/toolcheck'},
         {name: '外出登记', path: '/outregister'},
-//      {name: '定位展示', path: '/position'},
         {name: '互监组管理', path: '/mutualsupervision'},
 //        {name: '卡绑定', path: '/cardbind'}
       ],

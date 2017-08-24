@@ -13,9 +13,9 @@
       <el-col :span="22">
         <p>
           <span @click="$emit('getPosition')" class="nowposition">当前位置：{{ message }}</span>
-          <span>{{localTime}}</span>
-          <span>{{localWeek}}</span>
           <span>{{localYear}}</span>
+          <span>{{localWeek}}</span>
+          <span>{{localTime}}</span>
         </p>
         <p v-if="plan">
           <span class="nav-plan">{{ plan }}</span><span class="nav-plan-time">计划清点：{{ planStartTime }} - {{planEndTime}}</span>
@@ -62,14 +62,14 @@
         var vm = this;
         setInterval(function () {
           var Year = new Date().getFullYear()
-          var Months = new Date().getMonth()
-          var Days = new Date().getDay()
+          var Months = new Date().getMonth()+1
+          var Days = new Date().getDate()
           var getDay = new Date().getDay()
           var Hours = new Date().getHours()
           var Minutes = new Date().getMinutes()
           var Seconds = new Date().getSeconds()
           var getTime = Hours + ':' + Minutes + ':' + Seconds
-          var getYear = Year + '-' + Months + '-' + Days
+          var getYear = Year + '年' + Months + '月' + Days + '日'
           var week
           if (getDay === '0') {
             week = '星期日'
