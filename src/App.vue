@@ -1868,6 +1868,6 @@
     margin: 15px 16px;
     font-size: 22px;
     color: red;
-    font-weight: 1000;
+    font-weight: 800;
   }
 </style>

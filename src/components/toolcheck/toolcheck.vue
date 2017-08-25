@@ -21,7 +21,7 @@
             <div class="bodyCon">
               <el-col :span="2"  v-for="(tool,index) in inTool.slice(inA-1,inB)" :key="1">
                 <div  :class="['criminal', {chosed: tool.ischoose}]" v-on:click="chooseIn(index)" >
-                  <img :src="tool.Photo" width="98%" height="85" alt=""/>
+                  <img :src="tool.Photo" width="98%" height="85" alt="图片"/>
                   <span class="criminalName">{{ tool.ToolName }}</span>
                 </div>
               </el-col>
@@ -78,7 +78,7 @@
 
             <div class="bodyCon">
 
-              <table  border="1" width="100%">
+              <table  border="1"  cellspacing="0" cellpadding="0" width="100%">
                 <tr>
                   <th>清点类型</th>
                   <th>清点时间</th>
@@ -717,7 +717,7 @@ var vm=this
             }
           });
         }
-      },500)
+      },1000)
 
       /* Coding By Qianjf */
 

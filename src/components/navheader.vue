@@ -65,9 +65,9 @@
           var Months = new Date().getMonth()+1
           var Days = new Date().getDate()
           var getDay = new Date().getDay()
-          var Hours = new Date().getHours()
-          var Minutes = new Date().getMinutes()
-          var Seconds = new Date().getSeconds()
+          var Hours = new Date().getHours()>9?new Date().getHours():"0"+new Date().getHours()
+          var Minutes = new Date().getMinutes()>9?new Date().getMinutes():"0"+new Date().getMinutes()
+          var Seconds = new Date().getSeconds()>9? new Date().getSeconds():"0"+ new Date().getSeconds()
           var getTime = Hours + ':' + Minutes + ':' + Seconds
           var getYear = Year + '年' + Months + '月' + Days + '日'
           var week
