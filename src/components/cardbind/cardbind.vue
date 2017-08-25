@@ -126,7 +126,6 @@
             WristCard:vm.chest_card[i].wristband
           })
         }
-        console.log('提交换卡数据',ChangeCardPeopleList)
         var bandCardInfoSubmit = {
           Header: {
             MsgID:"201501260000000001",
@@ -137,7 +136,6 @@
             ChangeCardPeopleList:ChangeCardPeopleList
           })
         }
-        console.log('bandCardInfoSubmit',bandCardInfoSubmit)
         $.ajax({
           type: "get",
           contentType: "application/json; charset=utf-8",
@@ -147,7 +145,6 @@
           url: GUFEI,
           data:JSON.stringify(bandCardInfoSubmit),
           success: function (result) {
-            console.log('卡绑定信息',result)
             if(result.RET === 1){
               alert('绑定成功')
               vm.$router.push({ path: '/' })
@@ -206,8 +203,6 @@
             WristCard:vm.wristband[i].CardID
           })
         }
-
-        console.log('提交解绑数据',UnBundingList)
         var UnbandCardInfoSubmit = {
           Header: {
             MsgID:"201501260000000001",
@@ -254,7 +249,6 @@
             RegType:4602
           })
         }
-        console.log('bandCardInfo_req',bandCardInfo_reqAll)
         $.ajax({
           type: "get",
           contentType: "application/json; charset=utf-8",

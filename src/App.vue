@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <!-- <img src="./assets/logo.png"> -->
     <navheader
       @getPosition="onClickPosition()"
       :message="prisonSelectText"
@@ -9,8 +8,8 @@
       :planEndTime="planEndTime"
       :NextTime="NextTime"
       :onlinestatus="onlinestatus"
-      @aaa="closeWeb()"
     ></navheader>
+
     <router-view
       @clearCardInfo="clearCardInfo"
       @bindCardSelect="bindCardSelect"
@@ -1147,7 +1146,6 @@
             }
             //所有罪犯信息缓存(传进vue的数据用于渲染页面)
             vm.criminalList.push(personlist_hash);
-            console.log(personlist_hash)
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
@@ -1241,7 +1239,6 @@
               };
             }
             vm.policeList.push(police_hash)
-//            console.log('警员基础数据',police_hash)
           },
           complete: function (XHR) {
             XHR = null;  //回收资源
@@ -1279,7 +1276,6 @@
               };
             }
             vm.mapList.push(map_hash)
-//            console.log('地图基础数据',map_hash)
           },
           complete: function (XHR) {
             XHR = null;  //回收资源
@@ -1329,18 +1325,19 @@
       /* 打开websocket */
       vm.ws.onopen = function(){
         vm.onlinestatus = true
-//        setInterval(function () {
-//          /* 保持心跳-参数-01 */
-//          vm.ws.send(JSON.stringify(keep_heart))
-//          /* 人员分布-参数-14 */
-//          vm.ws.send(JSON.stringify(flowPerson_outPrison))
-//          /* 流动人员 && 外监进入人员-参数-24 */
-//          vm.ws.send(JSON.stringify(personnel_distribution))
-//        },5000)
+        setInterval(function () {
+          /* 保持心跳-参数-01 */
+          vm.ws.send(JSON.stringify(keep_heart))
+          /* 人员分布-参数-14 */
+          vm.ws.send(JSON.stringify(flowPerson_outPrison))
+          /* 流动人员 && 外监进入人员-参数-24 */
+          vm.ws.send(JSON.stringify(personnel_distribution))
+        },5000)
       };
 
       vm.allDataInit()
 
+      /* websocket接收信息 */
       vm.ws.onmessage=function(event) {
         vm.SocketAllData = event.data
         /*过滤进出工数据*/
@@ -1348,46 +1345,55 @@
           var  receiveDataMsgType25 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType25=receiveDataMsgType25
         }
+
         /*工具清点提交返回结果*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 30) {
           var receiveDataMsgType30 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType30=receiveDataMsgType30
         }
+
         /*工具清点*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 32) {
           var receiveDataMsgType32 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType32=receiveDataMsgType32
         }
+
         /*人员清点*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 31) {
           var receiveDataMsgType31 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType31=receiveDataMsgType31
         }
+
         /*外出登记初次发送*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 20) {
           var receiveDataMsgType20 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType20=receiveDataMsgType20
         }
+
         /*外出罪犯信息*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 22) {
           var receiveDataMsgType22 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType22=receiveDataMsgType22
         }
+
         /*陪同民警信息*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 27) {
           var receiveDataMsgType27 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType27=receiveDataMsgType27
         }
+
         /*外出登记提交*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 23) {
           var receiveDataMsgType23 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType23=receiveDataMsgType23
         }
+
         /*外出登记取消*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 26) {
           var receiveDataMsgType26 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType26=receiveDataMsgType26
         }
+
         /*互监组管理刷卡*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 8) {
           var receiveDataMsgType8 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
@@ -1408,43 +1414,37 @@
             }
           }
         }
-//        /*互监组管理提交*/
-//        if(JSON.parse(vm.SocketAllData).Header.MsgType === 35) {
-//          var receiveDataMsgType35 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
-//          vm.receiveDataMsgType35=receiveDataMsgType35
-//        }
+
         /*手动结束人员、工具清点*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 33) {
           var receiveDataMsgType33 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
           vm.receiveDataMsgType33=receiveDataMsgType33
         }
+
         /* 报警信息 */
-//        if (JSON.parse(event.data).Header.MsgType === 2) {
-//          var alarmNews = JSON.parse(JSON.parse(event.data).Body)
-////          console.log("报警。。。。。。。",alarmNews)
-//            /* 区域过滤测试后解开 */
-//          if (alarmNews.OrgID.toUpperCase() == localStorage.getItem("OrgID")) {
-//          var criminalData = alarmNews
-//            criminalData.criminalID = vm.criminalList[0][alarmNews.ObjectID].CriminalID
-//            criminalData.Photo = vm.criminalList[0][alarmNews.ObjectID].Photo
-//            vm.alarmList.unshift(criminalData)
-//          /*限制报警条数不超过99*/
-//            vm.alarmList.splice(99,99999999999)
-////            vm.alarmText = alarmNews.Description
-//            vm.alarmText =  vm.alarmList[0].Description
-//            vm.alarmPages = vm.alarmList.length
-//            if (vm.alarmList.length != 0) {
-//              vm.alertBJTK = true
-//            } else {
-//              vm.alertBJTK = false
-//            }
-//          }
-//        }
+        if (JSON.parse(event.data).Header.MsgType === 2) {
+          var alarmNews = JSON.parse(JSON.parse(event.data).Body)
+            /* 区域过滤测试后解开 */
+          if (alarmNews.OrgID.toUpperCase() == localStorage.getItem("OrgID")) {
+          var criminalData = alarmNews
+            criminalData.criminalID = vm.criminalList[0][alarmNews.ObjectID].CriminalID
+            criminalData.Photo = vm.criminalList[0][alarmNews.ObjectID].Photo
+            vm.alarmList.unshift(criminalData)
+          /*限制报警条数不超过99*/
+            vm.alarmList.splice(99,99999999999)
+            vm.alarmText =  vm.alarmList[0].Description
+            vm.alarmPages = vm.alarmList.length
+            if (vm.alarmList.length != 0) {
+              vm.alertBJTK = true
+            } else {
+              vm.alertBJTK = false
+            }
+          }
+        }
 
         /* 人员分布返回数据-14 */
         if(JSON.parse(event.data).Header.MsgType === 14){
           var personnel_distribution_rec = JSON.parse(JSON.parse(event.data).Body)
-//          console.log('人员分布-返回数据-14',personnel_distribution_rec)
           var chartsParms = []
           vm.chartsDatasName.length = 0
           for(let i=0; i<personnel_distribution_rec.length; i++){
@@ -1456,7 +1456,6 @@
               vm.chartsDatasName.push(personnel_distribution_rec[i].AreaName)
             }
           }
-//          console.log('chartsParms',vm.chartsDatasName)
           vm.chartsDatas = chartsParms
         }
 
@@ -1518,13 +1517,11 @@
         /* 实时流动-返回数据-3 */
         if(JSON.parse(event.data).Header.MsgType === 3){
           var  now_floating = JSON.parse(JSON.parse(event.data).Body)
-//          console.log('实时流动-返回数据-3',now_floating)
           if(vm.alertSSLD === true){
             vm.nowFloating()
             vm.nowfloatPerson.unshift(now_floating)
             vm.nowfloatPersonFirst = vm.nowfloatPerson[0]
           }
-
         }
 
         /* 警员刷卡-返回数据-6 */
@@ -1532,16 +1529,12 @@
           var  placeman_card = JSON.parse(JSON.parse(event.data).Body)
           vm.alertYHDL = false
           localStorage.setItem('placemanID',placeman_card)
-          console.log('警员刷卡-返回数据-6',placeman_card)
-
         }
 
         /* 绑定卡-刷卡数据-51 */
         if(JSON.parse(event.data).Header.MsgType === 51){
           var  chest_card = JSON.parse(JSON.parse(event.data).Body)
           var  wristband = JSON.parse(JSON.parse(event.data).Body)
-
-          console.log('aaaaaaaaaaaaaaaaa',vm.criminalList[0]["0be8d84b-0b19-45a3-9946-03ac5de710d6"])
           //判断是胸卡
           if(chest_card.CardType === 0){
             if(vm.chest_card.length ===0){
@@ -1572,7 +1565,6 @@
                 }
               }
             }
-            console.log('胸牌',vm.chest_card)
           //判断为腕带
           } else {
             if(wristband.CriminalID === "00000000-0000-0000-0000-000000000000"){
@@ -1603,13 +1595,10 @@
                       CriminalID: wristband.CriminalID,
                       Photo:vm.criminalList[0][wristband.CriminalID].Photo,
                     })
-                    console.log('ddddddddddddddddddddd',vm.wristband)
                   }
                 }
               }
             }
-
-            console.log('腕带',vm.chest_card)
           }
         }
 
@@ -1619,14 +1608,13 @@
 
       /* 关闭状态 */
       vm.ws.onclose = function(){
-//        vm.onlinestatus = false
-//        if(vm.onlinestatus === false){
-//          setInterval(function () {
-//            window.location.reload()
-//          },5000)
-//        }
+        vm.onlinestatus = false
+        if(vm.onlinestatus === false){
+          setInterval(function () {
+            window.location.reload()
+          },5000)
+        }
       };
-
 
       /* 错误信息 */
       vm.ws.onerror = function(evt) {
@@ -1637,10 +1625,6 @@
 
       /* Coding By Qianjf */
       localStorage.setItem("moveTypes","0")//1为进出工，2为临时外出登记
-
-//      setInterval(function () {
-//         vm.alertText=""
-//       },2000)
       /* Coding By Qianjf */
 
     }
