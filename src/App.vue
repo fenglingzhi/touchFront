@@ -603,72 +603,65 @@
              vm.alertYHDL=true
             clearInterval(alarmHandS)
           }else {
-//            for (var i=0;i<vm.alarmList.length;i++){
-//              if(vm.alarmList[i]["AlarmRecordID"]==alarmRecordID){
-                var placemanID = localStorage.getItem("placemanID")
-                $.ajax({
-                  type:"get",
-                  contentType:"application/json; charset=utf-8",
-                  dataType:"jsonp",
-                  jsonp:"callback",
-                  async:false,
-                  data:{
-                    "EventID":alarmRecordID,
-                    "PoliceID":placemanID,
-                    "PoliceName":vm.policeList[0][placemanID]["PoliceName"],
-                    "PoliceRole":vm.policeList[0][placemanID]["role"]
-                  },
-                  url: SHANLEI+'Event/AlarmHandle' + "?callback=?",
-                  success: function (result) {
-                    clearInterval(alarmHandS)
-                    if(result==0){
-                      vm.alertText="处理失败"
-                      setTimeout(function () {
-                        vm.alertText=""
-                      },2000)
-                    }else {
-                      /*页面删除效果*/
+            var placemanID = localStorage.getItem("placemanID")
+            $.ajax({
+              type:"get",
+              contentType:"application/json; charset=utf-8",
+              dataType:"jsonp",
+              jsonp:"callback",
+              async:false,
+              data:{
+                "EventID":alarmRecordID,
+                "PoliceID":placemanID,
+                "PoliceName":vm.policeList[0][placemanID]["PoliceName"],
+                "PoliceRole":vm.policeList[0][placemanID]["role"]
+              },
+              url: SHANLEI+'Event/AlarmHandle' + "?callback=?",
+              success: function (result) {
+                clearInterval(alarmHandS)
+                if(result==0){
+                  vm.alertText="处理失败"
+                  setTimeout(function () {
+                    vm.alertText=""
+                  },2000)
+                }else {
+                  /*页面删除效果*/
 
-                      for(var j=0;j<vm.alarmList.length;j++){
-                        if(vm.alarmList[j]["AlarmRecordID"]==alarmRecordID){
-                          vm.alarmList.splice(j,1);
-                          vm.alarmPages=vm.alarmList.length
-                          if( vm.alarmPages> vm.alarmNowPage||vm.alarmPages==vm.alarmNowPage){
-                          }else {
-                            if(vm.alarmPages==0){
-                              vm.alarmPages=1
-                              vm.alertBJTK=false
-                            }
-//                            vm.alarmNowPage=vm.alarmPages
-                            vm.alarmBack()
-
-                          }
+                  for(var j=0;j<vm.alarmList.length;j++){
+                    if(vm.alarmList[j]["AlarmRecordID"]==alarmRecordID){
+                      vm.alarmList.splice(j,1);
+                      vm.alarmPages=vm.alarmList.length
+                      if( vm.alarmPages> vm.alarmNowPage||vm.alarmPages==vm.alarmNowPage){
+                      }else {
+                        if(vm.alarmPages==0){
+                          vm.alarmPages=1
+                          vm.alertBJTK=false
                         }
+//                            vm.alarmNowPage=vm.alarmPages
+                        vm.alarmBack()
+
                       }
-                      vm.alarmText =  vm.alarmList[0].Description
-
-                      vm.alertText="处理成功"
-                      setTimeout(function () {
-                        vm.alertText=""
-                      },2000)
-
                     }
-
-                  },
-                  error: function (err) {
-                    clearInterval(alarmHandS)
-//                vm.alertText="请求异常"
-                  },
-                  complete: function (XHR, TS) {
-                    clearInterval(alarmHandS)
-                    XHR = null;  //回收资源
                   }
-                });
+                  vm.alarmText =  vm.alarmList[0].Description
 
+                  vm.alertText="处理成功"
+                  setTimeout(function () {
+                    vm.alertText=""
+                  },2000)
 
-//              }
-//            }
+                }
 
+              },
+              error: function (err) {
+                clearInterval(alarmHandS)
+//                vm.alertText="请求异常"
+              },
+              complete: function (XHR, TS) {
+                clearInterval(alarmHandS)
+                XHR = null;  //回收资源
+              }
+            });
           }
         },500)
 
@@ -1495,22 +1488,27 @@
         /* 计划任务-返回数据-4 */
         if(JSON.parse(event.data).Header.MsgType === 4){
           var  plan_task = JSON.parse(JSON.parse(event.data).Body)
-          vm.plan = plan_task.PlanTypeName
-          vm.planStartTime = plan_task.StartTime
-          vm.planEndTime = plan_task.EndTime
-          vm.NextTime = plan_task.NextTime
-          if(vm.plan == '工具清点计划'){
-            if(vm.canRouter == 1){
-              vm.$router.push({ path: '/toolcheck' })
-            } else {
-              alert('工具清点已经开始，请结束本次操作后开始工具清点')
+          console.log('ssssssssssssssssss',plan_task)
+          if(plan_task.PlanTypeName !== '巡更计划'){
+            vm.plan = plan_task.PlanTypeName
+            vm.planStartTime = plan_task.StartTime
+            vm.planEndTime = plan_task.EndTime
+            vm.NextTime = plan_task.NextTime
+            if(vm.plan == '工具清点计划'){
+              if(vm.canRouter == 1){
+                vm.$router.push({ path: '/toolcheck' })
+              } else {
+                alert('工具清点已经开始，请结束本次操作后开始工具清点')
+              }
+            } else if(vm.plan == '人员清点计划'){
+              if(vm.canRouter === 1){
+                vm.$router.push({ path: '/crimalcheck' })
+              } else {
+                alert('人员清点已经开始，请结束本次操作后开始人员清点')
+              }
             }
-          } else if(vm.plan == '人员清点计划'){
-            if(vm.canRouter === 1){
-              vm.$router.push({ path: '/crimalcheck' })
-            } else {
-              alert('人员清点已经开始，请结束本次操作后开始人员清点')
-            }
+          } else {
+              alert(1)
           }
         }
 
