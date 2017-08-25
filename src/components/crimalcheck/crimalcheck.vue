@@ -42,7 +42,7 @@
             <div class="bodyCon" style="height: 135px;">
               <el-col :span="2"  v-for="(criminal,index) in outCriminals.slice(outA-1,outB)" :key="2">
                 <div  :class="['criminal', {choosedcriminal: criminal.ischoose}]" v-on:click="chooseOut(index)" >
-                  <img :src="criminal.Photo" width="98%" height="85" alt=""/>
+                  <img :src="criminal.Photo" width="98%" height="85" alt="图片"/>
                   <span class="criminalName">{{ criminal.CriminalName}}</span>
                 </div>
               </el-col>
@@ -73,7 +73,7 @@
 
             <div class="bodyCon">
 
-              <table  border="1" width="100%">
+              <table  border="1" cellspacing="0" cellpadding="0" width="100%">
                 <tr>
                   <th>清点类型</th>
                   <th>清点时间</th>
