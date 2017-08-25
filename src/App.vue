@@ -1526,7 +1526,7 @@
 
         /* 警员刷卡-返回数据-6 */
         if(JSON.parse(event.data).Header.MsgType === 6){
-          var  placeman_card = JSON.parse(JSON.parse(event.data).Body)
+          var  placeman_card = JSON.parse(JSON.parse(event.data).Body).PoliceID
           vm.alertYHDL = false
           localStorage.setItem('placemanID',placeman_card)
         }

@@ -457,7 +457,8 @@
 
                   vm.alertText="手动结束成功"
                   localStorage.setItem("placemanID","0")
-
+                  vm.inCriminals=[]
+                  vm.outCriminals=[]
                   setTimeout(function () {
                     vm.alertText=""
 

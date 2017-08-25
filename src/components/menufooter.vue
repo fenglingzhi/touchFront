@@ -28,6 +28,7 @@ export default {
     }
   },
   methods: {
+
     gopage: function (path) {
       var vm = this
       // 路由跳转
@@ -39,6 +40,8 @@ export default {
       if(path === '/outwork' ){
         if(localStorage.getItem("moveTypes")==2){
             alert("请先完成临时外出登记")
+        }else if(localStorage.getItem("moveTypes")==3){
+          alert("请先完成卡绑定操作")
         }else {
           this.$router.push({ path: '/outwork' })
           vm.$emit('openLogin',true)
@@ -46,6 +49,8 @@ export default {
       }else if(path === '/outregister'){
         if(localStorage.getItem("moveTypes")==1){
           alert("请先完成进出工登记")
+        }else if(localStorage.getItem("moveTypes")==3){
+          alert("请先完成卡绑定操作")
         }else {
           this.$router.push({ path: '/outregister' })
           vm.$emit('openLogin',true)
@@ -61,10 +66,14 @@ export default {
       }else if(path === '/') {
           this.$router.push({ path: '/' })
       }else if(path === '/cardbind') {
-
+        if(localStorage.getItem("moveTypes")==2){
+          alert("请先完成临时外出登记")
+        }else if(localStorage.getItem("moveTypes")==1){
+          alert("请先完成进出工登记")
+        }else {
           this.$router.push({ path: '/cardbind' })
-
-
+          vm.$emit('openLogin',true)
+        }
       }
     },
   }

@@ -51,6 +51,7 @@
               <div class="sure" @click="bandCardInfoSubmit()" v-show="!isUnbind">提交</div>
               <div class="sure" @click="bandCardInfoUnbind()" v-show="isUnbind">提交解绑</div>
               <div class="sure" @click="bandCardUnbindAll()" v-show="isUnbind">一键解绑</div>
+              <div class="sure" @click="BindCancel()">取消</div>
             </div>
           </div>
         </div>
@@ -80,6 +81,38 @@
       }
     },
     methods: {
+      /*卡绑定取消*/
+      BindCancel:function () {
+        var vm=this
+        var send3 = {
+          Header: {
+            MsgID:"201501260000000035",
+            MsgType:26
+          },
+          Body: JSON.stringify({
+            OrgID : localStorage.getItem('OrgID'),
+            DoorID : localStorage.getItem('DoorID')
+          })
+        }
+        //发送数据
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          url: GUFEI,
+          data:JSON.stringify(send3),
+          success: function (result) {
+            localStorage.setItem("moveTypes","0")
+            vm.$router.push({ path: '/' })
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        })
+
+      },
       /* 绑定 */
       bandCardInfo_onBind:function () {
         let vm = this
@@ -147,6 +180,8 @@
           success: function (result) {
             if(result.RET === 1){
               alert('绑定成功')
+              localStorage.setItem("moveTypes","0")
+
               vm.$router.push({ path: '/' })
             } else {
               alert('绑定失败')
@@ -224,6 +259,8 @@
           success: function (result) {
             if(result.RET === 1){
               alert('解除绑定成功')
+              localStorage.setItem("moveTypes","0")
+
               vm.$router.push({ path: '/' })
             } else {
               alert('解除绑定失败')
@@ -260,6 +297,9 @@
           success: function (result) {
             if(result.RET === 1){
               alert('一键解绑成功')
+              localStorage.setItem("moveTypes","0")
+              vm.$router.push({ path: '/' })
+
             } else {
               alert('一键解绑失败')
             }
@@ -273,15 +313,25 @@
     mounted () {
       var vm = this
       /* Coding By YanM */
-      vm.bandCardInfo_onBind()
-      vm.$emit('CardBindPageInit')
+      localStorage.setItem("placemanID","0")
+      var outPlice= setInterval(function () {
+        if(localStorage.getItem("placemanID")==0){
+        }else {
+          localStorage.setItem("moveTypes","3")//1为进出工，2为临时外出登记，3为卡绑定
+          vm.bandCardInfo_onBind()
+          vm.$emit('CardBindPageInit')
+          clearInterval(outPlice)
+        }
+      },500)
+
+
       /* Coding By YanM */
     }
 
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .float_person_card{
     padding: 10px;
     height: 150px;

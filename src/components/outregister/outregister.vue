@@ -137,50 +137,50 @@
             </div>
           </div>
         </div>
-        <div class="tab2" v-show="isShow2">
-          <div class="partsBody" style="height:697px;">
+        <!--<div class="tab2" v-show="isShow2">-->
+          <!--<div class="partsBody" style="height:697px;">-->
 
-            <div class="bodyCon">
+            <!--<div class="bodyCon">-->
 
-              <table  border="1" width="100%">
-                <tr>
-                  <th>清点类型</th>
-                  <th>清点时间</th>
-                  <th>应点总数</th>
-                  <th>实点总数</th>
-                  <th>柜内已点</th>
-                  <th>柜外已点</th>
-                  <th>未点总数</th>
-                  <th>清点人姓名</th>
-                  <th>清点状态</th>
-                </tr>
-                <tr v-for="record in records" :key="1">
-                  <td>{{record.CountTypeName}}</td>
-                  <td>{{(record.CountTime==""||record.CountTime==null)?"":record.CountTime.replace("T"," ")}}</td>
-                  <td>{{record.ShouldCount}}</td>
-                  <td>{{record.RealCount}}</td>
-                  <td>{{record.InnerCount}}</td>
-                  <td>{{record.OutterCount}}</td>
-                  <td>{{record.UnCount}}</td>
-                  <td>{{record.PoliceName}}</td>
-                  <td>{{record.StatusName}}</td>
-                </tr>
-              </table>
+              <!--<table  border="1" width="100%">-->
+                <!--<tr>-->
+                  <!--<th>清点类型</th>-->
+                  <!--<th>清点时间</th>-->
+                  <!--<th>应点总数</th>-->
+                  <!--<th>实点总数</th>-->
+                  <!--<th>柜内已点</th>-->
+                  <!--<th>柜外已点</th>-->
+                  <!--<th>未点总数</th>-->
+                  <!--<th>清点人姓名</th>-->
+                  <!--<th>清点状态</th>-->
+                <!--</tr>-->
+                <!--<tr v-for="record in records" :key="1">-->
+                  <!--<td>{{record.CountTypeName}}</td>-->
+                  <!--<td>{{(record.CountTime==""||record.CountTime==null)?"":record.CountTime.replace("T"," ")}}</td>-->
+                  <!--<td>{{record.ShouldCount}}</td>-->
+                  <!--<td>{{record.RealCount}}</td>-->
+                  <!--<td>{{record.InnerCount}}</td>-->
+                  <!--<td>{{record.OutterCount}}</td>-->
+                  <!--<td>{{record.UnCount}}</td>-->
+                  <!--<td>{{record.PoliceName}}</td>-->
+                  <!--<td>{{record.StatusName}}</td>-->
+                <!--</tr>-->
+              <!--</table>-->
 
-            </div>
-            <el-row >
-              <el-col :span="8" style="height: 10px"></el-col>
-              <el-col :span="8" >
-                <div class="pages">
-                  <span class="pageControl"><img src="../../assets/q1.png" v-on:click="getRecordback()" alt=""/></span>
-                  <span class="pagesText">{{recordPage+1}}/{{Math.ceil(recordCount/20)==0?1:Math.ceil(recordCount/20)}}</span>
-                  <span class="pageControl"><img src="../../assets/q2.png" v-on:click="getRecordGo()" alt=""/></span>
-                </div>
-              </el-col>
-              <el-col :span="8" style="height: 10px"></el-col>
-            </el-row>
-          </div>
-        </div>
+            <!--</div>-->
+            <!--<el-row >-->
+              <!--<el-col :span="8" style="height: 10px"></el-col>-->
+              <!--<el-col :span="8" >-->
+                <!--<div class="pages">-->
+                  <!--<span class="pageControl"><img src="../../assets/q1.png" v-on:click="getRecordback()" alt=""/></span>-->
+                  <!--<span class="pagesText">{{recordPage+1}}/{{Math.ceil(recordCount/20)==0?1:Math.ceil(recordCount/20)}}</span>-->
+                  <!--<span class="pageControl"><img src="../../assets/q2.png" v-on:click="getRecordGo()" alt=""/></span>-->
+                <!--</div>-->
+              <!--</el-col>-->
+              <!--<el-col :span="8" style="height: 10px"></el-col>-->
+            <!--</el-row>-->
+          <!--</div>-->
+        <!--</div>-->
 
       </div>
     </el-col>
@@ -568,7 +568,7 @@
      var outPlice= setInterval(function () {
         if(localStorage.getItem("placemanID")==0){
         }else {
-          localStorage.setItem("moveTypes","2")//1为进出工，2为临时外出登记
+          localStorage.setItem("moveTypes","2")//1为进出工，2为临时外出登记，3为卡绑定
           vm.firstWs()
           clearInterval(outPlice)
           var Polices={}

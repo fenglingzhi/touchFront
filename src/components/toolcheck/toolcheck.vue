@@ -480,8 +480,8 @@ var vm=this
               success: function (result) {
                 if(result.RET==1){
 
-//                      vm.outTool=[]
-//                      vm.inTool=[]
+                      vm.outTool=[]
+                      vm.inTool=[]
                       vm.inChoose=[]
                       vm.outChoose=[]
 
