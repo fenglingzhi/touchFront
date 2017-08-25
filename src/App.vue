@@ -343,10 +343,12 @@
         nowfloatTime:0,                   //实时流动倒计时
         nowfloatPerson:[],                //实时流动人员
         nowfloatPersonFirst:[],           //实时流动人员大头像
-        nowfloatPersonA:1,
-        nowfloatPersonB:9,
+        nowfloatPersonA:1,                //实时流动人员分页
+        nowfloatPersonB:9,                //实时流动人员分页
         onlinestatus:true,
         mapList:[],                       //地图基础数据
+        chest_card:[],                    //胸卡信息
+        wristband:[],                     //腕带信息
         /* Coding By YanM */
         /* mj B*/
         receiveDataMsgType25:{},//进出ws工数据
@@ -395,8 +397,6 @@
         alertYDMD: false,                 //已点名单
         alertBJTK: false,                 //报警弹框
         alertYDGJ:false,                  //已点工具
-        chest_card:[],                    //胸卡
-        wristband:[],                     //腕带
         isPerson:true,                     //报警类别：人
         isGrup:false,                      //报警类别：互监组
         canRouter:1,                      //流动路由判
@@ -558,7 +558,6 @@
       /* 卡绑定选人 */
       bindCardSelect:function (index) {
         let vm = this
-        vm.CardBindPageInit()
         if(vm.chest_card.length!==0){
           for(let i = 0; i<vm.chest_card.length; i++){
             vm.chest_card[i].status = false
@@ -1148,6 +1147,7 @@
             }
             //所有罪犯信息缓存(传进vue的数据用于渲染页面)
             vm.criminalList.push(personlist_hash);
+            console.log(personlist_hash)
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
@@ -1241,7 +1241,7 @@
               };
             }
             vm.policeList.push(police_hash)
-            console.log('警员基础数据',police_hash)
+//            console.log('警员基础数据',police_hash)
           },
           complete: function (XHR) {
             XHR = null;  //回收资源
@@ -1279,7 +1279,7 @@
               };
             }
             vm.mapList.push(map_hash)
-            console.log('地图基础数据',map_hash)
+//            console.log('地图基础数据',map_hash)
           },
           complete: function (XHR) {
             XHR = null;  //回收资源
@@ -1329,14 +1329,14 @@
       /* 打开websocket */
       vm.ws.onopen = function(){
         vm.onlinestatus = true
-        setInterval(function () {
-          /* 保持心跳-参数-01 */
-          vm.ws.send(JSON.stringify(keep_heart))
-          /* 人员分布-参数-14 */
-          vm.ws.send(JSON.stringify(flowPerson_outPrison))
-          /* 流动人员 && 外监进入人员-参数-24 */
-          vm.ws.send(JSON.stringify(personnel_distribution))
-        },5000)
+//        setInterval(function () {
+//          /* 保持心跳-参数-01 */
+//          vm.ws.send(JSON.stringify(keep_heart))
+//          /* 人员分布-参数-14 */
+//          vm.ws.send(JSON.stringify(flowPerson_outPrison))
+//          /* 流动人员 && 外监进入人员-参数-24 */
+//          vm.ws.send(JSON.stringify(personnel_distribution))
+//        },5000)
       };
 
       vm.allDataInit()
@@ -1419,27 +1419,27 @@
           vm.receiveDataMsgType33=receiveDataMsgType33
         }
         /* 报警信息 */
-        if (JSON.parse(event.data).Header.MsgType === 2) {
-          var alarmNews = JSON.parse(JSON.parse(event.data).Body)
-//          console.log("报警。。。。。。。",alarmNews)
-            /* 区域过滤测试后解开 */
-          if (alarmNews.OrgID.toUpperCase() == localStorage.getItem("OrgID")) {
-          var criminalData = alarmNews
-            criminalData.criminalID = vm.criminalList[0][alarmNews.ObjectID].CriminalID
-            criminalData.Photo = vm.criminalList[0][alarmNews.ObjectID].Photo
-            vm.alarmList.unshift(criminalData)
-          /*限制报警条数不超过99*/
-            vm.alarmList.splice(99,99999999999)
-//            vm.alarmText = alarmNews.Description
-            vm.alarmText =  vm.alarmList[0].Description
-            vm.alarmPages = vm.alarmList.length
-            if (vm.alarmList.length != 0) {
-              vm.alertBJTK = true
-            } else {
-              vm.alertBJTK = false
-            }
-          }
-        }
+//        if (JSON.parse(event.data).Header.MsgType === 2) {
+//          var alarmNews = JSON.parse(JSON.parse(event.data).Body)
+////          console.log("报警。。。。。。。",alarmNews)
+//            /* 区域过滤测试后解开 */
+//          if (alarmNews.OrgID.toUpperCase() == localStorage.getItem("OrgID")) {
+//          var criminalData = alarmNews
+//            criminalData.criminalID = vm.criminalList[0][alarmNews.ObjectID].CriminalID
+//            criminalData.Photo = vm.criminalList[0][alarmNews.ObjectID].Photo
+//            vm.alarmList.unshift(criminalData)
+//          /*限制报警条数不超过99*/
+//            vm.alarmList.splice(99,99999999999)
+////            vm.alarmText = alarmNews.Description
+//            vm.alarmText =  vm.alarmList[0].Description
+//            vm.alarmPages = vm.alarmList.length
+//            if (vm.alarmList.length != 0) {
+//              vm.alertBJTK = true
+//            } else {
+//              vm.alertBJTK = false
+//            }
+//          }
+//        }
 
         /* 人员分布返回数据-14 */
         if(JSON.parse(event.data).Header.MsgType === 14){
@@ -1540,6 +1540,8 @@
         if(JSON.parse(event.data).Header.MsgType === 51){
           var  chest_card = JSON.parse(JSON.parse(event.data).Body)
           var  wristband = JSON.parse(JSON.parse(event.data).Body)
+
+          console.log('aaaaaaaaaaaaaaaaa',vm.criminalList[0]["0be8d84b-0b19-45a3-9946-03ac5de710d6"])
           //判断是胸卡
           if(chest_card.CardType === 0){
             if(vm.chest_card.length ===0){
@@ -1548,6 +1550,8 @@
                 CardType:chest_card.CardType,
                 CriminalID:chest_card.CriminalID,
                 status:false,
+                CriminalName:vm.criminalList[0][chest_card.CriminalID].CriminalName,
+                Photo:vm.criminalList[0][chest_card.CriminalID].Photo,
                 wristband:''
               })
             //刷卡去重
@@ -1558,6 +1562,8 @@
                     CardID:chest_card.CardID,
                     CardType:chest_card.CardType,
                     CriminalID:chest_card.CriminalID,
+                    CriminalName:vm.criminalList[0][chest_card.CriminalID].CriminalName,
+                    Photo:vm.criminalList[0][chest_card.CriminalID].Photo,
                     status:false,
                     wristband:''
                   })
@@ -1570,7 +1576,7 @@
           //判断为腕带
           } else {
             if(wristband.CriminalID === "00000000-0000-0000-0000-000000000000"){
-                alert(1)
+//                alert(1)
               //判断胸牌是否为空
               if(vm.chest_card.length!==0){
                 for(let i = 0; i<vm.chest_card.length; i++){
@@ -1581,16 +1587,23 @@
                 }
               }
             } else {
-                alert(2)
               if(vm.wristband.length === 0){
-                  console.log('2222222222222222222',wristband)
-                vm.wristband.push(wristband)
+                vm.wristband.push({
+                  CrimalName:vm.criminalList[0][wristband.CriminalID].CriminalName,
+                  CardID:wristband.CardID,
+                  CriminalID:wristband.CriminalID,
+                  Photo:vm.criminalList[0][wristband.CriminalID].Photo,
+                })
               } else {
-                for(let i = 0; i<=vm.wristband.length; i++){
+                for(let i = 0; i<vm.wristband.length; i++){
                   if(vm.wristband[i].CardID !== wristband.CardID){
-                    vm.chest_card.push(wristband)
-                  } else {
-                    alert('重复输入')
+                    vm.wristband.push({
+                      CrimalName:vm.criminalList[0][wristband.CriminalID].CriminalName,
+                      CardID: wristband.CardID,
+                      CriminalID: wristband.CriminalID,
+                      Photo:vm.criminalList[0][wristband.CriminalID].Photo,
+                    })
+                    console.log('ddddddddddddddddddddd',vm.wristband)
                   }
                 }
               }

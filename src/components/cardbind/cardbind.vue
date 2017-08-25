@@ -3,6 +3,10 @@
     <el-col :span="1" style="height:10px"></el-col>
     <el-col :span="22">
       <div class="li4_parts">
+        <div class="tabHead">
+          <div  :class="['tab', { tabing: isB1}]"  @click="bandCardInfo_onBind()">绑定</div>
+          <div  :class="['tab', { tabing: isB2}]"  @click="UnbandCardInfo_onUnBind()">解绑</div>
+        </div>
         <div class="tab1">
           <div class="partsBody">
             <div class="bodyHead">
@@ -14,34 +18,25 @@
                     <el-col :span="4" v-for="(item,index) in chest_card" :key='1' v-show="!isUnbind">
                       <div class="float_person_card card_bind_init" :class="['card_bind_init', {card_bind_select: item.status}, {card_bind_success:item.wristband!==''}]" @click="$emit('bindCardSelect',index)">
                         <el-col :span="10" class="photo">
-                          <!--<img :src="item.Photo" alt="" width="100%" height="100%">-->
+                          <img :src="item.Photo" alt="" width="100%" height="100%">
                         </el-col>
                         <el-col :span="12" class="crimal_content">
                           <p>姓名：{{item.CriminalName}}</p>
                           <p>罪犯编号：{{item.CriminalID}}</p>
                           <p>胸牌编号：{{item.CardID}}</p>
-                          <!--<p>当前区域：{{item.area}}</p>-->
-                          <!--<p>外出地点：{{item.destination}}</p>-->
-                          <!--<p>陪同民警：{{item.withplace}}</p>-->
                           <p>腕带编号：{{item.wristband}}</p>
-                          <!--<p>外出事由：{{item.outreasons}}</p>-->
                         </el-col>
                       </div>
                     </el-col>
                     <el-col :span="4" v-for="item in wristband" :key='1' v-show="isUnbind">
-                      <div class="float_person_card card_bind_success" @click="$emit('clearCardInfo')">
+                      <div class="float_person_card card_bind_success">
                         <el-col :span="10" class="photo">
-                          <!--<img :src="item.Photo" alt="" width="100%" height="100%">-->
+                          <img :src="item.Photo" alt="" width="100%" height="100%">
                         </el-col>
                         <el-col :span="12" class="crimal_content">
-                          <p>姓名：{{item.CriminalName}}</p>
+                          <p>姓名：{{item.CrimalName}}</p>
                           <p>罪犯编号：{{item.CriminalID}}</p>
-                          <!--<p>胸牌编号：{{item.CardID}}</p>-->
-                          <!--<p>当前区域：{{item.area}}</p>-->
-                          <!--<p>外出地点：{{item.destination}}</p>-->
-                          <!--<p>陪同民警：{{item.withplace}}</p>-->
                           <p>腕带编号：{{item.CardID}}</p>
-                          <!--<p>外出事由：{{item.outreasons}}</p>-->
                         </el-col>
                       </div>
                     </el-col>
@@ -53,11 +48,9 @@
           </div>
           <div class="partsFoot">
             <div style="margin: 13px 2px;float: right">
-              <div class="sure" @click="bandCardInfo_onBind()">开始换卡</div>
-              <div class="sure" @click="bandCardInfoSubmit()">提交</div>
-              <div class="sure" @click="UnbandCardInfo_onUnBind()">解绑</div>
-              <div class="sure" @click="bandCardInfoUnbind()">提交解绑</div>
-              <div class="sure" @click="bandCardUnbindAll()">一键解绑</div>
+              <div class="sure" @click="bandCardInfoSubmit()" v-show="!isUnbind">提交</div>
+              <div class="sure" @click="bandCardInfoUnbind()" v-show="isUnbind">提交解绑</div>
+              <div class="sure" @click="bandCardUnbindAll()" v-show="isUnbind">一键解绑</div>
             </div>
           </div>
         </div>
@@ -81,16 +74,20 @@
     data () {
       return {
         isUnbind:false,
-        CardTitle:'卡绑定'
+        CardTitle:'卡绑定',
+        isB1: true,
+        isB2: false,
       }
     },
     methods: {
-      /* 请求开始换卡 */
+      /* 绑定 */
       bandCardInfo_onBind:function () {
         let vm = this
+        this.isB1 =  true
+        this.isB2 = false
+        vm.$emit('CardBindPageInit')
         vm.CardTitle = '卡绑定'
         vm.isUnbind = false
-        alert('开始换卡')
         var bandCardInfo_req = {
           Header: {
             MsgID:"201501260000000001",
@@ -110,14 +107,14 @@
           url: GUFEI,
           data:JSON.stringify(bandCardInfo_req),
           success: function (result) {
-            console.log('执行开始换卡',result)
+            console.log('开始绑定',result)
           },
           complete: function (XHR) {
             XHR = null;  //回收资源
           }
         });
       },
-      /* 提交换卡 */
+      /* 提交绑定 */
       bandCardInfoSubmit:function () {
           alert('提交换卡')
         let vm = this
@@ -164,9 +161,12 @@
           }
         });
       },
-      /* 请求开始解绑 */
+      /* 解绑 */
       UnbandCardInfo_onUnBind:function () {
         let vm = this
+        this.isB1 = false
+        this.isB2 = true
+        vm.$emit('clearCardInfo')
         vm.CardTitle = '卡解绑'
         vm.isUnbind = true
         var bandCardInfo_req = {
@@ -188,7 +188,7 @@
           url: GUFEI,
           data:JSON.stringify(bandCardInfo_req),
           success: function (result) {
-            alert('请求解绑')
+            console.log('开始解绑',result)
           },
           complete: function (XHR) {
             XHR = null;  //回收资源
@@ -279,9 +279,7 @@
     mounted () {
       var vm = this
       /* Coding By YanM */
-//      vm.chest_card[0].status = true
-//      vm.bandCardInfo_onBind()
-//      vm.cardBindMap()
+      vm.bandCardInfo_onBind()
       vm.$emit('CardBindPageInit')
       /* Coding By YanM */
     }
@@ -346,7 +344,7 @@
   }
   .li4_parts .partsBody {
     width: 100%;
-    height: 675px;
+    height: 672px;
     background: white;
   }
   .li4_parts .partsFoot{
@@ -388,6 +386,26 @@
     text-indent: 15px;
     float: left;
 
+  }
+  .li4_parts .tabHead{
+    width: 100%;
+    height: 40px;
+  }
+  .li4_parts .tab{
+    width: 155px;
+    height: 40px;
+    background: #004bdc;
+    font-size: 18px;
+    text-align: center;
+    float: left;
+    color:white;
+    line-height: 38px;
+  }
+  .li4_parts .tabing{
+    background: white;
+    font-size: 18px;
+    color: #004bdc;
+    text-align: center;
   }
 
 
