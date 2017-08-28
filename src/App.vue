@@ -301,7 +301,7 @@
 <script>
   import navheader from './components/navheader.vue'                  // 引入组件头部导航
   import menufooter from './components/menufooter.vue'                // 引入组件底部菜单
-  import { SHANLEI,IMG,ajaxUrl} from './config'
+  import { BasicUrl,IMG,ReceiveAjaxUrl } from './config'
   import global from './plugins/vue.global.js'
 
   export default {
@@ -423,7 +423,7 @@
           dataType: "jsonp",
           jsonp: "callback",
           async: false,
-          url: SHANLEI + 'HomeIndex/GetBindJQ',
+          url: BasicUrl + 'HomeIndex/GetBindJQ',
           success: function (result) {
             vm.prisonSelect=result
             vm.prisonSelectText = vm.prisonSelect[0].AreaName
@@ -492,7 +492,7 @@
             UserID:vm.policeLogin.account,
             UserPwd:vm.policeLogin.password
           },
-          url: SHANLEI + 'HomeIndex/CheckUser',
+          url: BasicUrl + 'HomeIndex/CheckUser',
           success: function (result) {
 
             if(result != null){
@@ -616,7 +616,7 @@
                 "PoliceName":vm.policeList[0][placemanID]["PoliceName"],
                 "PoliceRole":vm.policeList[0][placemanID]["role"]
               },
-              url: SHANLEI+'Event/AlarmHandle' + "?callback=?",
+              url: BasicUrl+'Event/AlarmHandle' + "?callback=?",
               success: function (result) {
                 clearInterval(alarmHandS)
                 if(result==0){
@@ -687,7 +687,7 @@
               jsonp: "callback",
               async: false,
               data:{"GroupID":ObjectID},
-              url:  SHANLEI+'Group/GetCriminalListByGroup' + "?callback=?",
+              url:  BasicUrl+'Group/GetCriminalListByGroup' + "?callback=?",
               success: function (result) {
                 vm.groupTeam = result
               },
@@ -729,7 +729,7 @@
               jsonp: "callback",
               async: false,
               data:{"GroupID":ObjectID},
-              url:  SHANLEI+'Group/GetCriminalListByGroup' + "?callback=?",
+              url:  BasicUrl+'Group/GetCriminalListByGroup' + "?callback=?",
               success: function (result) {
                 vm.groupTeam = result
               },
@@ -760,7 +760,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.criminalPage,"PageSize":18},
-            url:  SHANLEI+'CriminalCnt/GetCriminalCntRecord' + "?callback=?",
+            url:  BasicUrl+'CriminalCnt/GetCriminalCntRecord' + "?callback=?",
             success: function (result) {
               if(result.length!=18){
                 vm.criminalCalledIsLastPage=true
@@ -785,7 +785,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url:  SHANLEI+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+            url:  BasicUrl+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
             success: function (result) {
               vm.criminalCount=result
             },
@@ -817,7 +817,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.criminalPage,"PageSize":18},
-            url:  SHANLEI+'CriminalCnt/GetCriminalCntRecord' + "?callback=?",
+            url:  BasicUrl+'CriminalCnt/GetCriminalCntRecord' + "?callback=?",
             success: function (result) {
               if(result.length!=18){
                 vm.criminalCalledIsLastPage=true
@@ -841,7 +841,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url:  SHANLEI+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+            url:  BasicUrl+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
             success: function (result) {
               vm.criminalCount=result
             },
@@ -869,7 +869,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.toolPage,"PageSize":18},
-            url:  SHANLEI+'ToolCnt/GetToolCalledList' + "?callback=?",
+            url:  BasicUrl+'ToolCnt/GetToolCalledList' + "?callback=?",
             success: function (result) {
               if(result.length!=18){
                 vm.toolCalledIsLastPage=true
@@ -893,7 +893,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url:  SHANLEI+'ToolCnt/GetToolCalledCount' + "?callback=?",
+            url:  BasicUrl+'ToolCnt/GetToolCalledCount' + "?callback=?",
             success: function (result) {
               vm.toolCount=result
             },
@@ -919,7 +919,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.toolPage,"PageSize":18},
-            url: SHANLEI+'ToolCnt/GetToolCalledList' + "?callback=?",
+            url: BasicUrl+'ToolCnt/GetToolCalledList' + "?callback=?",
             success: function (result) {
               if(result.length!=18){
                 vm.toolCalledIsLastPage=true
@@ -944,7 +944,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url: SHANLEI+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+            url: BasicUrl+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
             success: function (result) {
               vm.criminalCount=result
             },
@@ -975,7 +975,7 @@
           jsonp: "callback",
           async: false,
           data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":18},
-          url:  SHANLEI+'ToolCnt/GetToolCalledList' + "?callback=?",
+          url:  BasicUrl+'ToolCnt/GetToolCalledList' + "?callback=?",
           success: function (result) {
             if(result.length!=18){
               vm.toolCalledIsLastPage=true
@@ -999,7 +999,7 @@
           jsonp: "callback",
           async: false,
           data:{"OrgID":localStorage.getItem("OrgID")},
-          url:  SHANLEI+'ToolCnt/GetToolCalledCount' + "?callback=?",
+          url:  BasicUrl+'ToolCnt/GetToolCalledCount' + "?callback=?",
           success: function (result) {
             vm.toolCount=result
           },
@@ -1051,7 +1051,7 @@
           jsonp: "callback",
           async: false,
           data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":18},
-          url:  SHANLEI+'CriminalCnt/GetCriminalCalledList' + "?callback=?",
+          url:  BasicUrl+'CriminalCnt/GetCriminalCalledList' + "?callback=?",
           success: function (result) {
 
             if(result.length!=18){
@@ -1076,7 +1076,7 @@
           jsonp: "callback",
           async: false,
           data:{"OrgID":localStorage.getItem("OrgID")},
-          url:  SHANLEI+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+          url:  BasicUrl+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
           success: function (result) {
             vm.criminalCount=result
           },
@@ -1105,7 +1105,7 @@
           dataType: "jsonp",
           jsonp: "callback",
           async: false,
-          url: SHANLEI +'CriminalCnt/GetCriminalList' + "?callback=?",
+          url: BasicUrl +'CriminalCnt/GetCriminalList' + "?callback=?",
           success: function (result) {
             //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
             var personlist_hash = [];
@@ -1153,7 +1153,7 @@
           jsonp: "callback",
           async: false,
           data: {OrgID: localStorage.getItem('OrgID')},
-          url: SHANLEI + 'CriminalCnt/GetCurOrgCriminalCount',
+          url: BasicUrl + 'CriminalCnt/GetCurOrgCriminalCount',
           success: function (result) {
             vm.crimalCount_outCrimalCount = result[0]
           },
@@ -1170,7 +1170,7 @@
           jsonp: "callback",
           async: false,
           data: {OrgID: localStorage.getItem('OrgID')},
-          url:  SHANLEI+'ToolCnt/GetToolList' + "?callback=?",
+          url:  BasicUrl+'ToolCnt/GetToolList' + "?callback=?",
           success: function (result) {
 
             //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
@@ -1201,7 +1201,7 @@
           jsonp: "callback",
           async: false,
           data: {OrgID: localStorage.getItem('OrgID')},
-          url: SHANLEI + 'HomeIndex/GetPoliceList',
+          url: BasicUrl + 'HomeIndex/GetPoliceList',
           success: function (result) {
             //所有警员信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
             var police_hash = new Array();
@@ -1245,7 +1245,7 @@
           dataType: "jsonp",
           jsonp: "callback",
           async: false,
-          url: SHANLEI + 'HomeIndex/GetMapList',
+          url: BasicUrl + 'HomeIndex/GetMapList',
           success: function (result) {
             //所有警员信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
             var map_hash = new Array();
@@ -1486,31 +1486,31 @@
         }
 
         /* 计划任务-返回数据-4 */
-        if(JSON.parse(event.data).Header.MsgType === 4){
-          var  plan_task = JSON.parse(JSON.parse(event.data).Body)
-          console.log('ssssssssssssssssss',plan_task)
-          if(plan_task.PlanTypeName !== '巡更计划'){
-            vm.plan = plan_task.PlanTypeName
-            vm.planStartTime = plan_task.StartTime
-            vm.planEndTime = plan_task.EndTime
-            vm.NextTime = plan_task.NextTime
-            if(vm.plan == '工具清点计划'){
-              if(vm.canRouter == 1){
-                vm.$router.push({ path: '/toolcheck' })
-              } else {
-                alert('工具清点已经开始，请结束本次操作后开始工具清点')
-              }
-            } else if(vm.plan == '人员清点计划'){
-              if(vm.canRouter === 1){
-                vm.$router.push({ path: '/crimalcheck' })
-              } else {
-                alert('人员清点已经开始，请结束本次操作后开始人员清点')
-              }
-            }
-          } else {
-              alert(1)
-          }
-        }
+//        if(JSON.parse(event.data).Header.MsgType === 4){
+//          var  plan_task = JSON.parse(JSON.parse(event.data).Body)
+//          console.log('ssssssssssssssssss',plan_task)
+//          if(plan_task.PlanTypeName !== '巡更计划'){
+//            vm.plan = plan_task.PlanTypeName
+//            vm.planStartTime = plan_task.StartTime
+//            vm.planEndTime = plan_task.EndTime
+//            vm.NextTime = plan_task.NextTime
+//            if(vm.plan == '工具清点计划'){
+//              if(vm.canRouter == 1){
+//                vm.$router.push({ path: '/toolcheck' })
+//              } else {
+//                alert('工具清点已经开始，请结束本次操作后开始工具清点')
+//              }
+//            } else if(vm.plan == '人员清点计划'){
+//              if(vm.canRouter === 1){
+//                vm.$router.push({ path: '/crimalcheck' })
+//              } else {
+//                alert('人员清点已经开始，请结束本次操作后开始人员清点')
+//              }
+//            }
+//          } else {
+//              alert(1)
+//          }
+//        }
 
         /* 实时流动-返回数据-3 */
         if(JSON.parse(event.data).Header.MsgType === 3){

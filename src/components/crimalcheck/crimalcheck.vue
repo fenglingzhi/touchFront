@@ -119,7 +119,7 @@
 </template>
 
 <script>
-  import { SHANLEI,IMG,ajaxUrl} from '../../config'
+  import { BasicUrl,IMG,ajaxUrl} from '../../config'
 
   export default {
     name: 'navheader',
@@ -255,7 +255,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.recordPage,"PageSize":20},
-            url:  SHANLEI+'CriminalCnt/GetCriminalCntRecord' + "?callback=?",
+            url:  BasicUrl+'CriminalCnt/GetCriminalCntRecord' + "?callback=?",
             success: function (result) {
               if(result.length!=20){
                 vm.recordIsLastPage=true
@@ -281,7 +281,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url:  SHANLEI+'CriminalCnt/GetCriminalCntRecordsCount' + "?callback=?",
+            url:  BasicUrl+'CriminalCnt/GetCriminalCntRecordsCount' + "?callback=?",
             success: function (result) {
               vm.recordCount=result
             },
@@ -313,7 +313,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.recordPage,"PageSize":20},
-            url:  SHANLEI+'CriminalCnt/GetCriminalCntRecord' + "?callback=?",
+            url:  BasicUrl+'CriminalCnt/GetCriminalCntRecord' + "?callback=?",
             success: function (result) {
               if(result.length!=20){
                 vm.recordIsLastPage=true
@@ -337,7 +337,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url:  SHANLEI+'CriminalCnt/GetCriminalCntRecordsCount' + "?callback=?",
+            url:  BasicUrl+'CriminalCnt/GetCriminalCntRecordsCount' + "?callback=?",
             success: function (result) {
               vm.recordCount=result
             },
@@ -576,7 +576,7 @@
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":20},
-        url: SHANLEI+'CriminalCnt/GetCriminalCntRecord' + "?callback=?",
+        url: BasicUrl+'CriminalCnt/GetCriminalCntRecord' + "?callback=?",
         success: function (result) {
           if(result.length!=20){
             vm.recordIsLastPage=true
@@ -600,7 +600,7 @@
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID")},
-        url: SHANLEI+'CriminalCnt/GetCriminalCntRecordsCount' + "?callback=?",
+        url: BasicUrl+'CriminalCnt/GetCriminalCntRecordsCount' + "?callback=?",
         success: function (result) {
           vm.recordCount=result
         },
@@ -623,7 +623,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url:  SHANLEI+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
+            url:  BasicUrl+'CriminalCnt/GetCriminalCalledCount' + "?callback=?",
             success: function (result) {
               vm.hascelled=result
             },
@@ -641,7 +641,7 @@
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url:  SHANLEI+'CriminalCnt/GetCurOrgCriminalCount' + "?callback=?",
+            url:  BasicUrl+'CriminalCnt/GetCurOrgCriminalCount' + "?callback=?",
             success: function (result) {
               vm.orgCriminalCount=result[0].Total
             },

@@ -108,7 +108,7 @@
 </template>
 
 <script>
-  import { SHANLEI,IMG,ajaxUrl} from '../../config'
+  import { BasicUrl,IMG,ajaxUrl} from '../../config'
 
   export default {
     name: 'navheader',
@@ -475,7 +475,7 @@
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID")},
-        url:  SHANLEI+'Group/GetGeneralGroupList' + "?callback=?",
+        url:  BasicUrl+'Group/GetGeneralGroupList' + "?callback=?",
         success: function (result) {
           if(result!=""||result!=null){
             vm.generalGroupListAll=result.length
@@ -502,7 +502,7 @@
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID")},
-        url:  SHANLEI+'Group/GetProvisionalGroupList' + "?callback=?",
+        url:  BasicUrl+'Group/GetProvisionalGroupList' + "?callback=?",
         success: function (result) {
           if(result!=""&&result!=null){
             vm.provisionalGroupListAll=result.length

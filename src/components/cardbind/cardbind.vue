@@ -64,7 +64,7 @@
 </template>
 
 <script>
-  import { GUFEI } from '../../config'
+  import { ajaxUrl } from '../../config'
 
   export default {
     name: 'navheader',
@@ -101,7 +101,7 @@
           dataType: "jsonp",
           jsonp: "callback",
           async: false,
-          url: GUFEI,
+          url: ajaxUrl,
           data:JSON.stringify(send3),
           success: function (result) {
             localStorage.setItem("moveTypes","0")
@@ -137,7 +137,7 @@
           dataType: "jsonp",
           jsonp: "callback",
           async: false,
-          url: GUFEI,
+          url: ajaxUrl,
           data:JSON.stringify(bandCardInfo_req),
           success: function (result) {
             console.log('开始绑定',result)
@@ -175,7 +175,7 @@
           dataType: "jsonp",
           jsonp: "callback",
           async: false,
-          url: GUFEI,
+          url: ajaxUrl,
           data:JSON.stringify(bandCardInfoSubmit),
           success: function (result) {
             if(result.RET === 1){
@@ -217,7 +217,7 @@
           dataType: "jsonp",
           jsonp: "callback",
           async: false,
-          url: GUFEI,
+          url: ajaxUrl,
           data:JSON.stringify(bandCardInfo_req),
           success: function (result) {
             console.log('开始解绑',result)
@@ -254,7 +254,7 @@
           dataType: "jsonp",
           jsonp: "callback",
           async: false,
-          url: GUFEI,
+          url: ajaxUrl,
           data:JSON.stringify(UnbandCardInfoSubmit),
           success: function (result) {
             if(result.RET === 1){
@@ -292,7 +292,7 @@
           dataType: "jsonp",
           jsonp: "callback",
           async: false,
-          url: GUFEI,
+          url: ajaxUrl,
           data:JSON.stringify(bandCardInfo_reqAll),
           success: function (result) {
             if(result.RET === 1){

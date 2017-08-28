@@ -279,7 +279,7 @@ export default {
       }
     }
     .member_distribute{
-      height:520px;
+      height:470px;
       background: rgba(255,255,255,.8);
       overflow: hidden;
       text-align: left;
@@ -335,10 +335,11 @@ export default {
     .outside_persion_personnel{
       background: rgba(255,255,255,.8);
       overflow: hidden;
-      height: 310px;
+      height: 260px;
       margin-left: 20px;
       .outside_person_wrap{
         padding: 20px 10px;
+        height:140px;
         .outside_person_card{
           padding: 10px;
           height: 100px;

@@ -13,9 +13,9 @@
       <el-col :span="22">
         <p>
           <span @click="$emit('getPosition')" class="nowposition">当前位置：{{ message }}</span>
-          <span>{{localYear}}</span>
-          <span>{{localWeek}}</span>
-          <span>{{localTime}}</span>
+          <span style="float: right">{{localYear}}</span>
+          <span style="float: right">{{localWeek}}</span>
+          <span style="float: right">{{localTime}}</span>
         </p>
         <p v-if="plan">
           <span class="nav-plan">{{ plan }}</span><span class="nav-plan-time">计划清点：{{ planStartTime }} - {{planEndTime}}</span>
@@ -33,7 +33,7 @@
 
 <script>
   import axios from 'axios'
-  import { SHANLEI } from '../config'
+  import { BasicUrl } from '../config'
   export default {
 
     name: 'navheader',
