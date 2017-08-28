@@ -68,7 +68,7 @@
 </template>
 
 <script>
-  import { SHANLEI,IMG,ajaxUrl} from '../../config'
+  import { BasicUrl,IMG,ajaxUrl} from '../../config'
 
   export default {
     name: 'navheader',
@@ -326,7 +326,7 @@
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID")},
-        url: SHANLEI+'CriminalCnt/GetCriminalList' + "?callback=?",
+        url: BasicUrl+'CriminalCnt/GetCriminalList' + "?callback=?",
         success: function (result) {
           if(result!=""&&result!=null){
             vm.inListAll=result.length

@@ -33,7 +33,7 @@
 
 <script>
   import axios from 'axios'
-  import { SHANLEI } from '../config'
+  import { BasicUrl } from '../config'
   export default {
 
     name: 'navheader',

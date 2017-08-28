@@ -55,7 +55,7 @@
 </template>
 
 <script>
-  import { SHANLEI,IMG,ajaxUrl,MapUrl } from '../../config'
+  import { BasicUrl,IMG,ajaxUrl,MapUrl } from '../../config'
 
   export default {
     name: 'navheader',

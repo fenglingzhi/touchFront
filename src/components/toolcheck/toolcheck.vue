@@ -126,7 +126,7 @@
 </template>
 
 <script>
-  import { SHANLEI,IMG,ajaxUrl} from '../../config'
+  import { BasicUrl,IMG,ajaxUrl} from '../../config'
 var vm=this
   export default {
     name: 'navheader',
@@ -206,7 +206,7 @@ var vm=this
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.recordPage,"PageSize":20},
-            url:  SHANLEI+'ToolCnt/GetToolCntRecord' + "?callback=?",
+            url:  BasicUrl+'ToolCnt/GetToolCntRecord' + "?callback=?",
             success: function (result) {
                 if(result.length!=20){
                     vm.recordIsLastPage=true
@@ -233,7 +233,7 @@ var vm=this
           jsonp: "callback",
           async: false,
           data:{"OrgID":localStorage.getItem("OrgID")},
-          url:  SHANLEI+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
+          url:  BasicUrl+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
           success: function (result) {
             vm.recordCount=result
           },
@@ -259,7 +259,7 @@ var vm=this
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.recordPage,"PageSize":20},
-            url:  SHANLEI+'ToolCnt/GetToolCntRecord' + "?callback=?",
+            url:  BasicUrl+'ToolCnt/GetToolCntRecord' + "?callback=?",
             success: function (result) {
               if(result.length!=20){
                 vm.recordIsLastPage=true
@@ -283,7 +283,7 @@ var vm=this
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url:  SHANLEI+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
+            url:  BasicUrl+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
             success: function (result) {
               vm.recordCount=result
             },
@@ -390,7 +390,7 @@ var vm=this
                       jsonp: "callback",
                       async: false,
                       data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":20},
-                      url:  SHANLEI+'ToolCnt/GetToolCntRecord' + "?callback=?",
+                      url:  BasicUrl+'ToolCnt/GetToolCntRecord' + "?callback=?",
                       success: function (result) {
                         if(result.length!=20){
                           vm.recordIsLastPage=true
@@ -415,7 +415,7 @@ var vm=this
                       jsonp: "callback",
                       async: false,
                       data:{"OrgID":localStorage.getItem("OrgID")},
-                      url: SHANLEI+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
+                      url: BasicUrl+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
                       success: function (result) {
                         vm.recordCount=result
                       },
@@ -493,7 +493,7 @@ var vm=this
                     jsonp: "callback",
                     async: false,
                     data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":20},
-                    url:  SHANLEI+'ToolCnt/GetToolCntRecord' + "?callback=?",
+                    url:  BasicUrl+'ToolCnt/GetToolCntRecord' + "?callback=?",
                     success: function (result) {
                       if(result.length!=20){
                         vm.recordIsLastPage=true
@@ -518,7 +518,7 @@ var vm=this
                     jsonp: "callback",
                     async: false,
                     data:{"OrgID":localStorage.getItem("OrgID")},
-                    url: SHANLEI+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
+                    url: BasicUrl+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
                     success: function (result) {
                       vm.recordCount=result
                     },
@@ -639,7 +639,7 @@ var vm=this
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":20},
-        url:  SHANLEI+'ToolCnt/GetToolCntRecord' + "?callback=?",
+        url:  BasicUrl+'ToolCnt/GetToolCntRecord' + "?callback=?",
         success: function (result) {
           if(result.length!=20){
             vm.recordIsLastPage=true
@@ -664,7 +664,7 @@ var vm=this
         jsonp: "callback",
         async: false,
         data:{"OrgID":localStorage.getItem("OrgID")},
-        url: SHANLEI+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
+        url: BasicUrl+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
         success: function (result) {
           vm.recordCount=result
         },
@@ -687,7 +687,7 @@ var vm=this
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url:  SHANLEI+'ToolCnt/GetToolCalledCount' + "?callback=?",
+            url:  BasicUrl+'ToolCnt/GetToolCalledCount' + "?callback=?",
             success: function (result) {
               vm.toolCalledCount=result
             },
@@ -705,7 +705,7 @@ var vm=this
             jsonp: "callback",
             async: false,
             data:{"OrgID":localStorage.getItem("OrgID")},
-            url:  SHANLEI+'ToolCnt/GetToolCalledCount' + "?callback=?",
+            url:  BasicUrl+'ToolCnt/GetToolCalledCount' + "?callback=?",
             success: function (result) {
               vm.orgCriminalCount=result
             },
