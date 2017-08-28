@@ -82,7 +82,9 @@
 
                       <el-col :span="4"  v-for="(criminal,index) in outCriminals.slice(outCriminalsA-1,outCriminalsB)" :key="1">
                         <div  class="criminal" v-on:click="delPerson(index)" >
+                          <div style="height: 91px;width:90px;">
                           <img :src="criminal.Photo" width="98%" height="85" alt=""/>
+                          </div>
                           <span class="criminalName">{{ criminal.CriminalName}}</span>
                         </div>
                       </el-col>
@@ -107,7 +109,9 @@
                     <div class="deailBody" style="height:131px;">
                       <el-col :span="4"  v-for="(police,index) in outPolices.slice(outPoliceA-1,outPoliceB)" :key="1">
                         <div  class="criminal"  >
-                          <img :src="police.Photo" width="98%" height="85" alt=""/>
+                          <div style="height: 91px;width: 90px;">
+                            <img :src="police.Photo" width="98%" height="85" alt=""/>
+                          </div>
                           <span class="criminalName">{{ police.PoliceName}}</span>
                         </div>
                       </el-col>
@@ -745,6 +749,10 @@
   }
   li3_parts .deailBody{
 
+  }
+  .criminalImg{
+    height: 91px;
+    width: 89px;
   }
 
   .li3_parts .partsBody{
