@@ -2,8 +2,25 @@
 // 接口地址
 /* 基础数据接口地址 */
 export const BasicUrl = 'http://10.58.1.145:88/api/'
+$.ajax({
+  type: "get",
+  contentType: "application/json; charset=utf-8",
+  dataType: "jsonp",
+  jsonp: "callback",
+  async: false,
+  url:  BasicUrl+'HomeIndex/GetGateWayConfig' + "?callback=?",
+  success: function (result) {
+    console.log(result)
+    localStorage.setItem('IP',result[0].GateWayIP)
+    localStorage.setItem('WebSocketPort',result[0].ReceivePort)
+    localStorage.setItem('TcpPort',result[0].TcpReceivePort)
+  },
+  complete: function (XHR, TS) {
+    XHR = null;  //回收资源
+  }
+});
 /* 服务请求接口地址 */
-export const ajaxUrl = 'http://10.58.1.226:20001'
+export const ajaxUrl = 'http://'+localStorage.getItem('IP')+':' +localStorage.getItem('TcpPort')
 /* 静态资源地址 */
 export const IMG = 'http://10.58.1.178:9112'
 export const MapUrl ='http://10.58.1.237:8888'
@@ -20,6 +37,6 @@ export default {
       localStorage.setItem(keyName,keyValue)
     }
     /* websocket地址配置 */
-    Vue.prototype.ws = new WebSocket('ws:10.58.1.226:20002')
+    Vue.prototype.ws = new WebSocket('ws:'+localStorage.getItem('IP')+':'+localStorage.getItem('WebSocketPort'))
   }
 }
