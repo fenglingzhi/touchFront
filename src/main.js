@@ -11,10 +11,13 @@ import ajax from './assets/ajaxWebApiMethod.js'
 import global from './plugins/vue.global.js'
 import Vuex from 'vuex'
 import echarts from 'echarts'
+import jqUi from 'jquery-ui'
 
 Vue.use(Vuex)
 Vue.use(ElementUI)
 Vue.use(global)
+// Vue.use(jqUi)
+
 // Vue.use($)
 
 Vue.config.productionTip = false

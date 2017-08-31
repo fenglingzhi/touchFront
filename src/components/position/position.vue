@@ -11,27 +11,37 @@
             </div>
             <div class="bodyCon">
               <el-row >
-                <el-col :span="16">
+                <el-col :span="19">
                   <div style="height:0px;"></div>
                   <el-row >
-                    <el-row >
+                    <el-row style="overflow: hidden">
                       <div class="map">
-                        <img :src="criminalsituationLsit[0].MapUrl" alt="" ref="abc">
-                        <!--<div class="point" v-for="(item,index) in criminalList" :style="{'top':item.top,'left':item.left}"></div>-->
-                        <!--<div class="point" v-for="(item,index) in criminalList"></div>-->
+                        <!--{{criminalLists}}-->
+                        <img :src="mapPhoto" alt="" ref="abc">
+                        <div v-show="item.pointStatus"  :class="['point', {pointed: item.status}]"  v-on:click="select(index)" v-for="(item,index) in criminalLists" :style="{top:item.CriminalY+'px',left:item.CriminalX+'px'}" >
+                          <div class="pointTop" v-show="item.status">{{item.PSName}}</div>
+                        </div>
                       </div>
                     </el-row>
                   </el-row>
                 </el-col>
-                <el-col :span="2" style="height:10px;">
+                <el-col :span="1" style="height:10px;">
                   <!--中间空隙-->
+                   <div>
+                    <div class="slc" v-on:click="changeSize('+')">+</div>
+                    <div class="slc" v-on:click="changeSize('-')">-</div>
+                     <div class="slc" v-on:click="changeSize('0')">0</div>
+
+                   </div>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="4">
                   <el-row >
                     <div class="deailBody">
-                      <el-col :span="8" v-for="(item,index) in criminalsituationLsit" :key="1">
+                      <el-col :span="12" v-for="(item,index) in criminalLists" :key="1">
                         <div class="criminal" v-on:click="select(index)" :class="['criminal',{criminal_active:item.status}]">
-                          <img :src="item.Photo" width="100%" height="130px" alt=""/>
+                          <div style="height: 133px;width: 90px;">
+                          <img :src="item.CriminalPhoto" width="100%" height="130px" alt=""/>
+                          </div>
                           <span class="criminalName">{{item.PSName}}</span>
                         </div>
                       </el-col>
@@ -43,7 +53,7 @@
           </div>
           <div class="partsFoot">
             <div style="margin: 20px 2px;float: right">
-              <div class="sure" v-on:click="submit()">关闭</div>
+              <div class="sure" v-on:click="cancle()">关闭</div>
             </div>
           </div>
         </div>
@@ -56,6 +66,9 @@
 
 <script>
   import { SHANLEI,IMG,ajaxUrl,MapUrl } from '../../config'
+  import { ajax } from '../../assets/ajaxWebApiMethod'
+
+  var scaleNum;
 
   export default {
     name: 'navheader',
@@ -66,119 +79,136 @@
 
     data () {
       return {
-        criminalLists:[
-          {
-            CriminalName:'张三',
-            CriminalID:'0111111',
-            Photo:'../../static/crimal_1_03.jpg',
-            status:false,
-            left:123,
-            top:123
-          },
-          {
-            CriminalName:'张三',
-            CriminalID:'0111111',
-            Photo:'../../static/crimal_1_03.jpg',
-            status:false,
-            left:70,
-            top:70
-          },
-          {
-            CriminalName:'张三',
-            CriminalID:'0111111',
-            Photo:'../../static/crimal_1_03.jpg',
-            status:false,
-            left:180,
-            top:180
-          },
-          {
-            CriminalName:'张三',
-            CriminalID:'0111111',
-            Photo:'../../static/crimal_1_03.jpg',
-            status:false,
-            left:44,
-            top:44
-          },
-          {
-            CriminalName:'张三',
-            CriminalID:'0111111',
-            Photo:'../../static/crimal_1_03.jpg',
-            status:false,
-            left:66,
-            top:66
-          },
-          {
-            CriminalName:'张三',
-            CriminalID:'0111111',
-            Photo:'../../static/crimal_1_03.jpg',
-            status:false,
-            left:140,
-            top:140
-          },
-          {
-            CriminalName:'张三',
-            CriminalID:'0111111',
-            Photo:'../../static/crimal_1_03.jpg',
-            status:false,
-            left:160,
-            top:160
-          },
-          {
-            CriminalName:'张三',
-            CriminalID:'0111111',
-            Photo:'../../static/crimal_1_03.jpg',
-            status:false,
-            left:20,
-            top:20
-          },
-          {
-            CriminalName:'张三',
-            CriminalID:'0111111',
-            Photo:'../../static/crimal_1_03.jpg',
-            status:false,
-            left:11,
-            top:11
-          },
-          {
-            CriminalName:'张三',
-            CriminalID:'0111111',
-            Photo:'../../static/crimal_1_03.jpg',
-            status:false,
-            left:30,
-            top:30
-          },
-          {
-            CriminalName:'张三',
-            CriminalID:'0111111',
-            Photo:'../../static/crimal_1_03.jpg',
-            status:false,
-            left:100,
-            top:100
-          },
-          {
-            CriminalName:'张三',
-            CriminalID:'0111111',
-            Photo:'../../static/crimal_1_03.jpg',
-            status:false,
-            left:120,
-            top:120
-          },
-        ],
-        criminalGroupIDs:'9C4CE802-D8AB-4172-AC11-15578F19B0FC',
-        criminalsituationLsit:[]
+        mapPhoto:"",
+        getMapAct:0,
+        criminalLists:[],
+        criminalGroupIDs:localStorage.getItem("criminalGroupIDs"),
+//        criminalGroupIDs:'9C4CE802-D8AB-4172-AC11-15578F19B0FC',
+        criminalsituationLsit:''
       }
     },
     methods: {
       /* 选择互监组成员 */
       select:function (index) {
         let vm = this
-        for(let i = 0; i<vm.criminalList.length; i++){
-          vm.criminalList[i].status = false
+        for(let i = 0; i<vm.criminalLists.length; i++){
+          vm.criminalLists[i].status = false
         }
-        vm.criminalList[index].status = true
+        vm.criminalLists[index].status = true
+        vm.criminalsituationLsit= vm.criminalLists[index].CriminalID
+        if(vm.criminalLists[index].MapUrl==null){
+
+        }else {
+          vm.mapPhoto= vm.criminalLists[index].MapUrl
+//          for (var k=0 ;k<vm.criminalLists.length;k++){
+//            if(vm.criminalLists[k].MapUrl !=null){
+//              if(vm.mapPhoto !=vm.criminalLists[k].MapUrl){
+//                vm.criminalLists[k].pointStatus=false
+//              }
+//            }
+//          }
+        }
+
+
+
+      },
+      /*缩放地图*/
+      changeSize:function (type) {
+          if(type=="+"){
+            scaleNum=scaleNum+0.1
+          }else if(type=="-"){
+              if(scaleNum>0.2){
+                scaleNum=scaleNum-0.1
+              }
+          }else {
+            scaleNum=1
+
+          }
+
+        $(".map").css("transform", "scale("+scaleNum+")");
+        $(".map").css("-ms-transform-origin", "0 0");
+        $(".map").css("transform-origin", "0 0");
+        $(".map").css("-webkit-transform-origin", "0 0");
+        $(".map").css("-moz-transform-origin", "0 0");
+        $(".map").css("-o-transform-origin", "0 0");
       },
       /* 地图定位 */
       pointS:function () {
+        let vm = this
+        vm.criminalLists=[]
+        let criminalGroup  = {
+          Header: {
+            MsgID:"201501260000000035",
+            MsgType:36
+          },
+          Body: JSON.stringify({
+            CriminalGroupID:vm.criminalGroupIDs
+          })
+        }
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          url: ajaxUrl,
+          data:JSON.stringify(criminalGroup),
+          success: function (result) {
+            for(var i = 0; i<result.length; i++){
+              /* 互监组成员信息 */
+              var  isTrue=false;
+              if( vm.criminalsituationLsit==result[i].CriminalID){
+                isTrue=true
+              }
+              var psName;
+              var mapUrl;
+              if(result[i].Status==1){
+                psName=result[i].PSName
+                mapUrl=MapUrl+vm.mapList[0][result[i].MapID].MapUrl
+              }else if(result[i].Status==2){
+                psName=result[i].PSName+"(离线)"
+                mapUrl=null
+              }else  if(result[i].Status==3){
+                psName=result[i].PSName+"(报警)"
+                mapUrl=MapUrl+vm.mapList[0][result[i].MapID].MapUrl
+              }
+              vm.criminalLists.push({
+                PSName:psName,
+                CriminalID:result[i].CriminalID,
+                Status:result[i].Status,
+                CriminalX:result[i].X,
+                CriminalY:result[i].Y,
+                status:isTrue,
+                CriminalPhoto:vm.criminalList[0][result[i].CriminalID].Photo,
+                MapUrl:mapUrl,
+                pointStatus:true
+              })
+            }
+//            vm.criminalLists=[ { "PSName": "伊克斯古(离线)", "CriminalID": "2ba10595-b76c-4998-ba4a-9378009e4661", "Status": 2, "CriminalX": 0, "CriminalY": 0, "status": false, "CriminalPhoto": "http://10.58.1.178:9112/Document/Photos/Criminals/201706180933274406054346_11.jpg", "MapUrl": null, "pointStatus": true }, { "PSName": "王小兵(离线)", "CriminalID": "563c7646-b1e3-4761-837f-9768994d528f", "Status": 2, "CriminalX": 0, "CriminalY": 0, "status": false, "CriminalPhoto": "http://10.58.1.178:9112/Document/Photos/Criminals/201706180940074406060988_11.jpg", "MapUrl": null, "pointStatus": true }, { "PSName": "程玄(报警)", "CriminalID": "01e56eb8-928c-49c3-a421-2da21188ec97", "Status": 3, "CriminalX": 130, "CriminalY": 404, "status": false, "CriminalPhoto": "http://10.58.1.178:9112/Document/Photos/Criminals/201706180918044406062300_11.jpg", "MapUrl": "http://10.58.1.237:9999/Maps/20170829114110201708041026521874_厂房1.svg", "pointStatus": true }, { "PSName": "尧孝明(报警)", "CriminalID": "8110ebd0-d2be-42f1-80db-653570e4514b", "Status": 3, "CriminalX": 123, "CriminalY": 202, "status": false, "CriminalPhoto": "http://10.58.1.178:9112/Document/Photos/Criminals/201706180933424406055368_11.jpg", "MapUrl": "http://10.58.1.237:9999/Maps/20170829114110201708041026521874_厂房.svg", "pointStatus": true } ]
+            for (var i=0 ;i<vm.criminalLists.length;i++){
+              if(vm.criminalLists[i].MapUrl!=null){
+                vm.mapPhoto = vm.criminalLists[i].MapUrl
+                return
+              }
+            }
+//            for (var k=0 ;k<vm.criminalLists.length;k++){
+//                alert(1)
+//                console.log("kkkkkk",vm.mapPhoto==vm.criminalLists[k].MapUrl)
+//                if(vm.criminalLists[k].MapUrl !=null){
+//                  if(vm.mapPhoto !=vm.criminalLists[k].MapUrl){
+//                    vm.criminalLists[k].pointStatus=false
+//                  }
+//                }
+//            }
+
+          },
+          complete: function (XHR) {
+            XHR = null;  //回收资源
+          }
+        });
+      },
+      /* 地图定位实时刷新 */
+      pointShow:function () {
         let vm = this
         let criminalGroup  = {
           Header: {
@@ -192,57 +222,60 @@
         $.ajax({
           type: "get",
           contentType: "application/json; charset=utf-8",
-//          dataType: "jsonp",
-          dataType:'json',
-//          jsonp: "callback",
+          dataType: "jsonp",
+          jsonp: "callback",
           async: false,
-//          url: ajaxUrl,
-          url:'http://rapapi.org/mockjsdata/23163/maps',
+          url: ajaxUrl,
           data:JSON.stringify(criminalGroup),
           success: function (result) {
-            console.log('地图定位信息',result.data)
-//            var criminalFlinkID = []//互监组人员id列表
-//            for(let i = 0; i<result.data.length; i++){
-//              criminalFlinkID.push(result.data[i].CriminalID)
-//            }
-            console.log('11111111111',vm.mapList[0])
-            var MapIdList = []//地图id列表]
-            var MapUrls=''
-            for(let i = 0; i<result.data.length; i++){
-              MapIdList.push(result.data[i].MapID)
-//              MapUrls=vm.mapList[0]['c1313a92-6387-4d1a-bfbd-618441657968'].MapUrl
+            for(var i = 0; i<result.length; i++){
               /* 互监组成员信息 */
-              vm.criminalsituationLsit.push({
-                PSName:result.data[i].PSName,
-                CriminalID:result.data[i].CriminalID,
-                CriminalX:result.data[i].X,
-                CriminalY:result.data[i].Y,
-//                CriminalPhoto:vm.criminalList[0][result.data[i].CriminalID]
-                MapUrl:MapUrl+'/Maps/20170608104303监舍2F.svg'
-              })
+              var psName;
+              var mapUrl;
+              if(result[i].Status==1){
+                psName=result[i].PSName
+                mapUrl=MapUrl+vm.mapList[0][result[i].MapID].MapUrl
+              }else if(result[i].Status==2){
+                psName=result[i].PSName+"(离线)"
+                mapUrl=null
+              }else  if(result[i].Status==3){
+                psName=result[i].PSName+"(报警)"
+                mapUrl=MapUrl+vm.mapList[0][result[i].MapID].MapUrl
+              }
+              for (var j=0 ;j<vm.criminalLists.length;j++){
+                  if(vm.criminalLists[j].CriminalID==result[i].CriminalID){
+                    vm.criminalLists[j].PSName=psName
+                    vm.criminalLists[j].CriminalX=result[i].X
+                    vm.criminalLists[j].CriminalY=result[i].Y
+                    vm.criminalLists[j].Status=result[i].Status
+                    vm.criminalLists[j].MapUrl=mapUrl
+                  }
+              }
             }
-            console.log('eeeeeeeeeeeee',vm.criminalsituationLsit)
-            for(let i = 0; i< result.data.length; i++){
-              var html ='<div class="point" style="top:'+result.data[i].X+'px; left: '+result.data[i].Y+'px"></div>'
-              $('.map').append(html)
-            }
+
           },
           complete: function (XHR) {
             XHR = null;  //回收资源
           }
         });
-
-
       },
-
+      /*返回*/
+      cancle:function () {
+        clearInterval(this.getMapAct)
+        localStorage.setItem("criminalGroupIDs","")
+        this.$router.push({ path: '/mutualsupervision' })
+      }
     },
     mounted () {
       let vm = this
+      scaleNum=1
       /* Coding By YanM */
-      if(vm.criminalList!==null || vm.mapList!==null){
-
-      }
       vm.pointS()
+      vm.getMapAct=setInterval(function () {
+        vm.pointShow()
+      },1000)
+      $(".map").draggable();
+
 
       /* Coding By YanM */
     }
@@ -331,9 +364,32 @@
   }
   .point{
     width: 10px;
-    height:10px;
+    height: 10px;
     background: red;
     position: absolute;
+    border-radius: 18px;
+  }
+  .pointed{
+    background: blue;
+  }
+  .pointTop{
+      width: 96px;
+      color: white;
+      background: #6f665a;
+      text-align: center;
+      height: 39px;
+      padding: 3px;
+      border-radius: 5px;
+      margin: -46px 12px;
+  }
+  .slc{
+    width: 32px;
+    height: 33px;
+    line-height: 32px;
+    border-radius: 99px;
+    font-size: 35px;
+    border: 2px solid blue;
+    margin: 14px 9px;
   }
 
 </style>

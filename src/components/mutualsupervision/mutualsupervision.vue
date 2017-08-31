@@ -142,13 +142,15 @@
         for(var i=0;i< this.generalGroupList.length;i++){
           this.generalGroupList[i].ischoose=false
         }
+        localStorage.setItem("criminalGroupIDs",this.generalGroupList[dom+this.generalGroupA-1].FlnkID)
         this.generalGroupList[dom+this.generalGroupA-1].ischoose=!this.generalGroupList[dom+this.generalGroupA-1].ischoose
-//        this.$router.push({ path: '/position' })
+        this.$router.push({ path: '/position' })
       },
       chooseProvisionalGroup:function (dom) {
         for(var i=0;i< this.provisionalGroupList.length;i++){
           this.provisionalGroupList[i].ischoose=false
         }
+        localStorage.setItem("criminalGroupIDs", this.provisionalGroupList[dom+this.provisionalGroupA-1].FlnkID)
         this.provisionalGroupList[dom+this.provisionalGroupA-1].ischoose=!this.provisionalGroupList[dom+this.provisionalGroupA-1].ischoose
       },
       generalGroupGo:function () {
@@ -395,7 +397,7 @@
           url: ajaxUrl,
           data:JSON.stringify(send3),
           success: function (result) {
-          
+
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
