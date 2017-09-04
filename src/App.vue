@@ -266,33 +266,33 @@
     <!--报警弹框 end-->
 
     <!--用户登录 star-->
-    <div class="alertTip alertYHDL" v-show="alertYHDL">
-      <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 408px;">
-        <div class="bodyHead"><div class="title">用户登录</div><div  v-on:click="loginclose('alertYHDL')" class="close">X</div></div>
-        <div class="bodyCon">
-          <el-row class="menu_title_wrap">
-            <el-col :span="6" >
-              <div style="height: 57px"></div>
-              <p>登录名：</p>
-              <div style="height:12px"></div>
-              <p>密码：</p>
-            </el-col>
-            <el-col :span="12">
-              <span class="tipHead">请民警登录或刷卡确认</span>
-              <input type="text" placeholder="请输入" v-model="policeLogin.account">
-              <input type="password" placeholder="请输入" v-model="policeLogin.password">
-            </el-col>
-            <el-col :span="6" style="height: 10px"></el-col>
-          </el-row>
-        </div>
-        <div class="partsFoot">
-          <div class="alertText">{{alertText}}</div>
-          <div style="margin: 20px 2px;float: right">
-            <div class="sure" @click="logonSbumit">确定</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!--<div class="alertTip alertYHDL" v-show="alertYHDL">-->
+      <!--<div class="alertBody " style="margin: -204px -316px;width: 632px;height: 408px;">-->
+        <!--<div class="bodyHead"><div class="title">用户登录</div><div  v-on:click="loginclose('alertYHDL')" class="close">X</div></div>-->
+        <!--<div class="bodyCon">-->
+          <!--<el-row class="menu_title_wrap">-->
+            <!--<el-col :span="6" >-->
+              <!--<div style="height: 57px"></div>-->
+              <!--<p>登录名：</p>-->
+              <!--<div style="height:12px"></div>-->
+              <!--<p>密码：</p>-->
+            <!--</el-col>-->
+            <!--<el-col :span="12">-->
+              <!--<span class="tipHead">请民警登录或刷卡确认</span>-->
+              <!--<input type="text" placeholder="请输入" v-model="policeLogin.account">-->
+              <!--<input type="password" placeholder="请输入" v-model="policeLogin.password">-->
+            <!--</el-col>-->
+            <!--<el-col :span="6" style="height: 10px"></el-col>-->
+          <!--</el-row>-->
+        <!--</div>-->
+        <!--<div class="partsFoot">-->
+          <!--<div class="alertText">{{alertText}}</div>-->
+          <!--<div style="margin: 20px 2px;float: right">-->
+            <!--<div class="sure" @click="logonSbumit">确定</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
     <!--用户登录 end-->
 
   </div>
@@ -326,7 +326,7 @@
         FlnkIDList_3 : [],                //外监进入人员ID
         FlnkIDList_33: [],
         FlnkIDList_4 : [],                //在监人数（非在线）ID
-        FlnkIDList_44: ['123123123'],
+        FlnkIDList_44: [],
         chartsDatas:[],                   //人员分布图表渲染数据
         chartsDatasName:[],               //人员分布图表-表名
         crimalCount_outCrimalCount:{},    //监区人数 && 外出人数（监外）
@@ -712,7 +712,6 @@
       /*报警翻页*/
       alarmBack:function () {
         if(this.alarmNowPage==1){
-//          alert("已经是第一页了")
         }else {
           this.alarmNowPage=this.alarmNowPage-1
           this.alarmA=this.alarmA-1
@@ -734,7 +733,6 @@
                 vm.groupTeam = result
               },
               error: function (err) {
-//          alert("请求异常")
               },
               complete: function (XHR, TS) {
                 XHR = null;  //回收资源
@@ -770,7 +768,6 @@
               vm.GetCriminalCalledList=result
             },
             error: function (err) {
-//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -807,7 +804,6 @@
       getCriminalback:function () {
         var vm = this
         if(vm.criminalPage==0){
-//          alert("已经是第一页了")
         }else {
           vm.criminalPage=vm.criminalPage-1
           $.ajax({
@@ -827,7 +823,6 @@
               vm.GetCriminalCalledList=result
             },
             error: function (err) {
-//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -846,7 +841,6 @@
               vm.criminalCount=result
             },
             error: function (err) {
-//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -859,7 +853,6 @@
       getToolback:function () {
         var vm = this
         if(vm.toolPage==0){
-//          alert("已经是第一页了")
         }else {
           vm.toolPage=vm.toolPage-1
           $.ajax({
@@ -879,7 +872,6 @@
               vm.GetToolCalledList=result
             },
             error: function (err) {
-//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -898,7 +890,6 @@
               vm.toolCount=result
             },
             error: function (err) {
-//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -929,7 +920,6 @@
               vm.GetToolCalledList=result
             },
             error: function (err) {
-//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
@@ -949,14 +939,12 @@
               vm.criminalCount=result
             },
             error: function (err) {
-//              alert("请求异常")
             },
             complete: function (XHR, TS) {
               XHR = null;  //回收资源
             }
           });
         }else {
-//          alert("已经到了最后一页了")
         }
 
 
@@ -985,7 +973,6 @@
             vm.GetToolCalledList=result
           },
           error: function (err) {
-//            alert("请求异常")
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
@@ -1004,7 +991,6 @@
             vm.toolCount=result
           },
           error: function (err) {
-//            alert("请求异常")
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
@@ -1488,7 +1474,6 @@
         /* 计划任务-返回数据-4 */
         if(JSON.parse(event.data).Header.MsgType === 4){
           var  plan_task = JSON.parse(JSON.parse(event.data).Body)
-          console.log('ssssssssssssssssss',plan_task)
           if(plan_task.PlanTypeName !== '巡更计划'){
             vm.plan = plan_task.PlanTypeName
             vm.planStartTime = plan_task.StartTime

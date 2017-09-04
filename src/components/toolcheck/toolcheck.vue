@@ -69,7 +69,7 @@
           </div>
           <div class="partsFoot">
             <div class="alertText">{{alertText}}</div>
-            <div style="margin: 13px 2px;float: right">
+            <div style="margin: 20px 2px;float: right">
               <div class="sure" v-on:click="submitTool()">手动确定</div>
               <div class="sure" v-on:click="cancel()">手动结束</div>
             </div>

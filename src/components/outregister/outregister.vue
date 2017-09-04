@@ -135,7 +135,7 @@
           </div>
           <div class="partsFoot">
             <div class="alertText">{{alertText}}</div>
-            <div style="margin: 13px 2px;float: right">
+            <div style="margin: 20px 2px;float: right">
               <div class="sure" v-on:click="submitOutRegister()">提交</div>
               <div class="sure" v-on:click="cancel()">取消</div>
             </div>
@@ -757,14 +757,9 @@
 
   .li3_parts .partsBody{
     width: 100%;
-    height: 695px;
+    height: 692px;
     background: white;
 
-  }
-  .li3_parts .partsBody {
-    width: 100%;
-    height: 675px;
-    background: white;
   }
   .li3_parts .partsFoot{
     width: 100%;

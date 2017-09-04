@@ -222,6 +222,12 @@ export default {
       vm.float_personnelAllPages=Math.ceil(vm.FlnkIDList2.length/6)===0?1:Math.ceil(vm.FlnkIDList2.length/6)
       vm.outside_persion_personnelsListAll=vm.FlnkIDList3.length
       vm.outside_persion_personnelsAllPages=Math.ceil(vm.FlnkIDList3.length/4)===0?1:Math.ceil(vm.FlnkIDList3.length/4)
+      if(vm.outside_persion_personnelsNowPage>vm.outside_persion_personnelsAllPages){
+        vm.outside_persion_personnelsNowPage=vm.outside_persion_personnelsAllPages
+      }
+      if(vm.float_personnelNowPage>vm.float_personnelAllPages){
+        vm.float_personnelNowPag=vm.float_personnelAllPages
+      }
     },400)
 
 
@@ -279,7 +285,7 @@ export default {
       }
     }
     .member_distribute{
-      height:520px;
+      height:460px;
       background: rgba(255,255,255,.8);
       overflow: hidden;
       text-align: left;
@@ -287,7 +293,7 @@ export default {
     .floating_personnel{
       background: rgba(255,255,255,.8);
       overflow: hidden;
-      height: 510px;
+      height: 500px;
       margin-bottom: 20px;
       margin-left: 20px;
       .float{
@@ -335,10 +341,11 @@ export default {
     .outside_persion_personnel{
       background: rgba(255,255,255,.8);
       overflow: hidden;
-      height: 310px;
+      height: 260px;
       margin-left: 20px;
       .outside_person_wrap{
         padding: 20px 10px;
+        height:140px;
         .outside_person_card{
           padding: 10px;
           height: 100px;

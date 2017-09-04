@@ -47,7 +47,7 @@
 
           </div>
           <div class="partsFoot">
-            <div style="margin: 13px 2px;float: right">
+            <div style="margin: 20px 2px;float: right">
               <div class="sure" @click="bandCardInfoSubmit()" v-show="!isUnbind">提交</div>
               <div class="sure" @click="bandCardInfoUnbind()" v-show="isUnbind">提交解绑</div>
               <div class="sure" @click="bandCardUnbindAll()" v-show="isUnbind">一键解绑</div>
@@ -379,16 +379,9 @@
     height: 740px;
     margin: 0px auto;
   }
-
-  .li4_parts .partsBody{
-    width: 100%;
-    height: 695px;
-    background: white;
-
-  }
   .li4_parts .partsBody {
     width: 100%;
-    height: 672px;
+    height: 652px;
     background: white;
   }
   .li4_parts .partsFoot{

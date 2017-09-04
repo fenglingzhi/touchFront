@@ -93,7 +93,7 @@
           <div class="partsFoot">
             <div class="alertText">{{alertText}}</div>
 
-            <div style="margin: 13px 2px;float: right">
+            <div style="margin: 20px 2px;float: right">
               <div class="sure" v-on:click="submit()">提交</div>
               <div class="sure" v-on:click="cancelSubmit()">取消</div>
             </div>
@@ -143,7 +143,7 @@
           this.generalGroupList[i].ischoose=false
         }
         this.generalGroupList[dom+this.generalGroupA-1].ischoose=!this.generalGroupList[dom+this.generalGroupA-1].ischoose
-//        this.$router.push({ path: '/position' })
+        this.$router.push({ path: '/position' })
       },
       chooseProvisionalGroup:function (dom) {
         for(var i=0;i< this.provisionalGroupList.length;i++){
@@ -395,7 +395,7 @@
           url: ajaxUrl,
           data:JSON.stringify(send3),
           success: function (result) {
-          
+
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
@@ -555,13 +555,7 @@
 
   .li4_parts .partsBody{
     width: 100%;
-    height: 695px;
-    background: white;
-
-  }
-  .li4_parts .partsBody {
-    width: 100%;
-    height: 675px;
+    height: 692px;
     background: white;
   }
   .li4_parts .partsFoot{

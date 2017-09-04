@@ -378,7 +378,7 @@
   }
   .li1_parts .partsBody{
     width: 100%;
-    height: 614px;
+    height: 652px;
     background: white;
 
   }
