@@ -17,7 +17,9 @@
             <div class="bodyCon">
               <el-col :span="2"  v-for="(criminal,index) in inCriminals.slice(inA-1,inB)" :key="1">
                 <div  :class="['criminal', {choosedcriminal: criminal.ischoose}]" v-on:click="chooseIn(index)" >
+                  <div style="height: 91px;width: 90px;">
                   <img :src="criminal.Photo" width="98%" height="85" alt=""/>
+                  </div>
                   <span class="criminalName">{{ criminal.CriminalName }}</span>
                 </div>
               </el-col>

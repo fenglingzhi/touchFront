@@ -11,6 +11,7 @@ import ajax from './assets/ajaxWebApiMethod.js'
 import config from './config.js'
 import Vuex from 'vuex'
 import echarts from 'echarts'
+// import jqUi from 'jquery-ui'
 
 Vue.use(Vuex)
 Vue.use(ElementUI)

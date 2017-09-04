@@ -266,33 +266,33 @@
     <!--报警弹框 end-->
 
     <!--用户登录 star-->
-    <!--<div class="alertTip alertYHDL" v-show="alertYHDL">-->
-      <!--<div class="alertBody " style="margin: -204px -316px;width: 632px;height: 408px;">-->
-        <!--<div class="bodyHead"><div class="title">用户登录</div><div  v-on:click="loginclose('alertYHDL')" class="close">X</div></div>-->
-        <!--<div class="bodyCon">-->
-          <!--<el-row class="menu_title_wrap">-->
-            <!--<el-col :span="6" >-->
-              <!--<div style="height: 57px"></div>-->
-              <!--<p>登录名：</p>-->
-              <!--<div style="height:12px"></div>-->
-              <!--<p>密码：</p>-->
-            <!--</el-col>-->
-            <!--<el-col :span="12">-->
-              <!--<span class="tipHead">请民警登录或刷卡确认</span>-->
-              <!--<input type="text" placeholder="请输入" v-model="policeLogin.account">-->
-              <!--<input type="password" placeholder="请输入" v-model="policeLogin.password">-->
-            <!--</el-col>-->
-            <!--<el-col :span="6" style="height: 10px"></el-col>-->
-          <!--</el-row>-->
-        <!--</div>-->
-        <!--<div class="partsFoot">-->
-          <!--<div class="alertText">{{alertText}}</div>-->
-          <!--<div style="margin: 20px 2px;float: right">-->
-            <!--<div class="sure" @click="logonSbumit">确定</div>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
+    <div class="alertTip alertYHDL" v-show="alertYHDL">
+      <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 408px;">
+        <div class="bodyHead"><div class="title">用户登录</div><div  v-on:click="loginclose('alertYHDL')" class="close">X</div></div>
+        <div class="bodyCon">
+          <el-row class="menu_title_wrap">
+            <el-col :span="6" >
+              <div style="height: 57px"></div>
+              <p>登录名：</p>
+              <div style="height:12px"></div>
+              <p>密码：</p>
+            </el-col>
+            <el-col :span="12">
+              <span class="tipHead">请民警登录或刷卡确认</span>
+              <input type="text" placeholder="请输入" v-model="policeLogin.account">
+              <input type="password" placeholder="请输入" v-model="policeLogin.password">
+            </el-col>
+            <el-col :span="6" style="height: 10px"></el-col>
+          </el-row>
+        </div>
+        <div class="partsFoot">
+          <div class="alertText">{{alertText}}</div>
+          <div style="margin: 20px 2px;float: right">
+            <div class="sure" @click="logonSbumit">确定</div>
+          </div>
+        </div>
+      </div>
+    </div>
     <!--用户登录 end-->
 
   </div>
@@ -303,6 +303,8 @@
   import menufooter from './components/menufooter.vue'                // 引入组件底部菜单
   import { BasicUrl,IMG,ajaxUrl} from './config'
   import global from './plugins/vue.global.js'
+  import { ajax } from './assets/ajaxWebApiMethod'
+
 
   export default {
     name: 'app',
@@ -1591,12 +1593,12 @@
 
       /* 关闭状态 */
       vm.ws.onclose = function(){
-        vm.onlinestatus = false
-        if(vm.onlinestatus === false){
-          setInterval(function () {
-            window.location.reload()
-          },5000)
-        }
+//        vm.onlinestatus = false
+//        if(vm.onlinestatus === false){
+//          setInterval(function () {
+//            window.location.reload()
+//          },5000)
+//        }
       };
 
       /* 错误信息 */
@@ -1608,6 +1610,9 @@
 
       /* Coding By Qianjf */
       localStorage.setItem("moveTypes","0")//1为进出工，2为临时外出登记
+      $(".alertAlarm").draggable();
+
+
       /* Coding By Qianjf */
 
     }
@@ -1812,9 +1817,10 @@
   .alertAlarm{
     width: 230px;
     height: 80px;
-    position: fixed;
-    bottom: 80px;
-    right: 34px;
+    /*position: fixed;*/
+    /*bottom: 80px;*/
+    /*right: 34px;*/
+    position: absolute;
     background: rgb(255, 51, 51);
   }
   .alarmImg{

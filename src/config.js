@@ -23,7 +23,7 @@ $.ajax({
 export const ajaxUrl = 'http://'+localStorage.getItem('IP')+':' +localStorage.getItem('TcpPort')
 /* 静态资源地址 */
 export const IMG = 'http://10.58.1.178:9112'
-export const MapUrl ='http://10.58.1.237:8888'
+export const MapUrl ='http://10.58.1.237:9999'
 export default {
   /*全局弹窗显示变量*/
   install(Vue){
@@ -31,7 +31,6 @@ export default {
     Vue.prototype.getLocalStorage = (keyName) => {
       return (localStorage.getItem(keyName))
     }
-
     /* 全局本地存储 */
     Vue.prototype.setLocalStorage = (keyName,keyValue) => {
       localStorage.setItem(keyName,keyValue)

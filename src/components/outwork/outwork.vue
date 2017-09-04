@@ -13,7 +13,9 @@
 
             <el-col :span="2" v-for="(outCrimina,index)  in outCriminalList.slice(outA-1,outB)" :key="1">
               <div class="criminal">
+                <div style="height: 91px;width:102px;">
                 <img :src="outCrimina.Photo" width="98%" height="85" alt=""/>
+                </div>
                 <span class="criminalName">{{outCrimina.CriminalName}}</span>
               </div>
             </el-col>
@@ -35,7 +37,9 @@
           <div class="bodyCon">
             <el-col :span="2" v-for="(inCriminal,index) in inCriminalList.slice(inA-1,inB)" :key="1">
               <div class="criminal">
+                <div style="height: 91px;width: 102px;">
                 <img :src="inCriminal.Photo" width="98%" height="85" alt=""/>
+                </div>
                 <span class="criminalName">{{inCriminal.CriminalName}}</span>
               </div>
             </el-col>
@@ -145,7 +149,7 @@
       },
       outBack:function () {
         if(this.outNowPage==1){
-          alert("已经是第一页了")
+//          alert("已经是第一页了")
         }else {
           this.outNowPage=this.outNowPage-1
           this.outA=this.outA-48
