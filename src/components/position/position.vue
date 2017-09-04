@@ -14,7 +14,7 @@
                 <el-col :span="19">
                   <div style="height:0px;"></div>
                   <el-row >
-                    <el-row style="overflow: hidden">
+                    <el-row style="overflow: hidden ;height: 590px">
                       <div class="map">
                         <!--{{criminalLists}}-->
                         <img :src="mapPhoto" alt="" ref="abc">
@@ -30,7 +30,7 @@
                    <div>
                     <div class="slc" v-on:click="changeSize('+')">+</div>
                     <div class="slc" v-on:click="changeSize('-')">-</div>
-                     <div class="slc" v-on:click="changeSize('0')">0</div>
+                    <div class="slc" style="font-size: 15px" v-on:click="changeSize('0')">复位</div>
 
                    </div>
                 </el-col>
@@ -100,13 +100,14 @@
 
         }else {
           vm.mapPhoto= vm.criminalLists[index].MapUrl
-//          for (var k=0 ;k<vm.criminalLists.length;k++){
-//            if(vm.criminalLists[k].MapUrl !=null){
-//              if(vm.mapPhoto !=vm.criminalLists[k].MapUrl){
-//                vm.criminalLists[k].pointStatus=false
-//              }
-//            }
-//          }
+          vm.criminalLists[index].pointStatus=true
+          for (var k=0 ;k<vm.criminalLists.length;k++){
+            if(vm.criminalLists[k].MapUrl !=null){
+              if(vm.mapPhoto !=vm.criminalLists[k].MapUrl){
+                vm.criminalLists[k].pointStatus=false
+              }
+            }
+          }
         }
 
 
@@ -122,9 +123,7 @@
               }
           }else {
             scaleNum=1
-
           }
-
         $(".map").css("transform", "scale("+scaleNum+")");
         $(".map").css("-ms-transform-origin", "0 0");
         $(".map").css("transform-origin", "0 0");
@@ -184,22 +183,20 @@
                 pointStatus:true
               })
             }
-//            vm.criminalLists=[ { "PSName": "伊克斯古(离线)", "CriminalID": "2ba10595-b76c-4998-ba4a-9378009e4661", "Status": 2, "CriminalX": 0, "CriminalY": 0, "status": false, "CriminalPhoto": "http://10.58.1.178:9112/Document/Photos/Criminals/201706180933274406054346_11.jpg", "MapUrl": null, "pointStatus": true }, { "PSName": "王小兵(离线)", "CriminalID": "563c7646-b1e3-4761-837f-9768994d528f", "Status": 2, "CriminalX": 0, "CriminalY": 0, "status": false, "CriminalPhoto": "http://10.58.1.178:9112/Document/Photos/Criminals/201706180940074406060988_11.jpg", "MapUrl": null, "pointStatus": true }, { "PSName": "程玄(报警)", "CriminalID": "01e56eb8-928c-49c3-a421-2da21188ec97", "Status": 3, "CriminalX": 130, "CriminalY": 404, "status": false, "CriminalPhoto": "http://10.58.1.178:9112/Document/Photos/Criminals/201706180918044406062300_11.jpg", "MapUrl": "http://10.58.1.237:9999/Maps/20170829114110201708041026521874_厂房1.svg", "pointStatus": true }, { "PSName": "尧孝明(报警)", "CriminalID": "8110ebd0-d2be-42f1-80db-653570e4514b", "Status": 3, "CriminalX": 123, "CriminalY": 202, "status": false, "CriminalPhoto": "http://10.58.1.178:9112/Document/Photos/Criminals/201706180933424406055368_11.jpg", "MapUrl": "http://10.58.1.237:9999/Maps/20170829114110201708041026521874_厂房.svg", "pointStatus": true } ]
+//            vm.criminalLists=[ { "PSName": "伊克斯古(离线)", "CriminalID": "2ba10595-b76c-4998-ba4a-9378009e4661", "Status": 2, "CriminalX": 0, "CriminalY": 0, "status": false, "CriminalPhoto": "http://10.58.1.178:9112/Document/Photos/Criminals/201706180933274406054346_11.jpg", "MapUrl": null, "pointStatus": true }, { "PSName": "王小兵(离线)", "CriminalID": "563c7646-b1e3-4761-837f-9768994d528f", "Status": 2, "CriminalX": 0, "CriminalY": 0, "status": false, "CriminalPhoto": "http://10.58.1.178:9112/Document/Photos/Criminals/201706180940074406060988_11.jpg", "MapUrl": null, "pointStatus": true }, { "PSName": "程玄(报警)", "CriminalID": "01e56eb8-928c-49c3-a421-2da21188ec97", "Status": 3, "CriminalX": 130, "CriminalY": 404, "status": false, "CriminalPhoto": "http://10.58.1.178:9112/Document/Photos/Criminals/201706180918044406062300_11.jpg", "MapUrl": "http://10.58.1.237:9999/Maps/2017080410261020170712171800%E7%9B%91%E8%88%8D3F.svg", "pointStatus": true }, { "PSName": "尧孝明(报警)", "CriminalID": "8110ebd0-d2be-42f1-80db-653570e4514b", "Status": 3, "CriminalX": 123, "CriminalY": 202, "status": false, "CriminalPhoto": "http://10.58.1.178:9112/Document/Photos/Criminals/201706180933424406055368_11.jpg", "MapUrl": "http://10.58.1.237:9999/Maps/20170829114110201708041026521874_厂房.svg", "pointStatus": true } ]
             for (var i=0 ;i<vm.criminalLists.length;i++){
               if(vm.criminalLists[i].MapUrl!=null){
                 vm.mapPhoto = vm.criminalLists[i].MapUrl
-                return
+                break
               }
             }
-//            for (var k=0 ;k<vm.criminalLists.length;k++){
-//                alert(1)
-//                console.log("kkkkkk",vm.mapPhoto==vm.criminalLists[k].MapUrl)
-//                if(vm.criminalLists[k].MapUrl !=null){
-//                  if(vm.mapPhoto !=vm.criminalLists[k].MapUrl){
-//                    vm.criminalLists[k].pointStatus=false
-//                  }
-//                }
-//            }
+            for (var k=0 ;k<vm.criminalLists.length;k++){
+                if(vm.criminalLists[k].MapUrl !=null){
+                  if(vm.mapPhoto !=vm.criminalLists[k].MapUrl){
+                    vm.criminalLists[k].pointStatus=false
+                  }
+                }
+            }
 
           },
           complete: function (XHR) {
@@ -278,6 +275,10 @@
 
 
       /* Coding By YanM */
+    },
+    destroyed: function () {
+      clearInterval(this.getMapAct)
+      localStorage.setItem("criminalGroupIDs","")
     }
   }
 </script>
@@ -368,6 +369,22 @@
     background: red;
     position: absolute;
     border-radius: 18px;
+    box-shadow: 1px 0px 10px 3px;
+    animation:mymove 1s infinite;
+    -webkit-animation:mymove 1s infinite; /*Safari and Chrome*/
+  }
+  @keyframes mymove
+  {
+    0% { box-shadow:1px 0px 10px 5px;}
+    50% { box-shadow:1px 0px 10px 0px;}
+    100%{ box-shadow:1px 0px 10px 5px;}
+  }
+
+  @-webkit-keyframes mymove /*Safari and Chrome*/
+  {
+    0% { box-shadow:1px 0px 10px 5px;}
+    50% { box-shadow:1px 0px 10px 0px;}
+    100%{ box-shadow:1px 0px 10px 5px;}
   }
   .pointed{
     background: blue;
@@ -380,7 +397,7 @@
       height: 39px;
       padding: 3px;
       border-radius: 5px;
-      margin: -46px 12px;
+      margin: -18px 12px;
   }
   .slc{
     width: 32px;
