@@ -1,7 +1,9 @@
 // 配置baseurl
 // 接口地址
 /* 基础数据接口地址 */
-export const BasicUrl = 'http://10.58.1.145:88/api/'
+// export const BasicUrl = 'http://10.58.1.145:88/api/'
+export const BasicUrl = 'http://'+window.location.host+'/api/'
+console.log(BasicUrl)
 $.ajax({
   type: "get",
   contentType: "application/json; charset=utf-8",
@@ -22,8 +24,11 @@ $.ajax({
 /* 服务请求接口地址 */
 export const ajaxUrl = 'http://'+localStorage.getItem('IP')+':' +localStorage.getItem('TcpPort')
 /* 静态资源地址 */
-export const IMG = 'http://10.58.1.178:9112'
-export const MapUrl ='http://10.58.1.237:9999'
+// export const IMG = 'http://10.58.1.178:9112'
+export const IMG = ''
+// export const MapUrl ='http://10.58.1.237:9999'
+export const MapUrl =''
+
 export default {
   /*全局弹窗显示变量*/
   install(Vue){
