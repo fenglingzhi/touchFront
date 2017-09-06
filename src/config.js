@@ -2,7 +2,8 @@
 // 接口地址
 /* 基础数据接口地址 */
 // export const BasicUrl = 'http://10.58.1.145:88/api/'
-export const BasicUrl = 'http://'+window.location.host+'/api/'
+// export const BasicUrl = 'http://'+window.location.host+'/api/'
+export const BasicUrl = '/api/'
 $.ajax({
   type: "get",
   contentType: "application/json; charset=utf-8",
@@ -13,8 +14,8 @@ $.ajax({
   success: function (result) {
     console.log(result)
     localStorage.setItem('IP',result[0].GateWayIP)
-    localStorage.setItem('WebSocketPort',result[0].ReceivePort)
-    localStorage.setItem('TcpPort',result[0].TcpReceivePort)
+    localStorage.setItem('WebSocketPort',result[0].TcpReceivePort)
+    localStorage.setItem('TcpPort',result[0].ReceivePort)
   },
   complete: function (XHR, TS) {
     XHR = null;  //回收资源

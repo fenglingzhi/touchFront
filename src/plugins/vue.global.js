@@ -25,7 +25,7 @@ export default {
     Vue.prototype.websocketInit = (path) => {
       let ws = new WebSocket(path)
     }
-    Vue.prototype.ws = new WebSocket('ws:10.58.1.226:20002')
+    // Vue.prototype.ws = new WebSocket('ws:10.58.1.226:20002')
     // Vue.prototype.ws = new WebSocket('ws:10.58.1.237:20002')
     // Vue.prototype.ws = new WebSocket('ws:10.58.1.175:2015')
     // Vue.prototype.ws = new WebSocket('ws:127.0.0.1:2015')
