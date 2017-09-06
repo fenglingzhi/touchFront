@@ -60,6 +60,8 @@
       /* 导航时间计时器 */
       TimerFormat: function () {
         var vm = this;
+
+
         setInterval(function () {
           var Year = new Date().getFullYear()
           var Months = new Date().getMonth()+1
@@ -70,6 +72,17 @@
           var Seconds = new Date().getSeconds()>9? new Date().getSeconds():"0"+ new Date().getSeconds()
           var getTime = Hours + ':' + Minutes + ':' + Seconds
           var getYear = Year + '年' + Months + '月' + Days + '日'
+          /*收工语言提示*/
+          var overTime=localStorage.getItem("overTime")
+//          var overTime="15:23:00"
+          if(overTime!=null&&overTime!=""){
+            var timeList=overTime.split(":")
+            if(Hours==timeList[0]&&Minutes==timeList[1]&&Seconds==timeList[2]){
+                alert("收工时间到啦")
+              vm.$emit("workOut","workOut")
+            }
+          }
+
           var week
           if (getDay === '0') {
             week = '星期日'
@@ -90,10 +103,12 @@
           vm.localWeek = week
           vm.localYear = getYear
         }, 1000)
+
       }
     },
     mounted(){
       this.TimerFormat()
+
     }
   }
 </script>

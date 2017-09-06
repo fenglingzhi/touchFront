@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <navheader
+      @workOut="playAudio"
       @getPosition="onClickPosition()"
       :message="prisonSelectText"
       :plan="plan"
@@ -273,7 +274,7 @@
           <el-row class="menu_title_wrap">
             <el-col :span="6" >
               <div style="height: 57px"></div>
-              <p>登录名：</p>
+              <p >登录名：</p>
               <div style="height:12px"></div>
               <p>密码：</p>
             </el-col>
@@ -294,7 +295,22 @@
       </div>
     </div>
     <!--用户登录 end-->
-
+    <!--报警音频资源加载-->
+    <audio id="waring" preload="preload">
+      <source src="http://www.w3school.com.cn/i/song.mp3" type="audio/ogg" />
+    </audio>
+    <!--人员清点音频资源加载-->
+    <audio id="personPlan" preload="preload">
+      <source src="http://www.w3school.com.cn/i/song.mp3" type="audio/ogg" />
+    </audio>
+    <!--工具清点音频资源加载-->
+    <audio id="toolPlan" preload="preload">
+      <source src="http://www.w3school.com.cn/i/song.mp3" type="audio/ogg" />
+    </audio>
+    <!--收工音频资源加载-->
+    <audio id="workOut" preload="preload">
+      <source src="http://www.w3school.com.cn/i/song.mp3" type="audio/ogg" />
+    </audio>
   </div>
 </template>
 
@@ -1013,7 +1029,11 @@
           }
         });
       },
-
+      /*触发音频*/
+      playAudio:function (id) {
+        var audio = document.getElementById(id);
+        audio.play()
+      },
       /* Coding By Qianjf */
 
       /* 弹窗关闭 */
@@ -1164,6 +1184,22 @@
           }
         });
 
+        /* 收工时间 */
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          data: {OrgID: localStorage.getItem('OrgID')},
+          url: SHANLEI + 'HomeIndex/GetKnockOffTime',
+          success: function (result) {
+            localStorage.setItem("overTime",result[0].FieldValue)
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        });
         /* 工具基础信息 */
         $.ajax({
           type: "get",
@@ -1497,12 +1533,14 @@
             vm.planEndTime = plan_task.EndTime
             vm.NextTime = plan_task.NextTime
             if(vm.plan == '工具清点计划'){
+              vm.playAudio("toolPlan")
               if(vm.canRouter == 1){
                 vm.$router.push({ path: '/toolcheck' })
               } else {
                 alert('工具清点已经开始，请结束本次操作后开始工具清点')
               }
             } else if(vm.plan == '人员清点计划'){
+              vm.playAudio("personPlan")
               if(vm.canRouter === 1){
                 vm.$router.push({ path: '/crimalcheck' })
               } else {
@@ -1510,7 +1548,7 @@
               }
             }
           } else {
-              alert(1)
+//              alert(1)
           }
         }
 
