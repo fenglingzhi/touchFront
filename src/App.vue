@@ -1539,7 +1539,7 @@
               vm.chest_card.push({
                 CardID:chest_card.CardID,
                 CardType:chest_card.CardType,
-                CriminalID:chest_card.CriminalID,
+                CriminalID:vm.criminalList[0][chest_card.CriminalID].CriminalID,
                 status:false,
                 CriminalName:vm.criminalList[0][chest_card.CriminalID].CriminalName,
                 Photo:vm.criminalList[0][chest_card.CriminalID].Photo,
@@ -1645,7 +1645,7 @@
     text-align: center;
     color: #2c3e50;
     /*width: 100%;*/
-    background: url('./assets/bg.png');
+    background: url('../img/bg.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     width: 1584px;

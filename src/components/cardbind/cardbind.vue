@@ -153,45 +153,49 @@
         let vm = this
         let ChangeCardPeopleList = []
         for(let i = 0; i<vm.chest_card.length; i++){
-          ChangeCardPeopleList.push({
-            CriminalID:vm.chest_card[i].CriminalID,
-            ChestCard:vm.chest_card[i].CardID,
-            WristCard:vm.chest_card[i].wristband
-          })
-        }
-        var bandCardInfoSubmit = {
-          Header: {
-            MsgID:"201501260000000001",
-            MsgType:52,
-          },
-          Body: JSON.stringify({
-            DoorID : vm.getLocalStorage('DoorID'),
-            ChangeCardPeopleList:ChangeCardPeopleList
-          })
-        }
-        $.ajax({
-          type: "get",
-          contentType: "application/json; charset=utf-8",
-          dataType: "jsonp",
-          jsonp: "callback",
-          async: false,
-          url: ajaxUrl,
-          data:JSON.stringify(bandCardInfoSubmit),
-          success: function (result) {
-            if(result.RET === 1){
-              alert('绑定成功')
-              localStorage.setItem("moveTypes","0")
-
-              vm.$router.push({ path: '/' })
-            } else {
-              alert('绑定失败')
-//              vm.$router.push({ path: '/' })
+          if(vm.chest_card[i].wristband !== null || vm.chest_card[i].wristband !== ''){
+            for(let i = 0; i<vm.chest_card.length; i++){
+              ChangeCardPeopleList.push({
+                CriminalID:vm.chest_card[i].CriminalID,
+                ChestCard:vm.chest_card[i].CardID,
+                WristCard:vm.chest_card[i].wristband
+              })
             }
-          },
-          complete: function (XHR) {
-            XHR = null;  //回收资源
+            var bandCardInfoSubmit = {
+              Header: {
+                MsgID:"201501260000000001",
+                MsgType:52,
+              },
+              Body: JSON.stringify({
+                DoorID : vm.getLocalStorage('DoorID'),
+                ChangeCardPeopleList:ChangeCardPeopleList
+              })
+            }
+            $.ajax({
+              type: "get",
+              contentType: "application/json; charset=utf-8",
+              dataType: "jsonp",
+              jsonp: "callback",
+              async: false,
+              url: ajaxUrl,
+              data:JSON.stringify(bandCardInfoSubmit),
+              success: function (result) {
+                if(result.RET === 1){
+                  alert('绑定成功')
+                  localStorage.setItem("moveTypes","0")
+                  vm.$router.push({ path: '/' })
+                } else {
+                  alert('绑定失败')
+                }
+              },
+              complete: function (XHR) {
+                XHR = null;  //回收资源
+              }
+            });
+          } else {
+            alert('请绑定腕带')
           }
-        });
+        }
       },
       /* 解绑 */
       UnbandCardInfo_onUnBind:function () {
