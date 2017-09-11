@@ -47,11 +47,11 @@
 
           </div>
           <div class="partsFoot">
-            <div style="margin: 13px 2px;float: right">
-              <div class="sure" @click="bandCardInfoSubmit()" v-show="!isUnbind">提交</div>
-              <div class="sure" @click="bandCardInfoUnbind()" v-show="isUnbind">提交解绑</div>
-              <div class="sure" @click="bandCardUnbindAll()" v-show="isUnbind">一键解绑</div>
-              <div class="sure" @click="BindCancel()">取消</div>
+            <div style="margin: 11px 2px;float: right">
+              <input class="sure" value="提交" type="button" disabled="disabled" @click="bandCardInfoSubmit()" v-show="!isUnbind">
+              <input class="sure" value="提交解绑" type="button" @click="bandCardInfoUnbind()" v-show="isUnbind">
+              <input class="sure"  value="一键解绑" type="button" @click="bandCardUnbindAll()" v-show="isUnbind">
+              <input class="sure"  value="取消" type="button" @click="BindCancel()">
             </div>
           </div>
         </div>
@@ -147,10 +147,11 @@
           }
         });
       },
+
       /* 提交绑定 */
       bandCardInfoSubmit:function () {
-          alert('提交换卡')
         let vm = this
+        vm.addDisable()
         let ChangeCardPeopleList = []
         for(let i = 0; i<vm.chest_card.length; i++){
           ChangeCardPeopleList.push({
@@ -178,10 +179,10 @@
           url: GUFEI,
           data:JSON.stringify(bandCardInfoSubmit),
           success: function (result) {
+            vm.delDisable()
             if(result.RET === 1){
               alert('绑定成功')
               localStorage.setItem("moveTypes","0")
-
               vm.$router.push({ path: '/' })
             } else {
               alert('绑定失败')
@@ -190,8 +191,19 @@
           },
           complete: function (XHR) {
             XHR = null;  //回收资源
+          },
+          error:function () {
+            vm.delDisable()
           }
         });
+      },
+      /*阻止点击提交*/
+      addDisable:function () {
+        $('.sure').attr("disabled","disable");
+      },
+      /*解除点击提交*/
+      delDisable:function () {
+        $('.sure').removeAttr("disabled");
       },
       /* 解绑 */
       UnbandCardInfo_onUnBind:function () {
@@ -230,7 +242,7 @@
       /* 提交解绑 */
       bandCardInfoUnbind:function () {
         let vm = this
-        alert('提交解绑')
+        vm.addDisable()
         let UnBundingList = []
         for(let i = 0; i<vm.wristband.length; i++){
           UnBundingList.push({
@@ -257,6 +269,8 @@
           url: GUFEI,
           data:JSON.stringify(UnbandCardInfoSubmit),
           success: function (result) {
+            vm.delDisable()
+
             if(result.RET === 1){
               alert('解除绑定成功')
               localStorage.setItem("moveTypes","0")
@@ -269,13 +283,16 @@
           },
           complete: function (XHR) {
             XHR = null;  //回收资源
+          },
+          error:function () {
+            vm.delDisable()
           }
         });
       },
       /* 一键解绑 */
       bandCardUnbindAll:function () {
         let vm = this
-        alert('请求解绑')
+        vm.addDisable()
         var bandCardInfo_reqAll = {
           Header: {
             MsgID:"201501260000000001",
@@ -295,6 +312,7 @@
           url: GUFEI,
           data:JSON.stringify(bandCardInfo_reqAll),
           success: function (result) {
+            vm.delDisable()
             if(result.RET === 1){
               alert('一键解绑成功')
               localStorage.setItem("moveTypes","0")
@@ -306,6 +324,9 @@
           },
           complete: function (XHR) {
             XHR = null;  //回收资源
+          },
+          error:function () {
+            vm.delDisable()
           }
         });
       },

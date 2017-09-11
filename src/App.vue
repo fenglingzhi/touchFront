@@ -1573,6 +1573,7 @@
         if(JSON.parse(event.data).Header.MsgType === 51){
           var  chest_card = JSON.parse(JSON.parse(event.data).Body)
           var  wristband = JSON.parse(JSON.parse(event.data).Body)
+
           //判断是胸卡
           if(chest_card.CardType === 0){
             if(vm.chest_card.length ===0){
