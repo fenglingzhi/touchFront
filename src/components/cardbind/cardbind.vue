@@ -22,7 +22,7 @@
                         </el-col>
                         <el-col :span="12" class="crimal_content">
                           <p>姓名：{{item.CriminalName}}</p>
-                          <p>罪犯编号：{{item.CriminalID}}</p>
+                          <!--<p>罪犯编号：{{item.CriminalID}}</p>-->
                           <p>胸牌编号：{{item.CardID}}</p>
                           <p>腕带编号：{{item.wristband}}</p>
                         </el-col>
@@ -35,7 +35,7 @@
                         </el-col>
                         <el-col :span="12" class="crimal_content">
                           <p>姓名：{{item.CrimalName}}</p>
-                          <p>罪犯编号：{{item.CriminalID}}</p>
+                          <!--<p>罪犯编号：{{item.CriminalID}}</p>-->
                           <p>腕带编号：{{item.CardID}}</p>
                         </el-col>
                       </div>
@@ -149,53 +149,52 @@
       },
       /* 提交绑定 */
       bandCardInfoSubmit:function () {
-          alert('提交换卡')
         let vm = this
         let ChangeCardPeopleList = []
         for(let i = 0; i<vm.chest_card.length; i++){
-          if(vm.chest_card[i].wristband !== null || vm.chest_card[i].wristband !== ''){
-            for(let i = 0; i<vm.chest_card.length; i++){
-              ChangeCardPeopleList.push({
-                CriminalID:vm.chest_card[i].CriminalID,
-                ChestCard:vm.chest_card[i].CardID,
-                WristCard:vm.chest_card[i].wristband
-              })
-            }
-            var bandCardInfoSubmit = {
-              Header: {
-                MsgID:"201501260000000001",
-                MsgType:52,
-              },
-              Body: JSON.stringify({
-                DoorID : vm.getLocalStorage('DoorID'),
-                ChangeCardPeopleList:ChangeCardPeopleList
-              })
-            }
-            $.ajax({
-              type: "get",
-              contentType: "application/json; charset=utf-8",
-              dataType: "jsonp",
-              jsonp: "callback",
-              async: false,
-              url: ajaxUrl,
-              data:JSON.stringify(bandCardInfoSubmit),
-              success: function (result) {
-                if(result.RET === 1){
-                  alert('绑定成功')
-                  localStorage.setItem("moveTypes","0")
-                  vm.$router.push({ path: '/' })
-                } else {
-                  alert('绑定失败')
-                }
-              },
-              complete: function (XHR) {
-                XHR = null;  //回收资源
-              }
-            });
-          } else {
+          if(vm.chest_card[i].wristband == null || vm.chest_card[i].wristband == ''){
             alert('请绑定腕带')
+            return
           }
         }
+        for(let i = 0; i<vm.chest_card.length; i++){
+          ChangeCardPeopleList.push({
+            CriminalID:vm.chest_card[i].CriminalID,
+            ChestCard:vm.chest_card[i].CardID,
+            WristCard:vm.chest_card[i].wristband
+          })
+        }
+        var bandCardInfoSubmit = {
+          Header: {
+            MsgID:"201501260000000001",
+            MsgType:52,
+          },
+          Body: JSON.stringify({
+            DoorID : vm.getLocalStorage('DoorID'),
+            ChangeCardPeopleList:ChangeCardPeopleList
+          })
+        }
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          url: ajaxUrl,
+          data:JSON.stringify(bandCardInfoSubmit),
+          success: function (result) {
+            if(result.RET === 1){
+              alert('绑定成功')
+              localStorage.setItem("moveTypes","0")
+              vm.$router.push({ path: '/' })
+            } else {
+              alert('绑定失败')
+            }
+          },
+          complete: function (XHR) {
+            XHR = null;  //回收资源
+          }
+        });
       },
       /* 解绑 */
       UnbandCardInfo_onUnBind:function () {
@@ -234,7 +233,6 @@
       /* 提交解绑 */
       bandCardInfoUnbind:function () {
         let vm = this
-        alert('提交解绑')
         let UnBundingList = []
         for(let i = 0; i<vm.wristband.length; i++){
           UnBundingList.push({
@@ -279,7 +277,6 @@
       /* 一键解绑 */
       bandCardUnbindAll:function () {
         let vm = this
-        alert('请求解绑')
         var bandCardInfo_reqAll = {
           Header: {
             MsgID:"201501260000000001",
@@ -318,6 +315,7 @@
       var vm = this
       /* Coding By YanM */
       localStorage.setItem("placemanID","0")
+      vm.$emit('CardBindPageInit')
       var outPlice= setInterval(function () {
         if(localStorage.getItem("placemanID")==0){
         }else {

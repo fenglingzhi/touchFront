@@ -1539,7 +1539,7 @@
               vm.chest_card.push({
                 CardID:chest_card.CardID,
                 CardType:chest_card.CardType,
-                CriminalID:vm.criminalList[0][chest_card.CriminalID].CriminalID,
+                CriminalID:chest_card.CriminalID,
                 status:false,
                 CriminalName:vm.criminalList[0][chest_card.CriminalID].CriminalName,
                 Photo:vm.criminalList[0][chest_card.CriminalID].Photo,
@@ -1547,20 +1547,22 @@
               })
             //刷卡去重
             }else{
-              for(let i = 0; i<=vm.chest_card.length; i++){
-                if(vm.chest_card[i].CardID !== chest_card.CardID){
-                  vm.chest_card.push({
-                    CardID:chest_card.CardID,
-                    CardType:chest_card.CardType,
-                    CriminalID:chest_card.CriminalID,
-                    CriminalName:vm.criminalList[0][chest_card.CriminalID].CriminalName,
-                    Photo:vm.criminalList[0][chest_card.CriminalID].Photo,
-                    status:false,
-                    wristband:''
-                  })
-                } else {
-//                  alert('重复输入')
+              let flag = 1
+              for(let i = 0; i<vm.chest_card.length; i++){
+                if(vm.chest_card[i].CardID == chest_card.CardID){
+                  flag = 0
                 }
+              }
+              if(flag == 1){
+                vm.chest_card.push({
+                  CardID:chest_card.CardID,
+                  CardType:chest_card.CardType,
+                  CriminalID:chest_card.CriminalID,
+                  CriminalName:vm.criminalList[0][chest_card.CriminalID].CriminalName,
+                  Photo:vm.criminalList[0][chest_card.CriminalID].Photo,
+                  status:false,
+                  wristband:''
+                })
               }
             }
           //判断为腕带
@@ -1645,7 +1647,7 @@
     text-align: center;
     color: #2c3e50;
     /*width: 100%;*/
-    background: url('../img/bg.png');
+    background: url('./../static/bg.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     width: 1584px;
