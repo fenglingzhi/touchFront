@@ -142,13 +142,15 @@
         for(var i=0;i< this.generalGroupList.length;i++){
           this.generalGroupList[i].ischoose=false
         }
+        localStorage.setItem("criminalGroupIDs",this.generalGroupList[dom+this.generalGroupA-1].FlnkID)
         this.generalGroupList[dom+this.generalGroupA-1].ischoose=!this.generalGroupList[dom+this.generalGroupA-1].ischoose
-//        this.$router.push({ path: '/position' })
+        this.$router.push({ path: '/position' })
       },
       chooseProvisionalGroup:function (dom) {
         for(var i=0;i< this.provisionalGroupList.length;i++){
           this.provisionalGroupList[i].ischoose=false
         }
+        localStorage.setItem("criminalGroupIDs", this.provisionalGroupList[dom+this.provisionalGroupA-1].FlnkID)
         this.provisionalGroupList[dom+this.provisionalGroupA-1].ischoose=!this.provisionalGroupList[dom+this.provisionalGroupA-1].ischoose
       },
       generalGroupGo:function () {
@@ -374,51 +376,33 @@
         this.$router.push({ path: '/' })
          this.$emit('delCardPerson')
 
-//        var vm=this
-//        var send3 = {
-//          Header: {
-//            MsgID:"201501260000000035",
-//            MsgType:26
-//          },
-//          Body: JSON.stringify({
-//            OrgID : localStorage.getItem('OrgID'),
-//            DoorID : localStorage.getItem('DoorID')
-//          })
-//        }
-//        //发送数据
-//        $.ajax({
-//          type: "get",
-//          contentType: "application/json; charset=utf-8",
-//          dataType: "jsonp",
-//          jsonp: "callback",
-//          async: false,
-//          url: ajaxUrl,
-//          data:JSON.stringify(send3),
-//          success: function (result) {
-//            if(result.RET==1){
-//              vm.alertText="取消成功"
-//              vm.$emit('canRouterChange')
-//              localStorage.setItem("moveTypes","0")
-//
-//              setTimeout(function () {
-//                vm.alertText=""
-//                vm.$router.push({ path: '/' })
-//              },2000)
-//
-//
-//            }else {
-//              vm.alertText="取消失败"
-//              vm.$emit('canRouterChange')
-//              setTimeout(function () {
-//                vm.alertText=""
-//              },2000)
-//
-//            }
-//          },
-//          complete: function (XHR, TS) {
-//            XHR = null;  //回收资源
-//          }
-//        })
+        var vm=this
+        var send3 = {
+          Header: {
+            MsgID:"201501260000000035",
+            MsgType:26
+          },
+          Body: JSON.stringify({
+            OrgID : localStorage.getItem('OrgID'),
+            DoorID : localStorage.getItem('DoorID')
+          })
+        }
+        //发送数据
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          url: ajaxUrl,
+          data:JSON.stringify(send3),
+          success: function (result) {
+
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        })
 
       },
 
