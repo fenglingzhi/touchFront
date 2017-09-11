@@ -14,8 +14,8 @@ $.ajax({
   success: function (result) {
     console.log(result)
     localStorage.setItem('IP',result[0].GateWayIP)
-    localStorage.setItem('WebSocketPort',result[0].ReceivePort)
-    localStorage.setItem('TcpPort',result[0].TcpReceivePort)
+    localStorage.setItem('WebSocketPort',result[0].TcpReceivePort)
+    localStorage.setItem('TcpPort',result[0].ReceivePort)
   },
   complete: function (XHR, TS) {
     XHR = null;  //回收资源
