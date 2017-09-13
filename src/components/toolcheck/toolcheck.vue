@@ -21,7 +21,9 @@
             <div class="bodyCon">
               <el-col :span="2"  v-for="(tool,index) in inTool.slice(inA-1,inB)" :key="1">
                 <div  :class="['criminal', {chosed: tool.ischoose}]" v-on:click="chooseIn(index)" >
-                  <img :src="tool.Photo" width="98%" height="85" alt="图片"/>
+                  <div style="height: 91px;width: 97px;">
+                  <img :src="tool.Photo" width="98%" height="85" alt=""/>
+                  </div>
                   <span class="criminalName">{{ tool.ToolName }}</span>
                 </div>
               </el-col>
@@ -47,7 +49,7 @@
 
               <el-col :span="2"  v-for="(tool,index) in outTool.slice(outA-1,outB)" :key="1">
                 <div  :class="['criminal', {chosed: tool.ischoose}]" v-on:click="chooseOut(index)" >
-                  <div style="height: 91px;width: 90px;">
+                  <div style="height: 91px;width: 97px;">
                     <img :src="tool.Photo" width="98%" height="85" alt=""/>
                   </div>
                   <span class="criminalName">{{ tool.ToolName }}</span>

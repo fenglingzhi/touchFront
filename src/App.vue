@@ -185,7 +185,7 @@
       <div class="alertBody " style="margin: -330px -550px;width: 1100px;height: 660px;">
         <div class="bodyHead"><div class="title">已点名单</div><div v-on:click="close('alertYDMD')" class="close">X</div></div>
         <div class="bodyCon" style="height: 514px;" >
-          <table  border="1" width="100%">
+          <table  border="1" cellspacing="0" cellpadding="0"  width="100%">
             <tr>
               <th>罪犯姓名</th>
               <th>清点时间</th>
@@ -222,7 +222,7 @@
       <div class="alertBody " style="margin: -330px -550px;width: 1100px;height: 660px;">
         <div class="bodyHead"><div class="title">已点工具</div><div v-on:click="close('alertYDGJ')" class="close">X</div></div>
         <div class="bodyCon" style="height: 514px;" >
-          <table  border="1" width="100%">
+          <table border="1" cellspacing="0" cellpadding="0"  width="100%">
             <tr>
               <th>工具类别</th>
               <th>工具名称</th>
@@ -1678,10 +1678,11 @@
     height: 780px !important;
   }
   body{
+    -moz-user-select: none; -khtml-user-select: none; user-select: none;
     margin: 0;
     padding: 0;
   }
-  html { overflow-x: hidden; overflow-y: hidden; }
+  html { overflow-x: hidden; overflow-y: hidden; -moz-user-select: none; -khtml-user-select: none; user-select: none;}
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
