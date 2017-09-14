@@ -97,6 +97,8 @@
                   </el-row>
                 </div>
                 <div v-show="false" id="alarmRecordID">{{alarm.AlarmRecordID}}</div>
+                <div v-show="false" id="AreaID">{{alarm.AreaID}}</div>
+
                 <div  v-show="isPerson">
                   <div style="height:18px;"></div>
                   <el-row>
@@ -616,6 +618,8 @@
       alarmHandle:function () {
         var vm = this
         var alarmRecordID = $("#alarmRecordID").html()
+        var AreaID = $("#AreaID").html()
+
         var alarmHandS = setInterval(function () {
           if(localStorage.getItem("placemanID")==0){
              vm.alertYHDL=true
@@ -1455,9 +1459,12 @@
         /* 报警信息 */
         if (JSON.parse(event.data).Header.MsgType === 2) {
           var alarmNews = JSON.parse(JSON.parse(event.data).Body)
-            /* 区域过滤测试后解开 */
+          /* 区域过滤测试后解开 */
           if (alarmNews.OrgID.toUpperCase() == localStorage.getItem("OrgID")) {
           var criminalData = alarmNews
+            console.log("vm.criminalList", vm.alarmList)
+//            console.log("alarmNews.ObjectID", vm.criminalList[0][alarmNews.ObjectID].Photo)
+
             criminalData.criminalID = vm.criminalList[0][alarmNews.ObjectID].CriminalID
             criminalData.Photo = vm.criminalList[0][alarmNews.ObjectID].Photo
             vm.alarmList.unshift(criminalData)
@@ -1664,7 +1671,7 @@
 
       /* Coding By Qianjf */
       localStorage.setItem("moveTypes","0")//1为进出工，2为临时外出登记
-      $(".alertAlarm").draggable();
+//      $(".alertAlarm").draggable();
 
 
       /* Coding By Qianjf */
@@ -1872,9 +1879,9 @@
   .alertAlarm{
     width: 230px;
     height: 80px;
-    /*position: fixed;*/
-    /*bottom: 80px;*/
-    /*right: 34px;*/
+    position: fixed;
+    bottom: 80px;
+    right: 34px;
     position: absolute;
     background: rgb(255, 51, 51);
   }
