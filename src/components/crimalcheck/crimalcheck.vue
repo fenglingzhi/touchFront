@@ -17,7 +17,7 @@
             <div class="bodyCon">
               <el-col :span="2"  v-for="(criminal,index) in inCriminals.slice(inA-1,inB)" :key="1">
                 <div  :class="['criminal', {choosedcriminal: criminal.ischoose}]" v-on:click="chooseIn(index)" >
-                  <div style="height: 91px;width: 90px;">
+                  <div style="height: 91px;width: 97px;">
                   <img :src="criminal.Photo" width="98%" height="85" alt=""/>
                   </div>
                   <span class="criminalName">{{ criminal.CriminalName }}</span>
@@ -44,7 +44,7 @@
             <div class="bodyCon" style="height: 135px;">
               <el-col :span="2"  v-for="(criminal,index) in outCriminals.slice(outA-1,outB)" :key="2">
                 <div  :class="['criminal', {choosedcriminal: criminal.ischoose}]" v-on:click="chooseOut(index)" >
-                  <div style="height: 91px;width: 90px;">
+                  <div style="height: 91px;width: 97px;">
                        <img :src="criminal.Photo" width="98%" height="85" alt=""/>
                   </div>
                   <span class="criminalName">{{ criminal.CriminalName}}</span>
@@ -376,7 +376,6 @@
             ObjectID:subCriminals
           })
         }
-        console.log("人员清点",send)
         vm.$emit('openLogin',true)
         var submitCriminalSet=setInterval(function () {
           if(localStorage.getItem("placemanID")==0){
@@ -400,8 +399,10 @@
                 data:JSON.stringify(send),
                 success: function (result) {
                   if(result.RET==1){
-                  vm.outChoose.splice(0,vm.outChoose.length)
-                  vm.inChoose.splice(0,vm.inChoose.length)
+                    vm.outChoose=[]
+                    vm.inChoose=[]
+                    vm.inCriminals=[]
+                    vm.outCriminals=[]
                     localStorage.setItem("placemanID","0")
                     vm.alertText="手动确定成功"
                     setTimeout(function () {

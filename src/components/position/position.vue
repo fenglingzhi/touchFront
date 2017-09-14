@@ -39,7 +39,7 @@
                     <div class="deailBody">
                       <el-col :span="12" v-for="(item,index) in criminalLists" :key="1">
                         <div class="criminal" v-on:click="select(index)" :class="['criminal',{criminal_active:item.status}]">
-                          <div style="height: 133px;width: 90px;">
+                          <div style="height: 133px;width: 82px;">
                           <img :src="item.CriminalPhoto" width="100%" height="130px" alt=""/>
                           </div>
                           <span class="criminalName">{{item.PSName}}</span>

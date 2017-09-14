@@ -152,6 +152,7 @@
         }
         localStorage.setItem("criminalGroupIDs", this.provisionalGroupList[dom+this.provisionalGroupA-1].FlnkID)
         this.provisionalGroupList[dom+this.provisionalGroupA-1].ischoose=!this.provisionalGroupList[dom+this.provisionalGroupA-1].ischoose
+        this.$router.push({ path: '/position' })
       },
       generalGroupGo:function () {
         if(this.generalGroupNowPage<this.generalGroupPages){
@@ -233,6 +234,8 @@
             success: function (result) {
               if(result.Ret==1){
                 vm.alertText=result.Description
+                vm.cardPersonList=[]
+                vm.getGroups()
                 setTimeout(function () {
                   vm.alertText=""
                 },2000)
@@ -262,6 +265,8 @@
                     success: function (result) {
                       if(result.RET==1){
                         vm.alertText=result.Description
+                        vm.cardPersonList=[]
+                        vm.getGroups()
                         setTimeout(function () {
                           vm.alertText=""
                         },2000)
@@ -280,6 +285,8 @@
                 }
               }else if(result.Ret==3){
                 vm.alertText=result.Description
+                vm.cardPersonList=[]
+                vm.getGroups()
                 setTimeout(function () {
                   vm.alertText=""
                 },2000)
@@ -309,12 +316,16 @@
                     success: function (result) {
                       if(result.RET==1){
                         vm.alertText=result.Description
+                        vm.cardPersonList=[]
+                        vm.getGroups()
                         setTimeout(function () {
                           vm.alertText=""
                         },2000)
                       }else {
                         vm.alertText=result.Description
                         setTimeout(function () {
+                          vm.cardPersonList=[]
+                          vm.getGroups()
                           vm.alertText=""
                         },2000)
                       }
@@ -346,6 +357,8 @@
                     success: function (result) {
                       if(result.Ret==1){
                         vm.alertText=result.Description
+                        vm.cardPersonList=[]
+                        vm.getGroups()
                         setTimeout(function () {
                           vm.alertText=""
                         },2000)
@@ -397,7 +410,8 @@
           url: ajaxUrl,
           data:JSON.stringify(send3),
           success: function (result) {
-
+            vm.cardPersonList=[]
+            vm.getGroups()
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
@@ -405,7 +419,64 @@
         })
 
       },
+      /*获取互监组列表*/
+      getGroups:function () {
+        var vm = this
+//      获取普通互监组
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          data:{"OrgID":localStorage.getItem("OrgID")},
+          url:  SHANLEI+'Group/GetGeneralGroupList' + "?callback=?",
+          success: function (result) {
+            if(result!=""||result!=null){
+              vm.generalGroupListAll=result.length
+              vm.generalGroupPages=Math.ceil(result.length/30)==0?1:Math.ceil(result.length/30)
+              for (var i=0;i<result.length;i++){
+                result[i]["ischoose"]=false
+              }
+              vm.generalGroupList=result
+            }
 
+          },
+          error: function (err) {
+            alert("请求异常")
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        });
+//     获取临时互监组
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          data:{"OrgID":localStorage.getItem("OrgID")},
+          url:  SHANLEI+'Group/GetProvisionalGroupList' + "?callback=?",
+          success: function (result) {
+            if(result!=""&&result!=null){
+              vm.provisionalGroupListAll=result.length
+              vm.provisionalGroupPages=Math.ceil(result.length/12)==0?1:Math.ceil(result.length/12)
+              for (var i=0;i<result.length;i++){
+                result[i]["ischoose"]=false
+              }
+              vm.provisionalGroupList=result
+            }
+
+          },
+          error: function (err) {
+            alert("请求异常")
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        });
+      },
       firstWs:function () {
         var vm=this
         var send1 = {
@@ -496,15 +567,9 @@
             }
             vm.provisionalGroupList=result
           }
+      /*获取互监组*/
+      vm.getGroups()
 
-        },
-        error: function (err) {
-          alert("请求异常")
-        },
-        complete: function (XHR, TS) {
-          XHR = null;  //回收资源
-        }
-      });
 
       vm.firstWs()
 
@@ -532,7 +597,7 @@
 
     }
 
-  }
+  })
 </script>
 
 <style>

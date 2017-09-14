@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <navheader
+      @workOut="playAudio"
       @getPosition="onClickPosition()"
       :message="prisonSelectText"
       :plan="plan"
@@ -96,6 +97,8 @@
                   </el-row>
                 </div>
                 <div v-show="false" id="alarmRecordID">{{alarm.AlarmRecordID}}</div>
+                <div v-show="false" id="AreaID">{{alarm.AreaID}}</div>
+
                 <div  v-show="isPerson">
                   <div style="height:18px;"></div>
                   <el-row>
@@ -184,7 +187,7 @@
       <div class="alertBody " style="margin: -330px -550px;width: 1100px;height: 660px;">
         <div class="bodyHead"><div class="title">已点名单</div><div v-on:click="close('alertYDMD')" class="close">X</div></div>
         <div class="bodyCon" style="height: 514px;" >
-          <table  border="1" width="100%">
+          <table  border="1" cellspacing="0" cellpadding="0"  width="100%">
             <tr>
               <th>罪犯姓名</th>
               <th>清点时间</th>
@@ -221,7 +224,7 @@
       <div class="alertBody " style="margin: -330px -550px;width: 1100px;height: 660px;">
         <div class="bodyHead"><div class="title">已点工具</div><div v-on:click="close('alertYDGJ')" class="close">X</div></div>
         <div class="bodyCon" style="height: 514px;" >
-          <table  border="1" width="100%">
+          <table border="1" cellspacing="0" cellpadding="0"  width="100%">
             <tr>
               <th>工具类别</th>
               <th>工具名称</th>
@@ -273,7 +276,7 @@
           <el-row class="menu_title_wrap">
             <el-col :span="6" >
               <div style="height: 57px"></div>
-              <p>登录名：</p>
+              <p >登录名：</p>
               <div style="height:12px"></div>
               <p>密码：</p>
             </el-col>
@@ -294,7 +297,22 @@
       </div>
     </div>
     <!--用户登录 end-->
-
+    <!--报警音频资源加载-->
+    <audio id="waring" preload="preload">
+      <source src="http://www.w3school.com.cn/i/song.mp3" type="audio/ogg" />
+    </audio>
+    <!--人员清点音频资源加载-->
+    <audio id="personPlan" preload="preload">
+      <source src="http://www.w3school.com.cn/i/song.mp3" type="audio/ogg" />
+    </audio>
+    <!--工具清点音频资源加载-->
+    <audio id="toolPlan" preload="preload">
+      <source src="http://www.w3school.com.cn/i/song.mp3" type="audio/ogg" />
+    </audio>
+    <!--收工音频资源加载-->
+    <audio id="workOut" preload="preload">
+      <source src="http://www.w3school.com.cn/i/song.mp3" type="audio/ogg" />
+    </audio>
   </div>
 </template>
 
@@ -600,6 +618,8 @@
       alarmHandle:function () {
         var vm = this
         var alarmRecordID = $("#alarmRecordID").html()
+        var AreaID = $("#AreaID").html()
+
         var alarmHandS = setInterval(function () {
           if(localStorage.getItem("placemanID")==0){
              vm.alertYHDL=true
@@ -999,7 +1019,11 @@
           }
         });
       },
-
+      /*触发音频*/
+      playAudio:function (id) {
+        var audio = document.getElementById(id);
+        audio.play()
+      },
       /* Coding By Qianjf */
 
       /* 弹窗关闭 */
@@ -1150,6 +1174,22 @@
           }
         });
 
+        /* 收工时间 */
+        $.ajax({
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "jsonp",
+          jsonp: "callback",
+          async: false,
+          data: {OrgID: localStorage.getItem('OrgID')},
+          url: SHANLEI + 'HomeIndex/GetKnockOffTime',
+          success: function (result) {
+            localStorage.setItem("overTime",result[0].FieldValue)
+          },
+          complete: function (XHR, TS) {
+            XHR = null;  //回收资源
+          }
+        });
         /* 工具基础信息 */
         $.ajax({
           type: "get",
@@ -1405,9 +1445,12 @@
         /* 报警信息 */
         if (JSON.parse(event.data).Header.MsgType === 2) {
           var alarmNews = JSON.parse(JSON.parse(event.data).Body)
-            /* 区域过滤测试后解开 */
+          /* 区域过滤测试后解开 */
           if (alarmNews.OrgID.toUpperCase() == localStorage.getItem("OrgID")) {
           var criminalData = alarmNews
+            console.log("vm.criminalList", vm.alarmList)
+//            console.log("alarmNews.ObjectID", vm.criminalList[0][alarmNews.ObjectID].Photo)
+
             criminalData.criminalID = vm.criminalList[0][alarmNews.ObjectID].CriminalID
             criminalData.Photo = vm.criminalList[0][alarmNews.ObjectID].Photo
             vm.alarmList.unshift(criminalData)
@@ -1482,12 +1525,14 @@
             vm.planEndTime = plan_task.EndTime
             vm.NextTime = plan_task.NextTime
             if(vm.plan == '工具清点计划'){
+              vm.playAudio("toolPlan")
               if(vm.canRouter == 1){
                 vm.$router.push({ path: '/toolcheck' })
               } else {
                 alert('工具清点已经开始，请结束本次操作后开始工具清点')
               }
             } else if(vm.plan == '人员清点计划'){
+              vm.playAudio("personPlan")
               if(vm.canRouter === 1){
                 vm.$router.push({ path: '/crimalcheck' })
               } else {
@@ -1495,7 +1540,7 @@
               }
             }
           } else {
-              alert(1)
+//              alert(1)
           }
         }
 
@@ -1520,6 +1565,7 @@
         if(JSON.parse(event.data).Header.MsgType === 51){
           var  chest_card = JSON.parse(JSON.parse(event.data).Body)
           var  wristband = JSON.parse(JSON.parse(event.data).Body)
+
           //判断是胸卡
           if(chest_card.CardType === 0){
             if(vm.chest_card.length ===0){
@@ -1610,7 +1656,7 @@
 
       /* Coding By Qianjf */
       localStorage.setItem("moveTypes","0")//1为进出工，2为临时外出登记
-      $(".alertAlarm").draggable();
+//      $(".alertAlarm").draggable();
 
 
       /* Coding By Qianjf */
@@ -1624,10 +1670,11 @@
     height: 780px !important;
   }
   body{
+    -moz-user-select: none; -khtml-user-select: none; user-select: none;
     margin: 0;
     padding: 0;
   }
-  html { overflow-x: hidden; overflow-y: hidden; }
+  html { overflow-x: hidden; overflow-y: hidden; -moz-user-select: none; -khtml-user-select: none; user-select: none;}
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -1817,9 +1864,9 @@
   .alertAlarm{
     width: 230px;
     height: 80px;
-    /*position: fixed;*/
-    /*bottom: 80px;*/
-    /*right: 34px;*/
+    position: fixed;
+    bottom: 80px;
+    right: 34px;
     position: absolute;
     background: rgb(255, 51, 51);
   }
