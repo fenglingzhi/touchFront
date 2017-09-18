@@ -1,9 +1,9 @@
 // 配置baseurl
 // 接口地址
 /* 基础数据接口地址 */
-// export const BasicUrl = 'http://10.58.1.145:88/api/'
+export const BasicUrl = 'http://10.58.1.178:7701/api/'
 // export const BasicUrl = 'http://'+window.location.host+'/api/'
-export const BasicUrl = '/api/'
+// export const BasicUrl = '/api/'
 $.ajax({
   type: "get",
   contentType: "application/json; charset=utf-8",

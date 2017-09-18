@@ -16,7 +16,7 @@
               <el-row >
                   <el-row class="float_person_wrap">
                     <el-col :span="4" v-for="(item,index) in chest_card" :key='1' v-show="!isUnbind">
-                      <div class="float_person_card card_bind_init" :class="['card_bind_init', {card_bind_select: item.status}, {card_bind_success:item.wristband!==''}]" @click="$emit('bindCardSelect',index)">
+                      <div class="float_person_card card_bind_init" :class="['card_bind_init', {card_bind_select: item.status}, {card_bind_success:item.wristband!==''}]" v-on:contextmenu.prevent ="$emit('delCardSelect',index)" @click="$emit('bindCardSelect',index)">
                         <el-col :span="10" class="photo">
                           <img :src="item.Photo" alt="" width="100%" height="100%">
                         </el-col>
@@ -48,7 +48,7 @@
           </div>
           <div class="partsFoot">
             <div style="margin: 11px 2px;float: right">
-              <input class="sure" value="提交" type="button" disabled="disabled" @click="bandCardInfoSubmit()" v-show="!isUnbind">
+              <input class="sure" value="提交"  type="button" @click="bandCardInfoSubmit()"  v-show="!isUnbind">
               <input class="sure" value="提交解绑" type="button" @click="bandCardInfoUnbind()" v-show="isUnbind">
               <input class="sure"  value="一键解绑" type="button" @click="bandCardUnbindAll()" v-show="isUnbind">
               <input class="sure"  value="取消" type="button" @click="BindCancel()">
@@ -150,6 +150,7 @@
 
       /* 提交绑定 */
       bandCardInfoSubmit:function () {
+        console.log(event)
         let vm = this
         vm.addDisable()
         let ChangeCardPeopleList = []
@@ -382,12 +383,12 @@
     p{
       margin: 0;
       line-height: 22px;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+      /*white-space: nowrap;*/
+      /*text-overflow: ellipsis;*/
     }
   }
   .card_bind_select{
-    box-shadow: inset 0px 0px 9px 3px rgb(68, 74, 71);
+    box-shadow: inset 0px 0px 9px 3px #000000;
   }
   .card_bind_success{
     background: #196efc !important;
@@ -428,7 +429,7 @@
   .li4_parts .bodyCon{
     height: 592px;
     padding: 20px;
-
+    overflow: auto;
   }
   .li4_parts .sure{
     width: 126px;

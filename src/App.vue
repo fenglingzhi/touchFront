@@ -14,6 +14,7 @@
     <router-view
       @clearCardInfo="clearCardInfo"
       @bindCardSelect="bindCardSelect"
+      @delCardSelect="delCardSelect"
       @CardBindPageInit="CardBindPageInit"
       @openLogin="loginOpen"
       @hasCheaked="onHasCheaked"
@@ -280,7 +281,7 @@
             </el-col>
             <el-col :span="16">
               <span class="tipHead">请民警登录或刷卡确认</span>
-              <input type="text" placeholder="请输入" v-model="policeLogin.account">
+              <input type="text" placeholder="请输入" v-model="policeLogin.account" >
               <input type="password" placeholder="请输入" v-model="policeLogin.password">
             </el-col>
             <el-col :span="2" style="height: 10px"></el-col>
@@ -581,6 +582,16 @@
           }
           vm.chest_card[index].status = true
         }
+      },
+      /* 删除卡绑定人 */
+      delCardSelect:function (index) {
+        let vm = this
+        var r=confirm("是否删除此胸牌");
+        if (r==true){
+          vm.chest_card.splice(index, 1)
+
+        }
+
       },
 
       /* Coding By YanM */
@@ -1192,7 +1203,7 @@
           jsonp: "callback",
           async: false,
           data: {OrgID: localStorage.getItem('OrgID')},
-          url: SHANLEI + 'HomeIndex/GetKnockOffTime',
+          url: BasicUrl + 'HomeIndex/GetKnockOffTime',
           success: function (result) {
             localStorage.setItem("overTime",result[0].FieldValue)
           },
@@ -1611,13 +1622,44 @@
             if(wristband.CriminalID === "00000000-0000-0000-0000-000000000000"){
 //                alert(1)
               //判断胸牌是否为空
+              var notRightName=''
               if(vm.chest_card.length!==0){
+                let flag = 1
                 for(let i = 0; i<vm.chest_card.length; i++){
-                  if(vm.chest_card[i].status === true){
-                    //提交绑定数据
-                    vm.chest_card[i].wristband=wristband.CardID
+                  if(vm.chest_card[i].wristband == wristband.CardID){
+                    flag = 0
+                    notRightName=vm.chest_card[i].CriminalName
                   }
                 }
+                if(flag == 1){
+                  for(let i = 0; i<vm.chest_card.length; i++){
+                    if(vm.chest_card[i].status === true){
+                      //提交绑定数据
+                      vm.chest_card[i].wristband=wristband.CardID
+                    }
+                  }
+                }else {
+                  alert(notRightName+"已绑定此腕带")
+                }
+
+//                for(let i = 0; i<vm.chest_card.length; i++){
+//                  if(vm.chest_card[i].status === true){
+//                    //提交绑定数据
+//                    for (let m=0;m<vm.chest_card.length;m++){
+//                        console.log(wristband.CardID)
+//                      console.log(vm.chest_card)
+//                        if(vm.chest_card[m].wristband==wristband.CardID){
+//
+//                            alert(vm.chest_card[m].CriminalName+"腕带重复绑定")
+//                            return
+//                        }else {
+//                            alert(wristband.CardID)
+//                          vm.chest_card[i].wristband=wristband.CardID
+//                          return
+//                        }
+//                    }
+//                  }
+//                }
               }
             } else {
               if(vm.wristband.length === 0){
@@ -1649,12 +1691,12 @@
 
       /* 关闭状态 */
       vm.ws.onclose = function(){
-//        vm.onlinestatus = false
-//        if(vm.onlinestatus === false){
-//          setInterval(function () {
-//            window.location.reload()
-//          },5000)
-//        }
+        vm.onlinestatus = false
+        if(vm.onlinestatus === false){
+          setInterval(function () {
+            window.location.reload()
+          },5000)
+        }
       };
 
       /* 错误信息 */
@@ -1683,6 +1725,12 @@
     margin: 0;
     padding: 0;
   }
+  body{
+    -moz-user-select: none; -khtml-user-select: none; user-select: none;
+    margin: 0;
+    padding: 0;
+  }
+
   html { overflow-x: hidden; overflow-y: hidden; }
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -1764,7 +1812,7 @@
     margin: 20px 0px;
     font-size: 25px;
     height: 40px;
-    border: 1px solid rgba(0, 0, 0, 0.38);
+    border: 2px solid rgba(0, 0, 0, 0.38);
     text-indent: 10px;
   }
   .alertYHDL .tipHead{
