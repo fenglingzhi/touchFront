@@ -22,7 +22,7 @@
               <el-col :span="2"  v-for="(tool,index) in inTool.slice(inA-1,inB)" :key="1">
                 <div  :class="['criminal', {chosed: tool.ischoose}]" v-on:click="chooseIn(index)" >
                   <div style="height: 91px;width: 97px;">
-                  <img :src="tool.Photo" width="98%" height="85" alt=""/>
+                  <img :src="tool.Photo" width="96" height="85" alt=""/>
                   </div>
                   <span class="criminalName">{{ tool.ToolName }}</span>
                 </div>
@@ -50,7 +50,7 @@
               <el-col :span="2"  v-for="(tool,index) in outTool.slice(outA-1,outB)" :key="1">
                 <div  :class="['criminal', {chosed: tool.ischoose}]" v-on:click="chooseOut(index)" >
                   <div style="height: 91px;width: 97px;">
-                    <img :src="tool.Photo" width="98%" height="85" alt=""/>
+                    <img :src="tool.Photo" width="96" height="85" alt=""/>
                   </div>
                   <span class="criminalName">{{ tool.ToolName }}</span>
                 </div>
@@ -367,7 +367,10 @@ var vm=this
         }
           var submitToolSet=setInterval(function () {
             if(localStorage.getItem("placemanID")==0){
-
+              /*民警还未刷卡*/
+            }else if(localStorage.getItem("placemanID")==1){
+              /* 点击登录框关闭按钮停止检测民警登录情况*/
+              clearInterval(submitToolSet)
             }else {
               clearInterval(submitToolSet)
               //发送数据
@@ -456,6 +459,7 @@ var vm=this
       },
       cancel:function () {
         var vm=this
+        localStorage.setItem("canRouter",0)
         vm.$emit('openLogin',true)
         var send = {
           Header: {
@@ -483,7 +487,10 @@ var vm=this
               data:JSON.stringify(send),
               success: function (result) {
                 if(result.RET==1){
-
+                  vm.inChoose.length=0
+                  vm.outChoose.length=0
+                  vm.outTool.length=0
+                  vm.inTool.length=0
                       vm.outTool=[]
                       vm.inTool=[]
                       vm.inChoose=[]
@@ -537,6 +544,8 @@ var vm=this
                   vm.alertText="手动结束成功"
                   setTimeout(function () {
                     vm.alertText=""
+                    vm.$router.push({ path: '/' })
+
                   },2000)
                 }else {
 

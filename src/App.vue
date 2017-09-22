@@ -3,11 +3,19 @@
     <navheader
       @workOut="playAudio"
       @getPosition="onClickPosition()"
+      :alertText1="alertText1"
       :message="prisonSelectText"
       :plan="plan"
-      :planStartTime="planStartTime"
-      :planEndTime="planEndTime"
+      :personPlan="personPlan"
+      :toolPlan="toolPlan"
+      :toolplanStartTime="planStartTime"
+      :toolplanEndTime="planEndTime"
+      :toolNextTime="toolNextTime"
+      :personplanStartTime="personplanStartTime"
+      :personplanEndTime="personplanEndTime"
+      :personNextTime="personNextTime"
       :NextTime="NextTime"
+
       :onlinestatus="onlinestatus"
     ></navheader>
 
@@ -22,6 +30,8 @@
       @delCardPerson="delCardPerson"
       :criminalList="criminalList"
       :toolList="toolList"
+      :movePeople="movePeople"
+      :allGroups="allGroups"
       :FlnkIDList1="FlnkIDList_11"
       :FlnkIDList2="FlnkIDList_22"
       :FlnkIDList3="FlnkIDList_33"
@@ -51,6 +61,7 @@
     ></router-view>
 
     <menufooter
+      @routerTip="routerTip"
       @openLogin="loginOpen"
       :canRouter="canRouter">
     </menufooter>
@@ -270,7 +281,7 @@
 
     <!--用户登录 star-->
     <div class="alertTip alertYHDL" v-show="alertYHDL">
-      <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 408px;">
+      <div class="alertBody " style="margin: -204px -220px;width: 440px;height: 408px;">
         <div class="bodyHead"><div class="title">用户登录</div><div  v-on:click="loginclose('alertYHDL')" class="close">X</div></div>
         <div class="bodyCon">
           <el-row class="menu_title_wrap">
@@ -280,12 +291,12 @@
               <div style="height:12px"></div>
               <p>密码：</p>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="16">
               <span class="tipHead">请民警登录或刷卡确认</span>
-              <input type="text" placeholder="请输入" v-model="policeLogin.account">
+              <input type="text" placeholder="请输入" v-model="policeLogin.account" >
               <input type="password" placeholder="请输入" v-model="policeLogin.password">
             </el-col>
-            <el-col :span="6" style="height: 10px"></el-col>
+            <el-col :span="2" style="height: 10px"></el-col>
           </el-row>
         </div>
         <div class="partsFoot">
@@ -339,6 +350,7 @@
         OrgID:'',                         //监区ID
         flowPerson_outPrison:{},          //流动人员 && 外监进入人员
         personnel_distribution:{},        //人员分布
+        movePeople:[],                    //人员流动总集合
         FlnkIDList_1 : [],                //外出人数（监内）ID
         FlnkIDList_11: [],
         FlnkIDList_2 : [],                //非法流动ID
@@ -355,9 +367,17 @@
           account:'',
           password:''
         },
+        personPlan:'',                    //人员清点计划任务
+        toolPlan:'',                      //工具清点计划任务
         plan:'',                          //计划任务
+        toolplanStartTime:'',
+        personplanStartTime:'',
         planStartTime:'',                 //计划任务开始时间
         planEndTime:'',                   //计划任务结束时间
+        toolplanEndTime:'',
+       personplanEndTime:'',
+        toolNextTime:'',
+       personNextTime:'',
         NextTime:'',                      //下次计划人数时间
         nowfloatTime:0,                   //实时流动倒计时
         nowfloatPerson:[],                //实时流动人员
@@ -408,6 +428,9 @@
         groupTeam:[],//互监组成员
         SocketAllData:{},
         alertText:"",//登录页面提示
+        alertText1:"",//头部清点提示
+        allGroups:[],//所有互监组
+
         /* mj e*/
         alertYHDL: false,                 //用户登录
         alertJQXZ: false,                 //监区选择
@@ -432,6 +455,8 @@
         this.setLocalStorage('OrgID',this.prisonSelect[index].OrgID)
         this.setLocalStorage('AreaID',this.prisonSelect[index].AreaID)
         this.setLocalStorage('AreaType',this.prisonSelect[index].AreaType)
+//      this.setLocalStorage('MapFlnkID',vm.prisonSelect[index].MapFlnkID)
+
       },
 
       /* 默认初始化监区 */
@@ -446,11 +471,16 @@
           url: BasicUrl + 'HomeIndex/GetBindJQ',
           success: function (result) {
             vm.prisonSelect=result
+            console.log("jhoijojijojj",result)
             vm.prisonSelectText = vm.prisonSelect[0].AreaName
             vm.setLocalStorage('OrgID',vm.prisonSelect[0].OrgID)
             vm.setLocalStorage('DoorID',vm.prisonSelect[0].Door)
             vm.setLocalStorage('AreaID',vm.prisonSelect[0].AreaID)
             vm.setLocalStorage('AreaType',vm.prisonSelect[0].AreaType)
+//            vm.setLocalStorage('MapFlnkID',vm.prisonSelect[0].MapFlnkID)
+          vm.setLocalStorage('MapFlnkID',"9A27D083-ADFD-431D-B60B-ACDBB5024CF9")
+
+
           },
           error: function (err) {
             console.log(err)
@@ -473,14 +503,19 @@
         /* 非法流动 -2 筛选后数据用于VUE渲染 */
         var vueDataPersonlist_2=[];
         for(let j=0;j<vm.FlnkIDList_2.length;j++){
+
           vueDataPersonlist_2[j]={
             CriminalID:vm.criminalList[0][vm.FlnkIDList_2[j]].CriminalID,
             CriminalName:vm.criminalList[0][vm.FlnkIDList_2[j]].CriminalName,
             Photo:vm.criminalList[0][vm.FlnkIDList_2[j]].Photo,
-            UpdateTime:vm.criminalList[0][vm.FlnkIDList_2[j]].UpdateTime,
+//            AreaName:vm.criminalList[0][vm.FlnkIDList_2[j]].AreaName,
+//            Status:vm.criminalList[0][vm.FlnkIDList_2[j]].Status,
+//            UpdateTime:vm.criminalList[0][vm.FlnkIDList_2[j]].UpdateTime,
           }
         }
-        vm.FlnkIDList_22=vueDataPersonlist_2
+//        vm.FlnkIDList_22=vueDataPersonlist_2
+        vm.FlnkIDList_22=vm.movePeople
+
 
         /* 外监进入人员 -3 筛选后数据用于VUE渲染 */
         var vueDataPersonlist_3=[];
@@ -553,6 +588,7 @@
 
       /* 登录关闭按钮 */
       loginclose:function () {
+        localStorage.setItem("placemanID",1)
         this.$router.push({ path: '/' })
         this.alertYHDL=false
         this.policeLogin.account=''
@@ -589,6 +625,15 @@
 
       /* Coding By Qianjf */
 
+      /*路由跳转提示进出工外出登记不能同时进行*/
+      routerTip:function (tip) {
+          var vm=this
+        vm.alertText1=tip
+          setTimeout(function () {
+            vm.alertText1=""
+          },3000)
+      },
+
      /* 零时互监组取消操作，清空刷卡内容*/
       delCardPerson:function () {
         this.cardPerson=[]
@@ -624,7 +669,10 @@
           if(localStorage.getItem("placemanID")==0){
              vm.alertYHDL=true
             clearInterval(alarmHandS)
-          }else {
+          }else if(localStorage.getItem("placemanID")==1){
+            vm.alertYHDL=true
+            clearInterval(alarmHandS)
+          } else {
             var placemanID = localStorage.getItem("placemanID")
             $.ajax({
               type:"get",
@@ -1150,7 +1198,7 @@
               };
             }
             //所有罪犯信息缓存(传进vue的数据用于渲染页面)
-            vm.criminalList.push(personlist_hash);
+            vm.criminalList[0]=personlist_hash;
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
@@ -1182,7 +1230,7 @@
           jsonp: "callback",
           async: false,
           data: {OrgID: localStorage.getItem('OrgID')},
-          url: SHANLEI + 'HomeIndex/GetKnockOffTime',
+          url: BasicUrl + 'HomeIndex/GetKnockOffTime',
           success: function (result) {
             localStorage.setItem("overTime",result[0].FieldValue)
           },
@@ -1214,7 +1262,7 @@
                 Photo:IMG + result[i].Photo
               };
             }
-            vm.toolList.push(toolList_hash)
+            vm.toolList[0]=toolList_hash
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
@@ -1259,7 +1307,7 @@
                 IC:result[i].IC
               };
             }
-            vm.policeList.push(police_hash)
+            vm.policeList[0]=police_hash
           },
           complete: function (XHR) {
             XHR = null;  //回收资源
@@ -1296,7 +1344,7 @@
                 UpdateTime:result[i].UpdateTime,
               };
             }
-            vm.mapList.push(map_hash)
+            vm.mapList[0]=map_hash
           },
           complete: function (XHR) {
             XHR = null;  //回收资源
@@ -1306,7 +1354,7 @@
 
     },
     mounted () {
-      let vm = this
+      var vm = this
       vm.changeSize()
       window.aaa = this
       /* Coding By YanM */
@@ -1415,6 +1463,14 @@
           vm.receiveDataMsgType26=receiveDataMsgType26
         }
 
+        /*获取互监组*/
+        if(JSON.parse(vm.SocketAllData).Header.MsgType === 34) {
+          var receiveDataMsgType34 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
+          vm.allGroups=receiveDataMsgType34
+          var receiveData=receiveDataMsgType34
+
+        }
+
         /*互监组管理刷卡*/
         if(JSON.parse(vm.SocketAllData).Header.MsgType === 8) {
           var receiveDataMsgType8 = JSON.parse(JSON.parse(vm.SocketAllData).Body)
@@ -1448,9 +1504,8 @@
           /* 区域过滤测试后解开 */
           if (alarmNews.OrgID.toUpperCase() == localStorage.getItem("OrgID")) {
           var criminalData = alarmNews
-            console.log("vm.criminalList", vm.alarmList)
+            /*console.log("vm.criminalList", vm.alarmList)*/
 //            console.log("alarmNews.ObjectID", vm.criminalList[0][alarmNews.ObjectID].Photo)
-
             criminalData.criminalID = vm.criminalList[0][alarmNews.ObjectID].CriminalID
             criminalData.Photo = vm.criminalList[0][alarmNews.ObjectID].Photo
             vm.alarmList.unshift(criminalData)
@@ -1465,7 +1520,11 @@
             }
           }
         }
-
+        /* 基础数据更新-5*/
+        if(JSON.parse(event.data).Header.MsgType === 5){
+          var  update = JSON.parse(JSON.parse(event.data).Body)
+          vm.allDataInit()
+        }
         /* 人员分布返回数据-14 */
         if(JSON.parse(event.data).Header.MsgType === 14){
           var personnel_distribution_rec = JSON.parse(JSON.parse(event.data).Body)
@@ -1486,11 +1545,24 @@
         /* 流动人员 && 外监进入人员-返回数据-24 */
         if(JSON.parse(event.data).Header.MsgType === 24){
           var  flowPerson_outPrison_rec = JSON.parse(JSON.parse(event.data).Body)
-
+          vm.movePeople=[]
           // 1、外出人数（监内）
           vm.FlnkIDList_1.length = 0
           for (let i = 0; i<flowPerson_outPrison_rec[0].People.length; i++){
             vm.FlnkIDList_1.push(flowPerson_outPrison_rec[0].People[i].CriminalID)
+            let runPeople={};
+            //            runPeople.CriminalID=flowPerson_outPrison_rec[0].People[i].CriminalID
+            runPeople.AreaName=flowPerson_outPrison_rec[0].People[i].AreaName
+            runPeople.Areas=flowPerson_outPrison_rec[0].People[i].Areas
+            runPeople.LeaveTime=flowPerson_outPrison_rec[0].People[i].LeaveTime
+            runPeople.Polices=flowPerson_outPrison_rec[0].People[i].Polices
+            runPeople.Reason=flowPerson_outPrison_rec[0].People[i].Reason
+            runPeople.Status=flowPerson_outPrison_rec[0].People[i].Status
+            runPeople.CriminalID=vm.criminalList[0][flowPerson_outPrison_rec[0].People[i].CriminalID].CriminalID
+            runPeople.CriminalName=vm.criminalList[0][flowPerson_outPrison_rec[0].People[i].CriminalID].CriminalName
+            runPeople.Photo=vm.criminalList[0][flowPerson_outPrison_rec[0].People[i].CriminalID].Photo
+            runPeople.isBlue=true
+            vm.movePeople.push(runPeople)
           }
 
           // 2、非法流动
@@ -1499,7 +1571,21 @@
             if(vm.FlnkIDList_2.length !== flowPerson_outPrison_rec[1].People.length){
               vm.FlnkIDList_2.push(flowPerson_outPrison_rec[1].People[i].CriminalID)
             }
+            let runPeople={};
+//            runPeople.CriminalID=flowPerson_outPrison_rec[1].People[i].CriminalID
+            runPeople.AreaName=flowPerson_outPrison_rec[1].People[i].AreaName
+            runPeople.Areas=flowPerson_outPrison_rec[1].People[i].Areas
+            runPeople.LeaveTime=flowPerson_outPrison_rec[1].People[i].LeaveTime
+            runPeople.Polices=flowPerson_outPrison_rec[1].People[i].Polices
+            runPeople.Reason=flowPerson_outPrison_rec[1].People[i].Reason
+            runPeople.Status=flowPerson_outPrison_rec[1].People[i].Status
+            runPeople.CriminalID=vm.criminalList[0][flowPerson_outPrison_rec[1].People[i].CriminalID].CriminalID
+            runPeople.CriminalName=vm.criminalList[0][flowPerson_outPrison_rec[1].People[i].CriminalID].CriminalName
+            runPeople.Photo=vm.criminalList[0][flowPerson_outPrison_rec[1].People[i].CriminalID].Photo
+            runPeople.isBlue=false
+            vm.movePeople.push(runPeople)
           }
+//          console.log("dddddddddddddddddddddddddddddddddd",vm.movePeople)
 
           // 3、外监进入人员
           vm.FlnkIDList_3.length = 0
@@ -1525,19 +1611,39 @@
             vm.planEndTime = plan_task.EndTime
             vm.NextTime = plan_task.NextTime
             if(vm.plan == '工具清点计划'){
-              vm.playAudio("toolPlan")
-              if(vm.canRouter == 1){
-                vm.$router.push({ path: '/toolcheck' })
+              vm.toolPlan="工具清点计划"
+              vm.toolplanStartTime=vm.planStartTime
+              vm.toolplanEndTime= vm.planEndTime
+              vm.toolNextTime= vm.NextTime
+//              if(vm.canRouter == 1){
+              if(localStorage.getItem('canRouter') == 1){
+                  vm.$router.push({ path: '/toolcheck' })
               } else {
-                alert('工具清点已经开始，请结束本次操作后开始工具清点')
+                vm.alertText1="工具清点已经开始，请结束本次操作后开始工具清点"
+                setTimeout(function () {
+                  vm.alertText1=""
+                },4000)
               }
+              vm.playAudio("toolPlan")
+
             } else if(vm.plan == '人员清点计划'){
-              vm.playAudio("personPlan")
-              if(vm.canRouter === 1){
+
+              vm.personPlan="人员清点计划"
+              vm.personplanStartTime=vm.planStartTime
+              vm.personplanEndTime= vm.planEndTime
+              vm.personNextTime= vm.NextTime
+//              if(vm.canRouter == 1){
+              if(localStorage.getItem('canRouter') == 1){
+
                 vm.$router.push({ path: '/crimalcheck' })
               } else {
-                alert('人员清点已经开始，请结束本次操作后开始人员清点')
+//                alert('人员清点已经开始，请结束本次操作后开始人员清点')
+                vm.alertText1="人员清点已经开始，请结束本次操作后开始人员清点"
+                setTimeout(function () {
+                  vm.alertText1=""
+                },4000)
               }
+              vm.playAudio("personPlan")
             }
           } else {
 //              alert(1)
@@ -1639,12 +1745,12 @@
 
       /* 关闭状态 */
       vm.ws.onclose = function(){
-//        vm.onlinestatus = false
-//        if(vm.onlinestatus === false){
-//          setInterval(function () {
-//            window.location.reload()
-//          },5000)
-//        }
+        vm.onlinestatus = false
+        if(vm.onlinestatus === false){
+          setInterval(function () {
+            window.location.reload()
+          },5000)
+        }
       };
 
       /* 错误信息 */
@@ -1666,6 +1772,9 @@
 </script>
 
 <style>
+  .deailHead{
+    color: #004bdc !important;
+  }
   .home{
     height: 780px !important;
   }
@@ -1729,7 +1838,7 @@
     text-align: center;
     color: white;
     font-size: 20px;
-    line-height: 36px;
+    line-height: 40px;
     letter-spacing: 2px;
     float: right;
     margin: 0px 35px;
@@ -1755,7 +1864,7 @@
     margin: 20px 0px;
     font-size: 25px;
     height: 40px;
-    border: 1px solid rgba(0, 0, 0, 0.38);
+    border: 2px solid rgba(0, 0, 0, 0.38);
     text-indent: 10px;
   }
   .alertYHDL .tipHead{

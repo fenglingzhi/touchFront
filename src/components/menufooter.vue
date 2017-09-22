@@ -1,11 +1,11 @@
 <template>
   <div class="menufooter">
     <el-row class="menu_title_wrap">
-      <el-col :span="1" class="menu_title"></el-col>
+      <el-col :span="2" class="menu_title"></el-col>
       <el-col :span="3" class="menu_title" v-for="item in menuList" :key="1">
         <div @click="gopage(item.path)">{{item.name}}</div>
       </el-col>
-      <el-col :span="1" class="menu_title"></el-col>
+      <el-col :span="2" class="menu_title"></el-col>
     </el-row>
   </div>
 </template>
@@ -23,7 +23,7 @@ export default {
         {name: '工具清点', path: '/toolcheck'},
         {name: '外出登记', path: '/outregister'},
         {name: '互监组管理', path: '/mutualsupervision'},
-        {name: '卡绑定', path: '/cardbind'}
+//        {name: '卡绑定', path: '/cardbind'}
       ],
     }
   },
@@ -31,31 +31,29 @@ export default {
 
     gopage: function (path) {
       var vm = this
-      // 路由跳转
-//      this.$router.push({ path: path })
-//      if(path === '/outwork' || path === '/outregister'){
-//        vm.$emit('openLogin',true)
-//      }
-//
+
       if(path === '/outwork' ){
         if(localStorage.getItem("moveTypes")==2){
-            alert("请先完成临时外出登记")
+//            alert("请先完成临时外出登记")
+          vm.$emit('routerTip',"请先完成临时外出登记")
         }else if(localStorage.getItem("moveTypes")==3){
-          alert("请先完成卡绑定操作")
+//          alert("请先完成卡绑定操作")
+          vm.$emit('routerTip',"请先完成卡绑定操作")
         }else {
           this.$router.push({ path: '/outwork' })
           vm.$emit('openLogin',true)
         }
       }else if(path === '/outregister'){
         if(localStorage.getItem("moveTypes")==1){
-          alert("请先完成进出工登记")
+//          alert("请先完成进出工登记")
+          vm.$emit('routerTip',"请先完成进出工登记")
         }else if(localStorage.getItem("moveTypes")==3){
-          alert("请先完成卡绑定操作")
+//          alert("请先完成卡绑定操作")
+          vm.$emit('routerTip',"请先完成卡绑定操作")
         }else {
           this.$router.push({ path: '/outregister' })
           vm.$emit('openLogin',true)
         }
-
 
       }else if(path === '/crimalcheck'){
           this.$router.push({ path: '/crimalcheck' })
@@ -67,9 +65,11 @@ export default {
           this.$router.push({ path: '/' })
       }else if(path === '/cardbind') {
         if(localStorage.getItem("moveTypes")==2){
-          alert("请先完成临时外出登记")
+//          alert("请先完成临时外出登记")
+          vm.$emit('routerTip',"请先完成临时外出登记")
         }else if(localStorage.getItem("moveTypes")==1){
-          alert("请先完成进出工登记")
+//          alert("请先完成进出工登记")
+          vm.$emit('routerTip',"请先完成进出工登记")
         }else {
           this.$router.push({ path: '/cardbind' })
           vm.$emit('openLogin',true)
@@ -92,15 +92,16 @@ a{
   overflow: auto;
   .menu_title_wrap{
     height:70px;
-    border-bottom: 1px solid #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.31);
     line-height: 70px;
     margin: 20px 30px 0 30px;
   }
   .menu_title{
     height:70px;
     cursor: pointer;
+    font-size: 26px;
   }
-  .menu_title:hover{
+  .menu_title:active{
     border-bottom: 3px solid #fff;
   }
 }

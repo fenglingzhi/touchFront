@@ -18,7 +18,7 @@
               <el-col :span="2"  v-for="(criminal,index) in inCriminals.slice(inA-1,inB)" :key="1">
                 <div  :class="['criminal', {choosedcriminal: criminal.ischoose}]" v-on:click="chooseIn(index)" >
                   <div style="height: 91px;width: 97px;">
-                  <img :src="criminal.Photo" width="98%" height="85" alt=""/>
+                  <img :src="criminal.Photo" width="96" height="85" alt=""/>
                   </div>
                   <span class="criminalName">{{ criminal.CriminalName }}</span>
                 </div>
@@ -45,7 +45,7 @@
               <el-col :span="2"  v-for="(criminal,index) in outCriminals.slice(outA-1,outB)" :key="2">
                 <div  :class="['criminal', {choosedcriminal: criminal.ischoose}]" v-on:click="chooseOut(index)" >
                   <div style="height: 91px;width: 97px;">
-                       <img :src="criminal.Photo" width="98%" height="85" alt=""/>
+                       <img :src="criminal.Photo" width="96" height="85" alt=""/>
                   </div>
                   <span class="criminalName">{{ criminal.CriminalName}}</span>
                 </div>
@@ -379,7 +379,10 @@
         vm.$emit('openLogin',true)
         var submitCriminalSet=setInterval(function () {
           if(localStorage.getItem("placemanID")==0){
-
+            /*民警还未刷卡*/
+          }else if(localStorage.getItem("placemanID")==1){
+            /* 点击登录框关闭按钮停止检测民警登录情况*/
+            clearInterval(submitCriminalSet)
           }else {
             clearInterval(submitCriminalSet)
             if(subCriminals==[]||subCriminals==''){
@@ -401,8 +404,8 @@
                   if(result.RET==1){
                     vm.outChoose=[]
                     vm.inChoose=[]
-                    vm.inCriminals=[]
-                    vm.outCriminals=[]
+//                    vm.inCriminals=[]
+//                    vm.outCriminals=[]
                     localStorage.setItem("placemanID","0")
                     vm.alertText="手动确定成功"
                     setTimeout(function () {
@@ -456,18 +459,18 @@
               data:JSON.stringify(send),
               success: function (result) {
                 if(result.RET==1){
-
-                    vm.inChoose=[]
-                    vm.outChoose=[]
-
+                  localStorage.setItem("crimalCheckClean","0")
                   vm.alertText="手动结束成功"
-                  localStorage.setItem("placemanID","0")
+                  vm.inChoose=[]
+                  vm.outChoose=[]
                   vm.inCriminals=[]
                   vm.outCriminals=[]
+                  localStorage.setItem("placemanID","0")
+
                   setTimeout(function () {
                     vm.alertText=""
 
-//                vm.$router.push({ path: '/' })
+                vm.$router.push({ path: '/' })
                   },2000)
 
                 }else {
@@ -501,6 +504,7 @@
       /* Coding By Qianjf */
       localStorage.setItem("crimalCheckClean","1")
       localStorage.setItem("placemanID","0")
+      localStorage.setItem("canRouter",0)
 
       var vm = this
       var send = {
@@ -521,6 +525,12 @@
         //发送数据
         if(vm.ws.readyState == WebSocket.OPEN){
           vm.ws.send(JSON.stringify(send))
+          if(vm.receiveDataMsgType31==""){
+            vm.inChoose=[]
+            vm.outChoose=[]
+            vm.inCriminals=[]
+            vm.outCriminals=[]
+          }
         }
         //接收数据
         var  receiveData = vm.receiveDataMsgType31

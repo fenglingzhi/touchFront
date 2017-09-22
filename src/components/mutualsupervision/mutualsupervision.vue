@@ -19,9 +19,10 @@
                     </div>
                     <div class="deailBody" style="height:269px;">
                       <el-col :span="4" v-for="(generalGroup,index) in generalGroupList.slice(generalGroupA-1,generalGroupB)" :key="1">
-                        <div  :class="['choose', {choosed: generalGroup.ischoose}]" v-on:click="chooseGeneralGroup(index)">
+                        <div  :class="['choose', {wringGroup: generalGroup.isWring}]" v-on:click="chooseGeneralGroup(index)">
                           {{generalGroup.GroupNum}}
                         </div>
+
                       </el-col>
 
                     </div>
@@ -47,7 +48,8 @@
                       </div>
                       <div class="deailBody" style="height:110px;">
                         <el-col :span="4" v-for="(provisionalGroup,index) in provisionalGroupList.slice(provisionalGroupA-1,provisionalGroupB)" :key="1">
-                          <div  :class="['choose', {choosed: provisionalGroup.ischoose}]" v-on:click="chooseProvisionalGroup(index)">
+
+                          <div  :class="['choose', {wringGroup: provisionalGroup.isWring}]" v-on:click="chooseProvisionalGroup(index)">
                             {{provisionalGroup.GroupNum}}
                           </div>
                         </el-col>
@@ -113,7 +115,7 @@
   export default {
     name: 'navheader',
     props:[
-      'SocketAllData','criminalList','receiveDataMsgType8','receiveDataMsgType35','receiveDataMsgType20','cardPerson'
+      'SocketAllData','criminalList','receiveDataMsgType8','receiveDataMsgType35','receiveDataMsgType20','cardPerson','allGroups'
     ],
 
     data () {
@@ -132,7 +134,7 @@
         provisionalGroupB:12,
         isSuccess:0,
         alertText:"",
-//        cardPerson:[]//刷卡罪犯集合
+        getGroupsWS:"",//实时发送获取互监组请求
 
       }
     },
@@ -142,7 +144,8 @@
         for(var i=0;i< this.generalGroupList.length;i++){
           this.generalGroupList[i].ischoose=false
         }
-        localStorage.setItem("criminalGroupIDs",this.generalGroupList[dom+this.generalGroupA-1].FlnkID)
+//        localStorage.setItem("criminalGroupIDs",this.generalGroupList[dom+this.generalGroupA-1].FlnkID)
+        localStorage.setItem("criminalGroupIDs",this.generalGroupList[dom+this.generalGroupA-1].GroupNum)
         this.generalGroupList[dom+this.generalGroupA-1].ischoose=!this.generalGroupList[dom+this.generalGroupA-1].ischoose
         this.$router.push({ path: '/position' })
       },
@@ -150,7 +153,8 @@
         for(var i=0;i< this.provisionalGroupList.length;i++){
           this.provisionalGroupList[i].ischoose=false
         }
-        localStorage.setItem("criminalGroupIDs", this.provisionalGroupList[dom+this.provisionalGroupA-1].FlnkID)
+//        localStorage.setItem("criminalGroupIDs", this.provisionalGroupList[dom+this.provisionalGroupA-1].FlnkID)
+        localStorage.setItem("criminalGroupIDs", this.provisionalGroupList[dom+this.provisionalGroupA-1].GroupNum)
         this.provisionalGroupList[dom+this.provisionalGroupA-1].ischoose=!this.provisionalGroupList[dom+this.provisionalGroupA-1].ischoose
         this.$router.push({ path: '/position' })
       },
@@ -233,13 +237,17 @@
             data:JSON.stringify(send1),
             success: function (result) {
               if(result.Ret==1){
+                /*1：新建成功，*/
                 vm.alertText=result.Description
                 vm.cardPersonList=[]
                 vm.getGroups()
+                /*清除刷进来的互监组待定人员*/
+                vm.$emit("delCardPerson")
                 setTimeout(function () {
                   vm.alertText=""
                 },2000)
               }else if(result.Ret==2){
+                /*2：成员所属原互监组成员少于三人*/
                 var r=confirm(result.Description);
                 if (r==true)
                 {
@@ -266,6 +274,8 @@
                       if(result.RET==1){
                         vm.alertText=result.Description
                         vm.cardPersonList=[]
+                        /*清除刷进来的互监组待定人员*/
+                        vm.$emit("delCardPerson")
                         vm.getGroups()
                         setTimeout(function () {
                           vm.alertText=""
@@ -284,13 +294,17 @@
 
                 }
               }else if(result.Ret==3){
+                /*3：删除临时互监组成功*/
                 vm.alertText=result.Description
                 vm.cardPersonList=[]
+                /*清除刷进来的互监组待定人员*/
+                vm.$emit("delCardPerson")
                 vm.getGroups()
                 setTimeout(function () {
                   vm.alertText=""
                 },2000)
               }else if(result.Ret==4){
+                /*4：该操作包含的临时互监组成员中有新的成员，需要解除还是新建*/
                 var r=confirm(result.Description);
                 if (r==true)
                 {
@@ -316,18 +330,21 @@
                     success: function (result) {
                       if(result.RET==1){
                         vm.alertText=result.Description
-                        vm.cardPersonList=[]
-                        vm.getGroups()
                         setTimeout(function () {
                           vm.alertText=""
                         },2000)
+                        vm.cardPersonList=[]
+                        vm.getGroups()
+                        /*清除刷进来的互监组待定人员*/
+                        vm.$emit("delCardPerson")
                       }else {
                         vm.alertText=result.Description
                         setTimeout(function () {
-                          vm.cardPersonList=[]
-                          vm.getGroups()
                           vm.alertText=""
                         },2000)
+                        vm.cardPersonList=[]
+                        vm.getGroups()
+
                       }
                     },
                     complete: function (XHR, TS) {
@@ -357,11 +374,13 @@
                     success: function (result) {
                       if(result.Ret==1){
                         vm.alertText=result.Description
-                        vm.cardPersonList=[]
-                        vm.getGroups()
                         setTimeout(function () {
                           vm.alertText=""
                         },2000)
+                        vm.cardPersonList=[]
+                        vm.getGroups()
+                        /*清除刷进来的互监组待定人员*/
+                        vm.$emit("delCardPerson")
                       }else {
                         vm.alertText=result.Description
                         setTimeout(function () {
@@ -421,61 +440,64 @@
       },
       /*获取互监组列表*/
       getGroups:function () {
-        var vm = this
-//      获取普通互监组
-        $.ajax({
-          type: "get",
-          contentType: "application/json; charset=utf-8",
-          dataType: "jsonp",
-          jsonp: "callback",
-          async: false,
-          data:{"OrgID":localStorage.getItem("OrgID")},
-          url:  SHANLEI+'Group/GetGeneralGroupList' + "?callback=?",
-          success: function (result) {
-            if(result!=""||result!=null){
-              vm.generalGroupListAll=result.length
-              vm.generalGroupPages=Math.ceil(result.length/30)==0?1:Math.ceil(result.length/30)
-              for (var i=0;i<result.length;i++){
-                result[i]["ischoose"]=false
-              }
-              vm.generalGroupList=result
-            }
-
-          },
-          error: function (err) {
-            alert("请求异常")
-          },
-          complete: function (XHR, TS) {
-            XHR = null;  //回收资源
-          }
-        });
-//     获取临时互监组
-        $.ajax({
-          type: "get",
-          contentType: "application/json; charset=utf-8",
-          dataType: "jsonp",
-          jsonp: "callback",
-          async: false,
-          data:{"OrgID":localStorage.getItem("OrgID")},
-          url:  SHANLEI+'Group/GetProvisionalGroupList' + "?callback=?",
-          success: function (result) {
-            if(result!=""&&result!=null){
-              vm.provisionalGroupListAll=result.length
-              vm.provisionalGroupPages=Math.ceil(result.length/12)==0?1:Math.ceil(result.length/12)
-              for (var i=0;i<result.length;i++){
-                result[i]["ischoose"]=false
-              }
-              vm.provisionalGroupList=result
-            }
-
-          },
-          error: function (err) {
-            alert("请求异常")
-          },
-          complete: function (XHR, TS) {
-            XHR = null;  //回收资源
-          }
-        });
+//        var vm = this
+////      获取普通互监组
+//        $.ajax({
+//          type: "get",
+//          contentType: "application/json; charset=utf-8",
+//          dataType: "jsonp",
+//          jsonp: "callback",
+//          async: false,
+//          data:{"OrgID":localStorage.getItem("OrgID")},
+//          url:  BasicUrl+'Group/GetGeneralGroupList' + "?callback=?",
+//          success: function (result) {
+//            if(result!=""||result!=null){
+//              vm.generalGroupListAll=result.length
+//              vm.generalGroupPages=Math.ceil(result.length/30)==0?1:Math.ceil(result.length/30)
+//              for (var i=0;i<result.length;i++){
+//                result[i]["ischoose"]=false
+//              }
+//              vm.generalGroupList=result
+//            }
+//
+//          },
+//          error: function (err) {
+////            alert("请求异常")
+//          },
+//          complete: function (XHR, TS) {
+//            XHR = null;  //回收资源
+//          }
+//        });
+////     获取临时互监组
+//        $.ajax({
+//          type: "get",
+//          contentType: "application/json; charset=utf-8",
+//          dataType: "jsonp",
+//          jsonp: "callback",
+//          async: false,
+//          data:{"OrgID":localStorage.getItem("OrgID")},
+//          url:  BasicUrl+'Group/GetProvisionalGroupList' + "?callback=?",
+//          success: function (result) {
+//            if(result!=""&&result!=null){
+//              vm.provisionalGroupListAll=result.length
+//              vm.provisionalGroupPages=Math.ceil(result.length/12)==0?1:Math.ceil(result.length/12)
+//              for (var i=0;i<result.length;i++){
+//                result[i]["ischoose"]=false
+//              }
+//              vm.provisionalGroupList=result
+//            }else {
+//              vm.provisionalGroupList=[]
+//
+//            }
+//
+//          },
+//          error: function (err) {
+//            alert("请求异常")
+//          },
+//          complete: function (XHR, TS) {
+//            XHR = null;  //回收资源
+//          }
+//        });
       },
       firstWs:function () {
         var vm=this
@@ -521,57 +543,96 @@
 
       /* Coding By YanM */
       /* Coding By Qianjf */
+      localStorage.setItem("canRouter",0)
+
       var vm = this
-//      获取普通互监组
-      $.ajax({
-        type: "get",
-        contentType: "application/json; charset=utf-8",
-        dataType: "jsonp",
-        jsonp: "callback",
-        async: false,
-        data:{"OrgID":localStorage.getItem("OrgID")},
-        url:  BasicUrl+'Group/GetGeneralGroupList' + "?callback=?",
-        success: function (result) {
-          if(result!=""||result!=null){
-            vm.generalGroupListAll=result.length
-            vm.generalGroupPages=Math.ceil(result.length/30)==0?1:Math.ceil(result.length/30)
-            for (var i=0;i<result.length;i++){
-              result[i]["ischoose"]=false
-            }
-            vm.generalGroupList=result
-          }
-
-        },
-        error: function (err) {
-          alert("请求异常")
-        },
-        complete: function (XHR, TS) {
-          XHR = null;  //回收资源
-        }
-      });
-//     获取临时互监组
-      $.ajax({
-        type: "get",
-        contentType: "application/json; charset=utf-8",
-        dataType: "jsonp",
-        jsonp: "callback",
-        async: false,
-        data:{"OrgID":localStorage.getItem("OrgID")},
-        url:  BasicUrl+'Group/GetProvisionalGroupList' + "?callback=?",
-        success: function (result) {
-          if(result!=""&&result!=null){
-            vm.provisionalGroupListAll=result.length
-            vm.provisionalGroupPages=Math.ceil(result.length/12)==0?1:Math.ceil(result.length/12)
-            for (var i=0;i<result.length;i++){
-              result[i]["ischoose"]=false
-            }
-            vm.provisionalGroupList=result
-          }
+//      //获取普通互监组
+//      $.ajax({
+//        type: "get",
+//        contentType: "application/json; charset=utf-8",
+//        dataType: "jsonp",
+//        jsonp: "callback",
+//        async: false,
+//        data:{"OrgID":localStorage.getItem("OrgID")},
+//        url:  BasicUrl+'Group/GetGeneralGroupList' + "?callback=?",
+//        success: function (result) {
+//            console.log(result)
+//          if(result!=""||result!=null){
+//            vm.generalGroupListAll=result.length
+//            vm.generalGroupPages=Math.ceil(result.length/30)==0?1:Math.ceil(result.length/30)
+//            for (var i=0;i<result.length;i++){
+//              result[i]["ischoose"]=false
+//            }
+//            vm.generalGroupList=result
+//          }
+//
+//        },
+//        error: function (err) {
+////          alert("请求异常")
+//        },
+//        complete: function (XHR, TS) {
+//          XHR = null;  //回收资源
+//        }
+//      });
+//      //获取临时互监组
+//      $.ajax({
+//        type: "get",
+//        contentType: "application/json; charset=utf-8",
+//        dataType: "jsonp",
+//        jsonp: "callback",
+//        async: false,
+//        data: {"OrgID": localStorage.getItem("OrgID")},
+//        url: BasicUrl + 'Group/GetProvisionalGroupList' + "?callback=?",
+//        success: function (result) {
+//          if (result != "" && result != null) {
+//            vm.provisionalGroupListAll = result.length
+//            vm.provisionalGroupPages = Math.ceil(result.length / 12) == 0 ? 1 : Math.ceil(result.length / 12)
+//            for (var i = 0; i < result.length; i++) {
+//              result[i]["ischoose"] = false
+//            }
+//            vm.provisionalGroupList = result
+//          }
+//        }
+//      })
       /*获取互监组*/
-      vm.getGroups()
-
-
+//      vm.getGroups()
       vm.firstWs()
+      //      发送内容
+      var sendGroupAct = {
+        Header: {
+          MsgID:"201501260000000009",
+          MsgType:34
+        },
+        Body: JSON.stringify({
+          OrgID : localStorage.getItem('OrgID'),
+          MapID :localStorage.getItem('MapFlnkID')
+        })
+      }
+     vm.getGroupsWS=setInterval(function () {
+          if(vm.ws.readyState == WebSocket.OPEN){
+            vm.ws.send(JSON.stringify(sendGroupAct))
+          }
+       vm.generalGroupList=[]
+       vm.provisionalGroupList=[]
+       for (let i=0;i<vm.allGroups.length;i++){
+         /*判断是都是报警的互监组*/
+                let reveiceData=vm.allGroups[i]
+               if(reveiceData.Status==0){
+                 reveiceData.isWring=false
+               }else if(reveiceData.Status==1){
+                 reveiceData.isWring=true
+               }
+              if(vm.allGroups[i].GroupType==4301){
+                (vm.generalGroupList).push(reveiceData)
+              }else if(vm.allGroups[i].GroupType==4302){
+                (vm.provisionalGroupList).push(reveiceData)
+              }
+       }
+       vm.generalGroupListAll=vm.generalGroupList.length
+       vm.generalGroupPages=Math.ceil(vm.generalGroupList.length/30)==0?1:Math.ceil(vm.generalGroupList.length/30)
+       vm.provisionalGroupListAll = vm.provisionalGroupList.length
+       vm.provisionalGroupPages = Math.ceil(vm.provisionalGroupList.length / 12) == 0?1:Math.ceil(vm.provisionalGroupList.length / 12)
+      },1000)
 
 //      setInterval(function () {
 //          if(vm.isSuccess==1){
@@ -595,9 +656,12 @@
 //      },200)
       /* Coding By Qianjf */
 
+    },
+    destroyed: function () {
+      clearInterval(this.getGroupsWS)
     }
 
-  })
+  }
 </script>
 
 <style>
@@ -714,7 +778,7 @@
 
 
   .li4_parts .choose{
-    border: 1px solid blue;
+    border:2px solid #004bdc;
     height: 37px;
     line-height: 35px;
     margin: 6px 5px;
@@ -724,14 +788,18 @@
     text-overflow: ellipsis;
   }
   .li4_parts .choosed{
-    border: 1px solid blue;
+    border:2px solid #004bdc;
     height: 37px;
     line-height: 35px;
     margin: 6px 5px;
     color: white;
-    background: blue;
+    background: #004bdc;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  .wringGroup{
+    border: 2px solid #d20c0c !important;
+    color: red !important;
   }
 </style>

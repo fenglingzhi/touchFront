@@ -569,8 +569,14 @@
       /* Coding By Qianjf */
       var vm = this
       localStorage.setItem("placemanID","0")
+      localStorage.setItem("canRouter","0")
+
      var outPlice= setInterval(function () {
         if(localStorage.getItem("placemanID")==0){
+          /*民警还未刷卡*/
+        }else if(localStorage.getItem("placemanID")==1){
+          /* 点击登录框关闭按钮停止检测民警登录情况*/
+          clearInterval(outPlice)
         }else {
           localStorage.setItem("moveTypes","2")//1为进出工，2为临时外出登记，3为卡绑定
           vm.firstWs()
@@ -695,7 +701,7 @@
               result[i]["ischoose"]=false
             }
             vm.reasonList=result
-             console.log(result)
+//             console.log(result)
           }
 
         },
@@ -850,7 +856,7 @@
 
 
   .choose{
-    border: 1px solid blue;
+    border:2px solid #004bdc;
     height: 37px;
     line-height: 35px;
     margin: 6px 5px;
@@ -860,12 +866,12 @@
     text-overflow: ellipsis;
   }
   .choosed{
-    border: 1px solid blue;
+    border:2px solid #004bdc;
     height: 37px;
     line-height: 35px;
     margin: 6px 5px;
     color: white;
-    background: blue;
+    background: #004bdc;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

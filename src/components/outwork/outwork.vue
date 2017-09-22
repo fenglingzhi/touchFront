@@ -14,7 +14,7 @@
             <el-col :span="2" v-for="(outCrimina,index)  in outCriminalList.slice(outA-1,outB)" :key="1">
               <div class="criminal">
                 <div style="height: 91px;width:102px;">
-                <img :src="outCrimina.Photo" width="98%" height="85" alt=""/>
+                <img :src="outCrimina.Photo" width="96" height="85" alt=""/>
                 </div>
                 <span class="criminalName">{{outCrimina.CriminalName}}</span>
               </div>
@@ -164,7 +164,10 @@
         vm.$emit('openLogin',true)
         var subSetInterval=setInterval(function () {
           if(localStorage.getItem("placemanID")==0){
-
+            /*民警还未刷卡*/
+          }else if(localStorage.getItem("placemanID")==1){
+            /* 点击登录框关闭按钮停止检测民警登录情况*/
+            clearInterval(subSetInterval)
           }else {
               clearInterval(subSetInterval)
             var Polices=localStorage.getItem("placemanID");
@@ -264,6 +267,7 @@
     },
     mounted(){
       var vm = this
+      localStorage.setItem("canRouter",0)
       if(localStorage.getItem("AreaType")==1){
         vm.buttonText="结束"
         vm.MoveType="2602"
@@ -274,11 +278,13 @@
       localStorage.setItem("placemanID","0")
       var outWork= setInterval(function () {
         if(localStorage.getItem("placemanID")==0){
+          /*民警还未刷卡*/
+        }else if(localStorage.getItem("placemanID")==1){
+          /* 点击登录框关闭按钮停止检测民警登录情况*/
+          clearInterval(outWork)
         }else {
           localStorage.setItem("moveTypes","1")//1为进出工，2为临时外出登记
-
           vm.firstWs()
-
           clearInterval(outWork)
         }
       },500)

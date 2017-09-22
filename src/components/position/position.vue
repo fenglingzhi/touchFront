@@ -140,7 +140,9 @@
             MsgType:36
           },
           Body: JSON.stringify({
-            CriminalGroupID:vm.criminalGroupIDs
+//            CriminalGroupID:vm.criminalGroupIDs
+            GroupNum:vm.criminalGroupIDs,
+            OrgID:localStorage.getItem("OrgID")
           })
         }
         $.ajax({
@@ -212,7 +214,10 @@
             MsgType:36
           },
           Body: JSON.stringify({
-            CriminalGroupID:vm.criminalGroupIDs
+//            CriminalGroupID:vm.criminalGroupIDs
+            GroupNum:vm.criminalGroupIDs,
+            OrgID:localStorage.getItem("OrgID")
+
           })
         }
         $.ajax({
@@ -264,6 +269,7 @@
     },
     mounted () {
       let vm = this
+      localStorage.setItem("canRouter",0)
       scaleNum=1
       /* Coding By YanM */
       vm.pointS()

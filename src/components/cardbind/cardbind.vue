@@ -337,13 +337,18 @@
       localStorage.setItem("placemanID","0")
       var outPlice= setInterval(function () {
         if(localStorage.getItem("placemanID")==0){
-        }else {
+          /*民警还未刷卡*/
+        }else if(localStorage.getItem("placemanID")==1){
+          /* 点击登录框关闭按钮停止检测民警登录情况*/
+          clearInterval(outPlice)
+        }else{
           localStorage.setItem("moveTypes","3")//1为进出工，2为临时外出登记，3为卡绑定
           vm.bandCardInfo_onBind()
           vm.$emit('CardBindPageInit')
           clearInterval(outPlice)
         }
-      },500)
+      },1000)
+
 
 
       /* Coding By YanM */

@@ -1,7 +1,14 @@
 // 配置baseurl
 // 接口地址
 /* 基础数据接口地址 */
-export const BasicUrl = 'http://10.58.178:7701/api/'
+/*英德*/
+export const BasicUrl = 'http://10.58.1.178:9115/api/'
+
+// export const BasicUrl = 'http://10.58.1.145:88/api/'
+
+/*丁山*/
+// export const BasicUrl = 'http://10.58.1.178:7701/api/'
+/*上线版本*/
 // export const BasicUrl = 'http://'+window.location.host+'/api/'
 console.log(BasicUrl)
 $.ajax({
@@ -21,11 +28,12 @@ $.ajax({
     XHR = null;  //回收资源
   }
 });
+
 /* 服务请求接口地址 */
 export const ajaxUrl = 'http://'+localStorage.getItem('IP')+':' +localStorage.getItem('TcpPort')
 /* 静态资源地址 */
 // export const IMG = 'http://10.58.1.178:9112'
-export const IMG = ''
+export const IMG = 'http://10.58.1.178:9115'
 // export const MapUrl ='http://10.58.1.237:9999'
 export const MapUrl =''
 

@@ -25,22 +25,25 @@
       <el-col :span="18">
         <div class="floating_personnel">
           <h4 class="home_title">流动人员
-            <span class="float">（非法流动{{FlnkIDList2.length}}人，</span>
+            <span class="float">（非法流动{{FlnkIDList2.length-FlnkIDList1.length}}人，</span>
             <span class="out">本监外出{{FlnkIDList1.length}}人）</span>
           </h4>
           <el-row class="float_person_wrap">
+            <!--{{FlnkIDList2}}-->
             <el-col :span="8" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)" :key='1' :class="">
-              <div class="float_person_card illegal" :class="item.prisonstatus">
+              <!--<div class="float_person_card illegal" :class="item.prisonstatus">-->
+              <div :class="['float_person_card illegal', {moveBlue: item.isBlue}]" >
                 <el-col :span="10" class="photo">
                   <img :src="item.Photo" alt="" width="100%" height="100%">
                 </el-col>
                 <el-col :span="12" class="crimal_content">
                   <p>姓名：{{item.CriminalName}}</p>
                   <p>罪犯编号：{{item.CriminalID}}</p>
-                  <!--<p>当前区域：{{item.area}}</p>-->
-                  <!--<p>外出地点：{{item.destination}}</p>-->
-                  <!--<p>陪同民警：{{item.withplace}}</p>-->
-                  <p>外出时间：{{item.UpdateTime}}</p>
+                  <p>当前区域：{{item.AreaName}}</p>
+                  <p v-show="item.isBlue">前往区域：{{item.Areas}}</p>
+                  <p  v-show="item.isBlue">陪同民警：{{item.Polices}}</p>
+                  <p>外出时间：{{item.LeaveTime}}</p>
+                  <p>状态：{{item.Status}}</p>
                   <!--<p>外出事由：{{item.outreasons}}</p>-->
                 </el-col>
               </div>
@@ -214,6 +217,7 @@ export default {
   },
   mounted(){
     var vm = this
+    localStorage.setItem("canRouter",1)
     setInterval(function () {
       if(vm.chartsChange !== vm.chartsDatas){
         vm.charts()
@@ -239,6 +243,9 @@ export default {
 <style lang="scss">
   .home{
     height: 780px !important;
+  }
+  .moveBlue{
+    background: #2553ff !important;
   }
   #myChart{
     height:480px;
