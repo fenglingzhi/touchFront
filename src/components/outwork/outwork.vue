@@ -101,7 +101,8 @@
         outB:48,
         isSuccess:0,
         alertText:"",
-        buttonText:""
+        buttonText:"",
+        starInterval:""
 
       }
     },
@@ -268,6 +269,9 @@
     mounted(){
       var vm = this
       localStorage.setItem("canRouter",0)
+      /*民警进入该页面是否需要刷卡*/
+     var needPassCard = localStorage.getItem("needPassCard")
+
       if(localStorage.getItem("AreaType")==1){
         vm.buttonText="结束"
         vm.MoveType="2602"
@@ -276,18 +280,25 @@
         vm.MoveType="2601"
       }
       localStorage.setItem("placemanID","0")
-      var outWork= setInterval(function () {
-        if(localStorage.getItem("placemanID")==0){
-          /*民警还未刷卡*/
-        }else if(localStorage.getItem("placemanID")==1){
-          /* 点击登录框关闭按钮停止检测民警登录情况*/
-          clearInterval(outWork)
-        }else {
-          localStorage.setItem("moveTypes","1")//1为进出工，2为临时外出登记
-          vm.firstWs()
-          clearInterval(outWork)
-        }
-      },500)
+      if(needPassCard==0){
+        localStorage.setItem("moveTypes","1")//1为进出工，2为临时外出登记
+        vm.firstWs()
+      }else if(needPassCard==1){
+
+        var outWork= setInterval(function () {
+          if(localStorage.getItem("placemanID")==0){
+            /*民警还未刷卡*/
+          }else if(localStorage.getItem("placemanID")==1){
+            /* 点击登录框关闭按钮停止检测民警登录情况*/
+            clearInterval(outWork)
+          }else {
+            localStorage.setItem("moveTypes","1")//1为进出工，2为临时外出登记
+            vm.firstWs()
+            clearInterval(outWork)
+          }
+        },500)
+      }
+
 //      发送内容
       var personnel_distribution = {
         Header: {
@@ -299,7 +310,7 @@
           MoveType : vm.MoveType
         })
       }
-      setInterval(function () {
+      vm.starInterval=setInterval(function () {
         if(vm.isSuccess==1){
           if(vm.ws.readyState == WebSocket.OPEN){
             vm.ws.send(JSON.stringify(personnel_distribution))
@@ -355,6 +366,9 @@
           XHR = null;  //回收资源
         }
       });
+    },
+    destroyed: function () {
+     clearInterval(this.starInterval)
     }
   }
 

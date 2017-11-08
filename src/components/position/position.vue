@@ -15,7 +15,7 @@
                   <div style="height:0px;"></div>
                   <el-row >
                     <el-row style="overflow: hidden ;height: 590px">
-                      <div class="map">
+                      <div class="map" >
                         <!--{{criminalLists}}-->
                         <img :src="mapPhoto" alt="" ref="abc">
                         <div v-show="item.pointStatus"  :class="['point', {pointed: item.status}]"  v-on:click="select(index)" v-for="(item,index) in criminalLists" :style="{top:item.CriminalY+'px',left:item.CriminalX+'px'}" >
@@ -371,7 +371,7 @@
   .point{
     width: 10px;
     height: 10px;
-    background: red;
+    background:blue ;
     position: absolute;
     border-radius: 18px;
     box-shadow: 1px 0px 10px 3px;
@@ -392,7 +392,7 @@
     100%{ box-shadow:1px 0px 10px 5px;}
   }
   .pointed{
-    background: blue;
+    background:#ce8900 ;
   }
   .pointTop{
       width: 96px;

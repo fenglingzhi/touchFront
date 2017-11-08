@@ -198,11 +198,20 @@
 
       },
       cancle:function (index) {
-        var r=confirm("确定要删除该人员？");
-        if (r==true)
-        {
-           this.cardPerson.splice(index,1)
-        }
+//        var r=confirm("确定要删除该人员？");
+//        if (r==true)
+//        {
+//           this.cardPerson.splice(index,1)
+//        }
+        this.$confirm('确定要删除该人员?', '提示', {
+          confirmButtonText: '删除',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.cardPerson.splice(index,1)
+        }).catch(() => {
+
+        });
 
       },
       submit:function () {
@@ -248,9 +257,11 @@
                 },2000)
               }else if(result.Ret==2){
                 /*2：成员所属原互监组成员少于三人*/
-                var r=confirm(result.Description);
-                if (r==true)
-                {
+                this.$confirm(result.Description, '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning'
+                }).then(() => {
                   var send2 = {
                     Header: {
                       MsgID:"201501260000000034",
@@ -291,8 +302,54 @@
                       XHR = null;  //回收资源
                     }
                   })
-
-                }
+                }).catch(() => {
+                  //取消
+                });
+//                var r=confirm(result.Description);
+//                if (r==true)
+//                {
+//                  var send2 = {
+//                    Header: {
+//                      MsgID:"201501260000000034",
+//                      MsgType:35
+//                    },
+//                    Body: JSON.stringify({
+//                      CmdType:2,
+//                      CriminalIDs:cardPersonList
+//                    })
+//                  }
+//                  //发送数据
+//                  $.ajax({
+//                    type: "get",
+//                    contentType: "application/json; charset=utf-8",
+//                    dataType: "jsonp",
+//                    jsonp: "callback",
+//                    async: false,
+//                    url: ajaxUrl,
+//                    data:JSON.stringify(send2),
+//                    success: function (result) {
+//                      if(result.RET==1){
+//                        vm.alertText=result.Description
+//                        vm.cardPersonList=[]
+//                        /*清除刷进来的互监组待定人员*/
+//                        vm.$emit("delCardPerson")
+//                        vm.getGroups()
+//                        setTimeout(function () {
+//                          vm.alertText=""
+//                        },2000)
+//                      }else {
+//                        vm.alertText=result.Description
+//                        setTimeout(function () {
+//                          vm.alertText=""
+//                        },2000)
+//                      }
+//                    },
+//                    complete: function (XHR, TS) {
+//                      XHR = null;  //回收资源
+//                    }
+//                  })
+//
+//                }
               }else if(result.Ret==3){
                 /*3：删除临时互监组成功*/
                 vm.alertText=result.Description
@@ -305,9 +362,12 @@
                 },2000)
               }else if(result.Ret==4){
                 /*4：该操作包含的临时互监组成员中有新的成员，需要解除还是新建*/
-                var r=confirm(result.Description);
-                if (r==true)
-                {
+                this.$confirm(result.Description, '提示', {
+                  confirmButtonText: '新建',
+                  cancelButtonText: '解除',
+                  type: 'warning'
+                }).then(() => {
+
                   var send4 = {
                     Header: {
                       MsgID:"201501260000000034",
@@ -318,7 +378,7 @@
                       CriminalIDs:cardPersonList
                     })
                   }
-                  //发送数据
+                  //新建发送数据
                   $.ajax({
                     type: "get",
                     contentType: "application/json; charset=utf-8",
@@ -351,7 +411,7 @@
                       XHR = null;  //回收资源
                     }
                   })
-                }else {
+                }).catch(() => {
                   var send5 = {
                     Header: {
                       MsgID:"201501260000000034",
@@ -362,7 +422,7 @@
                       CriminalIDs:cardPersonList
                     })
                   }
-                  //发送数据
+                  //解除发送数据
                   $.ajax({
                     type: "get",
                     contentType: "application/json; charset=utf-8",
@@ -392,7 +452,95 @@
                       XHR = null;  //回收资源
                     }
                   })
-                }
+                });
+//                var r=confirm(result.Description);
+//                if (r==true)
+//                {
+//                  var send4 = {
+//                    Header: {
+//                      MsgID:"201501260000000034",
+//                      MsgType:35
+//                    },
+//                    Body: JSON.stringify({
+//                      CmdType:2,
+//                      CriminalIDs:cardPersonList
+//                    })
+//                  }
+//                  //发送数据
+//                  $.ajax({
+//                    type: "get",
+//                    contentType: "application/json; charset=utf-8",
+//                    dataType: "jsonp",
+//                    jsonp: "callback",
+//                    async: false,
+//                    url: ajaxUrl,
+//                    data:JSON.stringify(send4),
+//                    success: function (result) {
+//                      if(result.RET==1){
+//                        vm.alertText=result.Description
+//                        setTimeout(function () {
+//                          vm.alertText=""
+//                        },2000)
+//                        vm.cardPersonList=[]
+//                        vm.getGroups()
+//                        /*清除刷进来的互监组待定人员*/
+//                        vm.$emit("delCardPerson")
+//                      }else {
+//                        vm.alertText=result.Description
+//                        setTimeout(function () {
+//                          vm.alertText=""
+//                        },2000)
+//                        vm.cardPersonList=[]
+//                        vm.getGroups()
+//
+//                      }
+//                    },
+//                    complete: function (XHR, TS) {
+//                      XHR = null;  //回收资源
+//                    }
+//                  })
+//                }else {
+//                  var send5 = {
+//                    Header: {
+//                      MsgID:"201501260000000034",
+//                      MsgType:35
+//                    },
+//                    Body: JSON.stringify({
+//                      CmdType:3,
+//                      CriminalIDs:cardPersonList
+//                    })
+//                  }
+//                  //发送数据
+//                  $.ajax({
+//                    type: "get",
+//                    contentType: "application/json; charset=utf-8",
+//                    dataType: "jsonp",
+//                    jsonp: "callback",
+//                    async: false,
+//                    url: ajaxUrl,
+//                    data:JSON.stringify(send5),
+//                    success: function (result) {
+//                      if(result.Ret==1){
+//                        vm.alertText=result.Description
+//                        setTimeout(function () {
+//                          vm.alertText=""
+//                        },2000)
+//                        vm.cardPersonList=[]
+//                        vm.getGroups()
+//                        /*清除刷进来的互监组待定人员*/
+//                        vm.$emit("delCardPerson")
+//                      }else {
+//                        vm.alertText=result.Description
+//                        setTimeout(function () {
+//                          vm.alertText=""
+//                        },2000)
+//                      }
+//                    },
+//                    complete: function (XHR, TS) {
+//                      XHR = null;  //回收资源
+//                    }
+//                  })
+//                }
               }
             },
             error: function (err) {
@@ -604,8 +752,8 @@
           MsgType:34
         },
         Body: JSON.stringify({
-          OrgID : localStorage.getItem('OrgID'),
-          MapID :localStorage.getItem('MapFlnkID')
+          OrgID : localStorage.getItem('OrgID').toLowerCase(),
+          MapID :localStorage.getItem('MapFlnkID').toLowerCase()
         })
       }
      vm.getGroupsWS=setInterval(function () {
@@ -634,26 +782,7 @@
        vm.provisionalGroupPages = Math.ceil(vm.provisionalGroupList.length / 12) == 0?1:Math.ceil(vm.provisionalGroupList.length / 12)
       },1000)
 
-//      setInterval(function () {
-//          if(vm.isSuccess==1){
-//            /*刷卡信息*/
-//            var receiveData = vm.receiveDataMsgType8
-//            if(receiveData!=""||receiveData!=null){
-//              if(receiveData["Type"]==2002){
-//                receiveData["ischoose"]=false
-//                receiveData["CriminalName"]=vm.criminalList[0][receiveData["PersonID"]]["CriminalName"]
-//                receiveData["Photo"]=vm.criminalList[0][receiveData["PersonID"]]["Photo"]
-//                for( var i=0;i< vm.cardPerson.length;i++){
-//                  if(vm.cardPerson[i]["PersonID"]==receiveData["PersonID"]){
-//                    vm.cardPerson.splice(i,1)
-//                  }
-//                }
-//                vm.cardPerson.push(receiveData)
-//              }
-//            }
-//
-//          }
-//      },200)
+
       /* Coding By Qianjf */
 
     },
@@ -801,5 +930,6 @@
   .wringGroup{
     border: 2px solid #d20c0c !important;
     color: red !important;
+    box-shadow: 1px 1px 6px 1px;
   }
 </style>

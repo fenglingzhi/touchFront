@@ -471,15 +471,13 @@
           url: BasicUrl + 'HomeIndex/GetBindJQ',
           success: function (result) {
             vm.prisonSelect=result
-            console.log("jhoijojijojj",result)
             vm.prisonSelectText = vm.prisonSelect[0].AreaName
             vm.setLocalStorage('OrgID',vm.prisonSelect[0].OrgID)
             vm.setLocalStorage('DoorID',vm.prisonSelect[0].Door)
             vm.setLocalStorage('AreaID',vm.prisonSelect[0].AreaID)
             vm.setLocalStorage('AreaType',vm.prisonSelect[0].AreaType)
-//            vm.setLocalStorage('MapFlnkID',vm.prisonSelect[0].MapFlnkID)
-          vm.setLocalStorage('MapFlnkID',"9A27D083-ADFD-431D-B60B-ACDBB5024CF9")
-
+            vm.setLocalStorage('MapFlnkID',vm.prisonSelect[0].MapFlnkID)
+//          vm.setLocalStorage('MapFlnkID',"9A27D083-ADFD-431D-B60B-ACDBB5024CF9")
 
           },
           error: function (err) {
@@ -706,6 +704,8 @@
                         if(vm.alarmPages==0){
                           vm.alarmPages=1
                           vm.alertBJTK=false
+                          vm.alertBJXX=false
+
                         }
 //                            vm.alarmNowPage=vm.alarmPages
                         vm.alarmBack()
@@ -1222,17 +1222,46 @@
           }
         });
 
-        /* 收工时间 */
+//        /* 收工时间 */
+//        $.ajax({
+//          type: "get",
+//          contentType: "application/json; charset=utf-8",
+//          dataType: "jsonp",
+//          jsonp: "callback",
+//          async: false,
+//          data: {OrgID: localStorage.getItem('OrgID')},
+//          url: BasicUrl + 'HomeIndex/GetKnockOffTime',
+//          success: function (result) {
+//            localStorage.setItem("overTime",result[0].FieldValue)
+//          },
+//          complete: function (XHR, TS) {
+//            XHR = null;  //回收资源
+//          }
+//        });
+
+        /* 获取配置项 */
         $.ajax({
           type: "get",
           contentType: "application/json; charset=utf-8",
           dataType: "jsonp",
           jsonp: "callback",
           async: false,
-          data: {OrgID: localStorage.getItem('OrgID')},
-          url: BasicUrl + 'HomeIndex/GetKnockOffTime',
+          url: BasicUrl + 'HomeIndex/GetSysConfig',
           success: function (result) {
-            localStorage.setItem("overTime",result[0].FieldValue)
+          for (let i=0;i<result.length;i++){
+              if(result[i].FieldName=='KnockOffTime'){
+                /*  默认收工时间*/
+                localStorage.setItem("overTime",result[i].FieldValue)
+              }else if(result[i].FieldName=='ClientSingleOrgNeedRefreshCard'){
+                /*  触摸屏切换到出工收工时是否每次都需要刷卡或登录*/
+//                localStorage.setItem("needPassCard",1)
+                localStorage.setItem("needPassCard",result[i].FieldValue)
+
+
+              }
+          }
+            console.log(result)
+
           },
           complete: function (XHR, TS) {
             XHR = null;  //回收资源
@@ -1748,6 +1777,7 @@
         vm.onlinestatus = false
         if(vm.onlinestatus === false){
           setInterval(function () {
+            vm.$router.push({ path: '/' })
             window.location.reload()
           },5000)
         }
@@ -1756,6 +1786,10 @@
       /* 错误信息 */
       vm.ws.onerror = function(evt) {
           console.log("WebSocketError!",evt)
+        setInterval(function () {
+          vm.$router.push({ path: '/' })
+          window.location.reload()
+        },5000)
       }
 
       /* Coding By YanM */

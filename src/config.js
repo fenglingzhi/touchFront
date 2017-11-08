@@ -2,14 +2,14 @@
 // 接口地址
 /* 基础数据接口地址 */
 /*英德*/
-export const BasicUrl = 'http://10.58.1.178:9115/api/'
+// export const BasicUrl = 'http://10.58.1.178:9115/api/'
 
 // export const BasicUrl = 'http://10.58.1.145:88/api/'
 
 /*丁山*/
 // export const BasicUrl = 'http://10.58.1.178:7701/api/'
 /*上线版本*/
-// export const BasicUrl = 'http://'+window.location.host+'/api/'
+export const BasicUrl = 'http://'+window.location.host+'/api/'
 console.log(BasicUrl)
 $.ajax({
   type: "get",
@@ -31,9 +31,12 @@ $.ajax({
 
 /* 服务请求接口地址 */
 export const ajaxUrl = 'http://'+localStorage.getItem('IP')+':' +localStorage.getItem('TcpPort')
+// export const ajaxUrl = 'http://10.58.1.237:20001'
+
+
 /* 静态资源地址 */
-// export const IMG = 'http://10.58.1.178:9112'
-export const IMG = 'http://10.58.1.178:9115'
+export const IMG = ''
+// export const IMG = 'http://10.58.1.178:9115'
 // export const MapUrl ='http://10.58.1.237:9999'
 export const MapUrl =''
 
@@ -50,5 +53,7 @@ export default {
     }
     /* websocket地址配置 */
     Vue.prototype.ws = new WebSocket('ws:'+localStorage.getItem('IP')+':'+localStorage.getItem('WebSocketPort'))
+    // Vue.prototype.ws = new WebSocket('ws:10.58.1.237:20002')
+
   }
 }
